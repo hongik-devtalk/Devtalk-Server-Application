@@ -6,10 +6,6 @@ import com.hongik.devtalk.global.apiPayload.code.GeneralErrorCode;
 import com.hongik.devtalk.global.apiPayload.exception.GeneralException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.web.HttpRequestMethodNotSupportedException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -19,14 +15,22 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ExceptionAdvice {
 
     @ExceptionHandler(GeneralException.class)
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-
-    @ExceptionHandler(MissingServletRequestParameterException.class)
-
-    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-
-    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiResponse<Object>> handleCustomException(GeneralException e) {
+        log.warn("CustomException: {}", e.getCode().getMessage());
+        BaseErrorCode code = e.getCode();
+        return ResponseEntity
+                .status(code.getHttpStatus())
+                .body(ApiResponse.onFailure(code, e.getMessage()));
+    }
 
     @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiResponse<Object>> handleException(Exception e) {
+        log.warn("Exception: {}", e.getMessage());
+        BaseErrorCode code = GeneralErrorCode.INTERNAL_SERVER_ERROR;
+        return ResponseEntity
+                .status(code.getHttpStatus())
+                .body(ApiResponse.onFailure(code, e.getMessage()));
+    }
+
+
 }
