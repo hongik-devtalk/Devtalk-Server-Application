@@ -22,5 +22,5 @@ public class Department {
     private String departmentName;
 
     @OneToMany(mappedBy = "department")
-    private List<StudentDepartmentId> studentDepartments = new ArrayList<>();
+    private List<StudentDepartment> studentDepartments = new ArrayList<>();
 }

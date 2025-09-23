@@ -40,7 +40,7 @@ public class Student extends BaseTimeEntity {
     private StudentStatus status;
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
-    private List<StudentDepartmentId> studentDepartments = new ArrayList<>();
+    private List<StudentDepartment> studentDepartments = new ArrayList<>();
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
     private List<Applicant> applicants = new ArrayList<>();
