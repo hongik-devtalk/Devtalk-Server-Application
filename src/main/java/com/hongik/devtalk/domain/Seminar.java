@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,13 +21,15 @@ public class Seminar {
     private Long id;
 
     @Column(length = 50, nullable = false, unique = true)
-    private String seminarNum; // 몇회차
+    private int seminarNum; // 몇회차
 
     private String topic;
 
-    private LocalDate startDate;
+    private LocalDateTime startDate;
 
-    private LocalDate endDate;
+    private LocalDateTime endDate;
+
+    private String place;
 
     @OneToMany(mappedBy = "seminar", cascade = CascadeType.ALL)
     private List<Attendance> attendances = new ArrayList<>();
