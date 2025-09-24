@@ -20,9 +20,10 @@ public class LiveFile {
     @Column(name = "file_id")
     private Long id;
 
+    // 세미나별로 자료 제공
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lecture_id", nullable = false)
-    private Lecture lecture;
+    @JoinColumn(name = "seminar_id", nullable = false)
+    private Seminar seminar;
 
     @Column(nullable = false)
     private String fileName;

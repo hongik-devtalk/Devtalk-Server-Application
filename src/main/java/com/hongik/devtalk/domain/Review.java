@@ -21,9 +21,10 @@ public class Review extends BaseTimeEntity {
     @JoinColumn(name = "student_id", nullable = false)
     private Student student;
 
+    // 세미나별로 후기 작성
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lecture_id", nullable = false)
-    private Lecture lecture;
+    @JoinColumn(name = "seminar_id", nullable = false)
+    private Seminar seminar;
 
     @Column(length = 100)
     private String nickname;

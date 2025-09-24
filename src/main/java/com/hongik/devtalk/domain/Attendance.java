@@ -22,9 +22,10 @@ public class Attendance {
     @JoinColumn(name = "applicant_id", nullable = false)
     private Applicant applicant;
 
+    // 세미나 별로 출석체크
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lecture_id", nullable = false)
-    private Lecture lecture;
+    @JoinColumn(name = "seminar_id", nullable = false)
+    private Seminar seminar;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
