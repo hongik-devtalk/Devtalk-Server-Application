@@ -41,6 +41,9 @@ public class Seminar {
     private Live live;
 
     @OneToMany(mappedBy = "seminar", cascade = CascadeType.ALL)
+    private List<LiveFile> liveFiles = new ArrayList<>();
+
+    @OneToMany(mappedBy = "seminar", cascade = CascadeType.ALL)
     private List<Applicant> applicants = new ArrayList<>();
 
     @OneToMany(mappedBy = "seminar", cascade = CascadeType.ALL)
