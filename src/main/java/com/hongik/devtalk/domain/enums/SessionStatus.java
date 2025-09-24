@@ -1,5 +1,5 @@
 package com.hongik.devtalk.domain.enums;
 
-public enum LectureStatus {
+public enum SessionStatus {
     UPCOMING, LIVE, ENDED
 }

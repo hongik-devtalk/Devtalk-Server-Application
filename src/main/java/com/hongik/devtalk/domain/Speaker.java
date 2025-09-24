@@ -40,5 +40,5 @@ public class Speaker {
     private String etc;
 
     @OneToMany(mappedBy = "speaker", cascade = CascadeType.ALL)
-    private List<Lecture> lectures = new ArrayList<>();
+    private List<Session> sessions = new ArrayList<>();
 }

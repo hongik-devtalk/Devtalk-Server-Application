@@ -13,16 +13,16 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class SeminarImage {
+public class SessionImage { // 세션별로 이미지
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "seminar_image_id")
+    @Column(name = "session_image_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lecture_id", nullable = false)
-    private Lecture lecture;
+    @JoinColumn(name = "session_id", nullable = false)
+    private Session session;
 
     @Column(length = 2048, nullable = false)
     private String imageUrl;

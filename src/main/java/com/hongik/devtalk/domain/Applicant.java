@@ -27,8 +27,8 @@ public class Applicant {
     private Student student;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "round_id", nullable = false)
-    private Round round;
+    @JoinColumn(name = "seminar_id", nullable = false)
+    private Seminar seminar;
 
     @CreatedDate
     @Column(nullable = false)

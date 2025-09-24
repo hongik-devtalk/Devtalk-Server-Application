@@ -1,7 +1,7 @@
 package com.hongik.devtalk.domain;
 
 import com.hongik.devtalk.domain.common.BaseTimeEntity;
-import com.hongik.devtalk.domain.enums.LectureStatus;
+import com.hongik.devtalk.domain.enums.SessionStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,16 +14,16 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Lecture extends BaseTimeEntity {
+public class Session extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "lecture_id")
+    @Column(name = "session_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "round_id", nullable = false)
-    private Round round;
+    @JoinColumn(name = "seminar_id", nullable = false)
+    private Seminar seminar;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "speaker_id", nullable = false)
@@ -43,23 +43,13 @@ public class Lecture extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private LectureStatus status;
+    private SessionStatus status;
 
-    @OneToMany(mappedBy = "lecture", cascade = CascadeType.ALL)
-    private List<Attendance> attendances = new ArrayList<>();
 
-    @OneToMany(mappedBy = "lecture", cascade = CascadeType.ALL)
-    private List<Review> reviews = new ArrayList<>();
-
-    @OneToOne(mappedBy = "lecture", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Live live;
-
-    @OneToMany(mappedBy = "lecture", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "session", cascade = CascadeType.ALL)
     private List<LiveFile> liveFiles = new ArrayList<>();
 
-    @OneToMany(mappedBy = "lecture", cascade = CascadeType.ALL)
-    private List<SeminarImage> seminarImages = new ArrayList<>();
+    @OneToMany(mappedBy = "session", cascade = CascadeType.ALL)
+    private List<SessionImage> seminarImages = new ArrayList<>();
 
-    @OneToMany(mappedBy = "lecture", cascade = CascadeType.ALL)
-    private List<Remind> reminds = new ArrayList<>();
 }
