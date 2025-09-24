@@ -47,9 +47,6 @@ public class Session extends BaseTimeEntity {
 
 
     @OneToMany(mappedBy = "session", cascade = CascadeType.ALL)
-    private List<LiveFile> liveFiles = new ArrayList<>();
-
-    @OneToMany(mappedBy = "session", cascade = CascadeType.ALL)
     private List<SessionImage> seminarImages = new ArrayList<>();
 
 }

@@ -26,16 +26,24 @@ public class Review extends BaseTimeEntity {
     @JoinColumn(name = "seminar_id", nullable = false)
     private Seminar seminar;
 
-    @Column(length = 100)
-    private String nickname;
-
+    //좋았던 점
     @Lob
     @Column(nullable = false)
-    private String comment;
+    private String strength;
 
+    //아쉬웠던 점
+    @Lob
+    private String improvement;
+
+    //다음에 듣고 싶은 주제
+    @Lob
+    private String nextTopic;
+
+    //별점
     @Column(nullable = false)
     private byte score;
 
+    //공개 여부
     @Column(nullable = false)
     @ColumnDefault("false")
     private boolean isPublic;
