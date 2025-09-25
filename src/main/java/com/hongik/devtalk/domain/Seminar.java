@@ -25,8 +25,13 @@ public class Seminar {
 
     private String topic;
 
+    //세미나가 진행되는 시간
+    private LocalDateTime seminarDate;
+
+    //신청 시작 시간
     private LocalDateTime startDate;
 
+    //신청 마감 시간
     private LocalDateTime endDate;
 
     private String place;
