@@ -26,8 +26,11 @@ public class Student extends BaseTimeEntity {
     @Column(length = 50, nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private int grade;
+    //기본 선택 (1,2,3,4학년인 경우)
+    private Integer grade;
+
+    //기타 선택 (학생 직접 입력)
+    private String gradeEtc;
 
     @Column(nullable = false, unique = true)
     private String email;
