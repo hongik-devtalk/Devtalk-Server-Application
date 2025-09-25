@@ -36,9 +36,6 @@ public class Seminar {
 
     private String place;
 
-    //리뷰 작성 기간 (10일)
-    private LocalDateTime reviewDeadline;
-
     @OneToMany(mappedBy = "seminar", cascade = CascadeType.ALL)
     private List<Attendance> attendances = new ArrayList<>();
 
