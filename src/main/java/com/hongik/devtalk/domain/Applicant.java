@@ -1,5 +1,7 @@
 package com.hongik.devtalk.domain;
 
+import com.hongik.devtalk.domain.enums.InflowPath;
+import com.hongik.devtalk.domain.enums.ParticipationType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -29,6 +31,14 @@ public class Applicant {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seminar_id", nullable = false)
     private Seminar seminar;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ParticipationType participationType; // 참여 방식 (ONLINE / OFFLINE)
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private InflowPath inflowPath; // 유입 경로
 
     @CreatedDate
     @Column(nullable = false)

@@ -26,7 +26,7 @@ public class Seminar {
     private String topic;
 
     //세미나가 진행되는 시간
-    private String seminarDate;
+    private LocalDateTime seminarDate;
 
     //신청 시작 시간
     private LocalDateTime startDate;
