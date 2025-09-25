@@ -45,7 +45,7 @@ public class Review extends BaseTimeEntity {
 
     //공개 여부
     @Column(nullable = false)
-    @ColumnDefault("false")
+    @ColumnDefault("true")
     private boolean isPublic;
 
     @Column(nullable = false)
