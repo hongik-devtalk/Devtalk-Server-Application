@@ -3,6 +3,8 @@ package com.hongik.devtalk.controller.mainpage;
 import com.hongik.devtalk.global.apiPayload.ApiResponse;
 import com.hongik.devtalk.controller.mainpage.dto.*;
 import com.hongik.devtalk.domain.enums.ImageType;
+import com.hongik.devtalk.domain.mainpage.MainpageImagesResponseDto;
+import com.hongik.devtalk.service.mainpage.MainpageImagesService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,6 +23,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/admin/home")
 public class MainpageController {
+
+    private final MainpageImagesService mainpageImagesService;
 
     // Images APIs
     @GetMapping("/images")
@@ -46,6 +50,8 @@ public class MainpageController {
             )
     })
     public ApiResponse<MainpageImagesResponseDto> getMainpageImages(
+            @Parameter(description = "인증 토큰", required = true)
+            @RequestHeader("Authorization") String authorization
 //            @Parameter(description = "인증 토큰", required = true)
 //            @RequestHeader("Authorization") String authorization
     ) {
@@ -259,6 +265,8 @@ public class MainpageController {
 //            @RequestHeader("Authorization") String authorization,
             @Valid @RequestBody ReorderRequestDto request
     ) {
+        MainpageImagesResponseDto result = mainpageImagesService.getMainpageImages();
+        return ApiResponse.onSuccess("홍보 사진 정보를 조회했습니다.", result);
         // TODO: 후기 카드 순위 변경 로직 구현
         return ApiResponse.onSuccess("후기 카드 순서를 갱신했습니다.", null);
     }
