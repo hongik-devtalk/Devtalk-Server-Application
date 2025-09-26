@@ -5,7 +5,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/devtalk_test_db?serverTimezone=Asia/Seoul
     username: root
-    password: ${MYSQL_PASSWORD}
+    password: sypark0305^0st?sqsql
 
   jpa:
     hibernate:
