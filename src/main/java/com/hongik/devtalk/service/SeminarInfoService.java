@@ -19,7 +19,7 @@ public class SeminarInfoService {
 
     public SeminarInfoResponseDTO getSeminarById(Long seminarId){
         Seminar seminar = seminarInfoRepository.findById(seminarId)
-                .orElseThrow(() -> new GeneralException(GeneralErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new GeneralException(GeneralErrorCode.SEMINARINFO_NOT_FOUND));
         return SeminarInfoResponseDTO.builder()
                 .seminarId(seminar.getId())
                 .seminarNum(seminar.getSeminarNum())

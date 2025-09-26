@@ -15,7 +15,7 @@ public enum GeneralErrorCode implements BaseErrorCode {
     TOKEN_EXPIRED(HttpStatus.valueOf(419), "AUTH_4191", "토큰이 만료되었습니다."), // Spring 기본 없음
 
     // 유저 에러
-    USER_NOT_FOUND(HttpStatus.NOT_FOUND,"USER_4041","해당 리소스를 찾을 수 없습니다."),
+    SEMINARINFO_NOT_FOUND(HttpStatus.NOT_FOUND,"SEMINARINFO_4041","seminarId를 찾을 수 없습니다."),
 
     // 요청/파라미터 에러
     MISSING_PARAMETER(HttpStatus.BAD_REQUEST, "REQ_4001", "필수 파라미터가 누락되었습니다."),
