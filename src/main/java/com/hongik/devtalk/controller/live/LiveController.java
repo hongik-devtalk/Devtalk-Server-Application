@@ -4,6 +4,7 @@ import com.hongik.devtalk.domain.live.dto.*;
 import com.hongik.devtalk.global.apiPayload.ApiResponse;
 import com.hongik.devtalk.service.live.LiveService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -24,7 +25,7 @@ public class LiveController {
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "200", description = "OK, 인증 성공",
-                    content = @Content(schema = @Schema(implementation = AuthStudentResponseDto.class))),
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "AUTH_4011", description = "신청자 정보 없음",
                     content = @Content(mediaType = "application/json",
@@ -49,7 +50,7 @@ public class LiveController {
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "200", description = "OK, 리뷰 작성 성공",
-                    content = @Content(schema = @Schema(implementation = ReviewResponseDto.class))),
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "AUTH_4191", description = "토큰 만료",
                     content = @Content(mediaType = "application/json",
@@ -58,7 +59,9 @@ public class LiveController {
                                     value = "{\"isSuccess\": false, \"code\": \"AUTH_4191\", \"message\": \"토큰이 만료되었습니다.\", \"result\": null, \"error\": {\"reason\": \"Expired JWT\", \"hint\": \"refreshToken으로 재발급 후 다시 요청하세요.\"}}"
                             )))
     })
-    public ApiResponse<ReviewResponseDto> createReview(@RequestBody ReviewRequestDto requestDto) {
+    public ApiResponse<ReviewResponseDto> createReview(@Parameter(description = "인증 토큰", required = true)
+                                                           @RequestHeader("Authorization") String authorization,
+                                                       @RequestBody ReviewRequestDto requestDto) {
         ReviewResponseDto responseDto = ReviewResponseDto.builder()
                 .reviewId(100L)
                 .studentNum("C123456")
@@ -75,7 +78,7 @@ public class LiveController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "200", description = "OK, 출석 성공",
                     // implementation을 위에서 만든 AttendanceResponse.class로 변경
-                    content = @Content(schema = @Schema(implementation = AttendanceResponseDto.class))),
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class))),
 
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "AUTH_4191", description = "토큰 만료",
@@ -88,7 +91,8 @@ public class LiveController {
                     )
             )
     })
-    public ApiResponse<AttendanceResponseDto> attendCheck() {
+    public ApiResponse<AttendanceResponseDto> attendCheck(@Parameter(description = "인증 토큰", required = true)
+                                                              @RequestHeader("Authorization") String authorization) {
 
         AttendanceResponseDto responseDto = AttendanceResponseDto.builder()
                 .liveUrl("https://hongik-devtalk.com/live")
