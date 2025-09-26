@@ -14,3 +14,8 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
+jwt:
+  token:
+    secretKey: umceightfightingjwttokenauthentication
+    expiration:
+      access: 14400000
