@@ -50,13 +50,11 @@ public class MainpageController {
             )
     })
     public ApiResponse<MainpageImagesResponseDto> getMainpageImages(
-            @Parameter(description = "인증 토큰", required = true)
-            @RequestHeader("Authorization") String authorization
 //            @Parameter(description = "인증 토큰", required = true)
 //            @RequestHeader("Authorization") String authorization
     ) {
-        // TODO: 홍보 사진 조회 로직 구현
-        return ApiResponse.onSuccess("홍보 사진 정보를 조회했습니다.", null);
+        MainpageImagesResponseDto result = mainpageImagesService.getMainpageImages();
+        return ApiResponse.onSuccess("홍보 사진 정보를 조회했습니다.", result);
     }
 
     @PostMapping("/images")
@@ -265,8 +263,6 @@ public class MainpageController {
 //            @RequestHeader("Authorization") String authorization,
             @Valid @RequestBody ReorderRequestDto request
     ) {
-        MainpageImagesResponseDto result = mainpageImagesService.getMainpageImages();
-        return ApiResponse.onSuccess("홍보 사진 정보를 조회했습니다.", result);
         // TODO: 후기 카드 순위 변경 로직 구현
         return ApiResponse.onSuccess("후기 카드 순서를 갱신했습니다.", null);
     }
