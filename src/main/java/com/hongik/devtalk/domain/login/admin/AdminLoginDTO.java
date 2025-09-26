@@ -1,4 +1,4 @@
-package com.hongik.devtalk.domain.login;
+package com.hongik.devtalk.domain.login.admin;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -9,10 +9,10 @@ public class AdminLoginDTO {
     @Setter
     public static class LoginReqDTO{
         @NotBlank(message = "아이디는 필수입니다.")
-        private String loginId;
+        String loginId;
 
         @NotBlank(message = "패스워드는 필수입니다.")
-        private String password;
+        String password;
     }
 
     @Builder

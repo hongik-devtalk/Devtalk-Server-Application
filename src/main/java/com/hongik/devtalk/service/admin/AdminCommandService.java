@@ -1,7 +1,7 @@
 package com.hongik.devtalk.service.admin;
 
 import com.hongik.devtalk.domain.Admin;
-import com.hongik.devtalk.domain.login.AdminLoginDTO;
+import com.hongik.devtalk.domain.login.admin.AdminLoginDTO;
 import com.hongik.devtalk.global.apiPayload.exception.GeneralException;
 import com.hongik.devtalk.global.security.JwtTokenProvider;
 import com.hongik.devtalk.repository.AdminRepository;
@@ -12,7 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.hongik.devtalk.domain.login.AdminLoginDTO.toLoginResDTO;
+import static com.hongik.devtalk.domain.login.admin.AdminLoginDTO.toLoginResDTO;
 import static com.hongik.devtalk.global.apiPayload.code.GeneralErrorCode.INVALID_LOGIN;
 
 @Service
