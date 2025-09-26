@@ -1,12 +1,11 @@
 package com.hongik.devtalk.domain.login.admin;
 
 import com.hongik.devtalk.domain.Admin;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.util.List;
 
-public class AdminCRUDDTO {
+public class AdminDTO {
 
     @Builder
     @Getter

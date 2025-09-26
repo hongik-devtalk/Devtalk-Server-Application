@@ -1,6 +1,6 @@
 package com.hongik.devtalk.controller;
 
-import com.hongik.devtalk.domain.login.admin.AdminCRUDDTO;
+import com.hongik.devtalk.domain.login.admin.AdminDTO;
 import com.hongik.devtalk.domain.login.admin.AdminLoginDTO;
 import com.hongik.devtalk.global.apiPayload.ApiResponse;
 import com.hongik.devtalk.service.admin.AdminCommandService;
@@ -12,8 +12,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import static com.hongik.devtalk.domain.login.admin.AdminCRUDDTO.toJoinAdminResDTO;
-import static com.hongik.devtalk.domain.login.admin.AdminCRUDDTO.toLoginIdResDTOList;
+import static com.hongik.devtalk.domain.login.admin.AdminDTO.toJoinAdminResDTO;
+import static com.hongik.devtalk.domain.login.admin.AdminDTO.toLoginIdResDTOList;
 
 @RequiredArgsConstructor
 @RestController
@@ -23,23 +23,16 @@ public class AdminController {
 
     private final AdminCommandService adminCommandService;
 
-    @PostMapping("/login")
-    @Operation(summary = "관리자 로그인 API -by 남성현", description = "아이디와 비밀번호를 받아 로그인 기능 수행합니다.")
-    public ApiResponse<AdminLoginDTO.LoginResDTO> login(@RequestBody @Valid AdminLoginDTO.LoginReqDTO request) {
-
-        return ApiResponse.onSuccess("로그인에 성공하였습니다.", adminCommandService.loginAdmin(request));
-    }
-
     @GetMapping("/authority/loginIds")
     @Operation(summary = "관리자 아이디 관리 API -by 남성현", description = "관리자의 아이디 리스트를 조회합니다.")
-    public ApiResponse<AdminCRUDDTO.LoginIdResDTOList> loginIdList() {
+    public ApiResponse<AdminDTO.LoginIdResDTOList> loginIdList() {
 
         return ApiResponse.onSuccess("관리자 아이디 리스트", toLoginIdResDTOList(null));
     }
 
     @PostMapping("/authority/loginIds")
     @Operation(summary = "관리자 아이디 추가 API -by 남성현", description = "추가할 관리자의 아이디와 비밀번호를 입력합니다.")
-    public ApiResponse<AdminCRUDDTO.JoinAdminResDTO> joinAdmin(@RequestBody @Valid AdminLoginDTO.LoginReqDTO request) {
+    public ApiResponse<AdminDTO.JoinAdminResDTO> joinAdmin(@RequestBody @Valid AdminLoginDTO.LoginReqDTO request) {
 
         return ApiResponse.onSuccess("관리자 추가 완료", toJoinAdminResDTO(null));
     }
