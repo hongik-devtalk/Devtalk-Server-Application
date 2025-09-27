@@ -4,6 +4,8 @@ services:
   spring-boot:
     container_name: spring-boot-container # nginx.conf의 proxy_pass에서 설정한 컨테이너 이름과 동일해야 함. 추후 도커 컨테이너 이름으로 사용
     build: . # springboot Dockerfile 경로
+    env_file:
+      - .env
     networks:
       - devtalk-network
     environment:
