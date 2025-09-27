@@ -1,8 +1,8 @@
 package com.hongik.devtalk.service.mainpage;
 
 import com.hongik.devtalk.domain.MainpageImages;
-import com.hongik.devtalk.domain.mainpage.ImageInfoDto;
-import com.hongik.devtalk.domain.mainpage.MainpageImagesResponseDto;
+import com.hongik.devtalk.domain.mainpage.dto.ImageInfoDto;
+import com.hongik.devtalk.domain.mainpage.dto.MainpageImagesResponseDto;
 import com.hongik.devtalk.repository.mainpage.MainpageImagesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

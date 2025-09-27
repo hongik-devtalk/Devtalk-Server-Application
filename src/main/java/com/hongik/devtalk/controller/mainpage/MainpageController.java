@@ -3,7 +3,6 @@ package com.hongik.devtalk.controller.mainpage;
 import com.hongik.devtalk.global.apiPayload.ApiResponse;
 import com.hongik.devtalk.domain.mainpage.dto.*;
 import com.hongik.devtalk.domain.enums.ImageType;
-import com.hongik.devtalk.domain.mainpage.*;
 import com.hongik.devtalk.service.mainpage.MainpageImagesService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
