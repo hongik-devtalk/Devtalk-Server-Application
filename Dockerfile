@@ -6,7 +6,7 @@ ARG JAR_FILE=build/libs/*.jar
 ARG SPRING_PROFILE=dev
 # dev 개발 환경으로 설정
 
-COPY ${JAR_FILE} Liver-Server-springboot.jar
+COPY ${JAR_FILE} devtalk-springboot.jar
 ENV spring_profile=${SPRING_PROFILE}
 
-ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom","-jar","/Liver-Server-springboot.jar", "--spring.profiles.active=${spring_profile}"]
+ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom","-jar","/devtalk-springboot.jar", "--spring.profiles.active=${spring_profile}"]
