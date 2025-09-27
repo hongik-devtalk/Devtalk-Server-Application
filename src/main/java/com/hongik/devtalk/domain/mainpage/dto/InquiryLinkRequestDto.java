@@ -1,4 +1,4 @@
-package com.hongik.devtalk.controller.mainpage.dto;
+package com.hongik.devtalk.domain.mainpage.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
