@@ -1,4 +1,4 @@
-package com.hongik.devtalk.controller.mainpage.dto;
+package com.hongik.devtalk.domain.mainpage.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DeleteLinkResponseDto {
+public class DeleteReviewResponseDto {
     
-    private String linkId;
+    private String reviewId;
 }
