@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 @Entity
 @IdClass(StudentDepartmentId.class)
 public class StudentDepartment {
+
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id", nullable = false)
