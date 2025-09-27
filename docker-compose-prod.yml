@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  spring-boot:
+    container_name: spring-boot-container # nginx.conf의 proxy_pass에서 설정한 컨테이너 이름과 동일해야 함. 추후 도커 컨테이너 이름으로 사용
+    build: . # springboot Dockerfile 경로
+    networks:
+      - devtalk-network
+
+  nginx:
+    container_name: nginx
+    image: nginx:latest
+    volumes:
+      - ./nginx/:/etc/nginx/ # 로컬 경로 : 도커 컨테이너 내부 경로
+    ports:
+      - 80:80
+    depends_on:
+      - spring-boot
+      # 이미지 빌드 순서: spring-boot -> nginx
+    networks:
+      - devtalk-network
+
+networks:
+  devtalk-network:
