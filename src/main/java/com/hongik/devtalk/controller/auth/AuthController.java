@@ -2,7 +2,7 @@ package com.hongik.devtalk.controller.auth;
 
 import com.hongik.devtalk.domain.login.admin.AdminLoginDTO;
 import com.hongik.devtalk.global.apiPayload.ApiResponse;
-import com.hongik.devtalk.controller.auth.dto.LogoutRequestDto;
+import com.hongik.devtalk.domain.auth.dto.LogoutRequestDto;
 import com.hongik.devtalk.service.admin.AdminCommandService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
