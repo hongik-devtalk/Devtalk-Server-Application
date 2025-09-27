@@ -2,7 +2,7 @@
 FROM openjdk:17-jdk
 LABEL authors="hongik-devtalk-server"
 EXPOSE 8080
-ARG JAR_FILE=build/libs/*.jar
+ARG JAR_FILE=build/libs/devtalk-0.0.1-SNAPSHOT.jar
 ARG SPRING_PROFILE=dev
 # dev 개발 환경으로 설정
 
