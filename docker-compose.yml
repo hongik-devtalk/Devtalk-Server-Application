@@ -20,7 +20,7 @@ services:
       - spring-boot
       # 이미지 빌드 순서: spring-boot -> nginx
     networks:
-      - Liver-Server
+      - devtalk-network
 
 networks:
   devtalk-network:
