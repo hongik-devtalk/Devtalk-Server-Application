@@ -1,13 +1,16 @@
 package com.hongik.devtalk.controller.auth;
 
+import com.hongik.devtalk.domain.login.admin.AdminLoginDTO;
 import com.hongik.devtalk.global.apiPayload.ApiResponse;
 import com.hongik.devtalk.controller.auth.dto.LogoutRequestDto;
+import com.hongik.devtalk.service.admin.AdminCommandService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +19,15 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/admin")
 public class AuthController {
+
+    private final AdminCommandService adminCommandService;
+
+    @PostMapping("/login")
+    @Operation(summary = "관리자 로그인 API -by 남성현", description = "아이디와 비밀번호를 받아 로그인 기능 수행합니다.")
+    public ApiResponse<AdminLoginDTO.LoginResDTO> login(@RequestBody @Valid AdminLoginDTO.LoginReqDTO request) {
+
+        return ApiResponse.onSuccess("로그인에 성공하였습니다.", adminCommandService.loginAdmin(request));
+    }
 
     @PostMapping("/logout")
     @Operation(
