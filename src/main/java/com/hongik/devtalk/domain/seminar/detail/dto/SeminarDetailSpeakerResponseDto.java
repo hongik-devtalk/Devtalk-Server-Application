@@ -1,4 +1,4 @@
-package com.hongik.devtalk.domain.seminar.dto;
+package com.hongik.devtalk.domain.seminar.detail.dto;
 
 
 import com.hongik.devtalk.domain.Speaker;

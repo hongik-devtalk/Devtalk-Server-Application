@@ -1,4 +1,4 @@
-package com.hongik.devtalk.domain.seminar.dto;
+package com.hongik.devtalk.domain.seminar.detail.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hongik.devtalk.domain.LiveFile;

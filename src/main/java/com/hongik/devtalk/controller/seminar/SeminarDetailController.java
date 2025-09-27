@@ -1,9 +1,9 @@
 package com.hongik.devtalk.controller.seminar;
 
-import com.hongik.devtalk.domain.seminar.dto.SeminarDetailResponseDto;
-import com.hongik.devtalk.domain.seminar.dto.SeminarDetailReviewResponseDto;
-import com.hongik.devtalk.domain.seminar.dto.SeminarDetailSessionResponseDto;
-import com.hongik.devtalk.domain.seminar.dto.SeminarDetailSpeakerResponseDto;
+import com.hongik.devtalk.domain.seminar.detail.dto.SeminarDetailResponseDto;
+import com.hongik.devtalk.domain.seminar.detail.dto.SeminarDetailReviewResponseDto;
+import com.hongik.devtalk.domain.seminar.detail.dto.SeminarDetailSessionResponseDto;
+import com.hongik.devtalk.domain.seminar.detail.dto.SeminarDetailSpeakerResponseDto;
 import com.hongik.devtalk.global.apiPayload.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
