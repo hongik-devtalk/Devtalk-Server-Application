@@ -1,6 +1,6 @@
 package com.hongik.devtalk.controller;
 
-import com.hongik.devtalk.dto.SeminarInfoResponseDTO;
+import com.hongik.devtalk.domain.userhome.dto.SeminarInfoResponseDTO;
 import com.hongik.devtalk.global.apiPayload.ApiResponse;
 import com.hongik.devtalk.service.SeminarInfoService;
 import io.swagger.v3.oas.annotations.Operation;
