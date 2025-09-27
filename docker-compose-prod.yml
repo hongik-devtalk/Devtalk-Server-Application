@@ -6,6 +6,9 @@ services:
     build: . # springboot Dockerfile 경로
     networks:
       - devtalk-network
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    restart: always
 
   nginx:
     container_name: nginx
