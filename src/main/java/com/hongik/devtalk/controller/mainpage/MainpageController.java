@@ -96,9 +96,12 @@ public class MainpageController {
             @Parameter(description = "업로드할 이미지 파일 (최대 10MB, 허용 MIME: image/jpeg, image/png, image/webp)", required = true)
             @RequestParam("file") MultipartFile file
     ) {
-        // TODO: S3 이미지 업로드/교체 로직 구현
-        // TODO: 파일 유효성 검사 (크기, MIME 타입)
-        return ApiResponse.onSuccess(type.getDescription() + " 이미지를 저장했습니다.", null);
+        // TODO: 추후 인증 기능 구현 시 authorization에서 사용자 정보 추출
+        String updatedBy = "admin"; // 임시값 - 추후 실제 사용자 정보로 대체
+        
+        ImageInfoDto result = mainpageImagesService.uploadOrReplaceMainpageImage(type, file, updatedBy);
+        
+        return ApiResponse.onSuccess(type.name() + " 이미지를 저장했습니다.", result);
     }
 
     @DeleteMapping("/images")
