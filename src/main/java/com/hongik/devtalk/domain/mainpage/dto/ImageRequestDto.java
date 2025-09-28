@@ -1,4 +1,4 @@
-package com.hongik.devtalk.controller.mainpage.dto;
+package com.hongik.devtalk.domain.mainpage.dto;
 
 import com.hongik.devtalk.domain.enums.ImageType;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DeleteImageRequestDto {
+public class ImageRequestDto {
     
     private ImageType type; // INTRO 또는 PREVIOUS_SEMINAR
 }

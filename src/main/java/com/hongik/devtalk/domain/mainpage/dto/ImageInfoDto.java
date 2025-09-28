@@ -1,4 +1,4 @@
-package com.hongik.devtalk.domain.mainpage;
+package com.hongik.devtalk.domain.mainpage.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;

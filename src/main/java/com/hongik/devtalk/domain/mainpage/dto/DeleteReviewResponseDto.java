@@ -1,4 +1,4 @@
-package com.hongik.devtalk.controller.auth.dto;
+package com.hongik.devtalk.domain.mainpage.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LogoutRequestDto {
+public class DeleteReviewResponseDto {
     
-    private String userId;
+    private String reviewId;
 }
