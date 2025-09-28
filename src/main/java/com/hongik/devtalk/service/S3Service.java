@@ -91,19 +91,41 @@ public class S3Service {
      * @return S3 키
      */
     public String extractS3KeyFromUrl(String url) {
-        if (url == null) return null;
-        
-        // CloudFront URL인 경우
-        if (!cloudfrontDomain.isEmpty() && url.contains(cloudfrontDomain)) {
-            return url.substring(url.indexOf(cloudfrontDomain) + cloudfrontDomain.length() + 1);
+        if (url == null || url.trim().isEmpty()) {
+            log.warn("URL이 null이거나 비어있습니다.");
+            return null;
         }
         
-        // S3 직접 URL인 경우
-        if (url.contains(bucketName + ".s3.")) {
-            return url.substring(url.indexOf(bucketName + ".s3.") + bucketName.length() + 4 + url.substring(url.indexOf(bucketName + ".s3.") + bucketName.length() + 4).indexOf("/") + 1);
-        }
+        log.debug("URL에서 S3 키 추출 시도: {}", url);
         
-        return null;
+        try {
+            // CloudFront URL인 경우
+            if (cloudfrontDomain != null && !cloudfrontDomain.isEmpty() && url.contains(cloudfrontDomain)) {
+                String s3Key = url.substring(url.indexOf(cloudfrontDomain) + cloudfrontDomain.length() + 1);
+                log.debug("CloudFront URL에서 추출한 S3 키: {}", s3Key);
+                return s3Key;
+            }
+            
+            // S3 직접 URL인 경우 (https://bucket-name.s3.region.amazonaws.com/key 형식)
+            String s3Pattern = bucketName + ".s3.";
+            if (url.contains(s3Pattern)) {
+                int startIndex = url.indexOf(s3Pattern) + s3Pattern.length();
+                // 리전 부분 건너뛰기 (예: ap-northeast-2.amazonaws.com/)
+                int pathStartIndex = url.indexOf("/", startIndex);
+                if (pathStartIndex != -1) {
+                    String s3Key = url.substring(pathStartIndex + 1);
+                    log.debug("S3 직접 URL에서 추출한 S3 키: {}", s3Key);
+                    return s3Key;
+                }
+            }
+            
+            log.warn("지원하지 않는 URL 형식입니다: {}", url);
+            return null;
+            
+        } catch (Exception e) {
+            log.error("URL에서 S3 키 추출 중 오류 발생: {}", url, e);
+            return null;
+        }
     }
 
     /**

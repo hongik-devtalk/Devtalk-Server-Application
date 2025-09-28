@@ -17,6 +17,9 @@ public enum GeneralErrorCode implements BaseErrorCode {
 
     // 유저 에러
     SEMINARINFO_NOT_FOUND(HttpStatus.NOT_FOUND,"SEMINARINFO_4041","seminarId를 찾을 수 없습니다."),
+    
+    // 이미지 에러
+    IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "IMAGE_4041", "해당 타입의 이미지를 찾을 수 없습니다."),
 
     // 요청/파라미터 에러
     MISSING_PARAMETER(HttpStatus.BAD_REQUEST, "REQ_4001", "필수 파라미터가 누락되었습니다."),

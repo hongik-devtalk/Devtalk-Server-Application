@@ -119,6 +119,11 @@ public class MainpageController {
                     responseCode = "401",
                     description = "인증 실패",
                     content = @Content(schema = @Schema(implementation = ApiResponse.class))
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "404",
+                    description = "해당 타입의 이미지를 찾을 수 없음",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class))
             )
     })
     public ApiResponse<DeleteImageResponseDto> deleteMainpageImage(
@@ -126,8 +131,11 @@ public class MainpageController {
 //            @RequestHeader("Authorization") String authorization,
             @Valid @RequestBody DeleteImageRequestDto request
     ) {
-        // TODO: 이미지 삭제 로직 구현
-        return ApiResponse.onSuccess(request.getType().getDescription() + " 이미지를 삭제했습니다.", null);
+        // TODO: 추후 인증 기능 구현 시 authorization에서 사용자 정보 추출 및 권한 검증
+        
+        DeleteImageResponseDto result = mainpageImagesService.deleteMainpageImage(request.getType());
+        
+        return ApiResponse.onSuccess(request.getType().getDescription() + " 이미지를 삭제했습니다.", result);
     }
 
     // Inquiry Link APIs

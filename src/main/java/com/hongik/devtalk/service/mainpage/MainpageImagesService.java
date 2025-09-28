@@ -4,6 +4,7 @@ import com.hongik.devtalk.domain.MainpageImages;
 import com.hongik.devtalk.domain.enums.ImageType;
 import com.hongik.devtalk.domain.mainpage.dto.ImageInfoDto;
 import com.hongik.devtalk.domain.mainpage.dto.MainpageImagesResponseDto;
+import com.hongik.devtalk.domain.mainpage.dto.DeleteImageResponseDto;
 import com.hongik.devtalk.global.apiPayload.code.GeneralErrorCode;
 import com.hongik.devtalk.global.apiPayload.exception.GeneralException;
 import com.hongik.devtalk.repository.mainpage.MainpageImagesRepository;
@@ -101,6 +102,7 @@ public class MainpageImagesService {
                 .fileName(file.getOriginalFilename())
                 .contentType(file.getContentType())
                 .updatedAt(LocalDateTime.now())
+                
                 .updatedBy(updatedBy)
                 .build();
     }
@@ -181,6 +183,71 @@ public class MainpageImagesService {
                 .contentType(contentType)
                 .updatedAt(updatedAt)
                 .updatedBy(updatedBy)
+                .build();
+    }
+    
+    /**
+     * 홍보 이미지를 삭제합니다.
+     */
+    @Transactional
+    public DeleteImageResponseDto deleteMainpageImage(ImageType type) {
+        // MainpageImages 엔티티 조회
+        MainpageImages mainpageImages = mainpageImagesRepository.findTopByOrderById()
+                .orElseThrow(() -> new GeneralException(GeneralErrorCode.IMAGE_NOT_FOUND));
+        
+        String imageId = null;
+        String s3Url = null;
+        
+        // 해당 타입의 이미지가 있는지 확인 및 정보 추출
+        if (type == ImageType.INTRO) {
+            if (!mainpageImages.hasIntroImage()) {
+                throw new GeneralException(GeneralErrorCode.IMAGE_NOT_FOUND);
+            }
+            imageId = mainpageImages.getIntroImageId();
+            s3Url = mainpageImages.getIntroUrl();
+        } else if (type == ImageType.PREVIOUS_SEMINAR) {
+            if (!mainpageImages.hasSeminarImage()) {
+                throw new GeneralException(GeneralErrorCode.IMAGE_NOT_FOUND);
+            }
+            imageId = mainpageImages.getSeminarImageId();
+            s3Url = mainpageImages.getSeminarUrl();
+        }
+        
+        // S3에서 이미지 삭제
+        if (s3Url != null) {
+            log.info("S3에서 삭제할 이미지 URL: {}", s3Url);
+            String s3Key = s3Service.extractS3KeyFromUrl(s3Url);
+            
+            if (s3Key != null && !s3Key.trim().isEmpty()) {
+                try {
+                    s3Service.deleteFile(s3Key);
+                    log.info("S3 이미지 삭제 완료: {}", s3Key);
+                } catch (Exception e) {
+                    log.error("S3 이미지 삭제 실패: URL={}, S3Key={}", s3Url, s3Key, e);
+                    throw new GeneralException(GeneralErrorCode.S3_DELETE_FAILED);
+                }
+            } else {
+                log.error("URL에서 S3 키 추출 실패: {}", s3Url);
+                throw new GeneralException(GeneralErrorCode.S3_DELETE_FAILED);
+            }
+        } else {
+            log.error("삭제할 S3 URL이 null입니다. type={}", type);
+            throw new GeneralException(GeneralErrorCode.IMAGE_NOT_FOUND);
+        }
+        
+        // DB에서 해당 이미지 정보 삭제 (null로 설정)
+        if (type == ImageType.INTRO) {
+            mainpageImages.removeIntroImage();
+        } else {
+            mainpageImages.removeSeminarImage();
+        }
+        
+        mainpageImagesRepository.save(mainpageImages);
+        
+        log.info("이미지 삭제 완료: type={}, imageId={}", type, imageId);
+        
+        return DeleteImageResponseDto.builder()
+                .imageId(imageId)
                 .build();
     }
 }
