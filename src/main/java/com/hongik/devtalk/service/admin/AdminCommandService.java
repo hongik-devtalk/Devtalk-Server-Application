@@ -2,6 +2,7 @@ package com.hongik.devtalk.service.admin;
 
 import com.hongik.devtalk.domain.Admin;
 import com.hongik.devtalk.domain.RefreshToken;
+import com.hongik.devtalk.domain.enums.AdminStatus;
 import com.hongik.devtalk.domain.login.admin.AdminLoginDTO;
 import com.hongik.devtalk.global.apiPayload.exception.GeneralException;
 import com.hongik.devtalk.global.security.JwtTokenProvider;
@@ -63,6 +64,23 @@ public class AdminCommandService {
         String accessToken = jwtTokenProvider.generateToken(authentication);
 
         return toLoginResDTO(admin.getId(), accessToken, refreshToken);
+    }
+
+    public Admin joinAdmin (AdminLoginDTO.LoginReqDTO request) {
+
+        if (adminRepository.existsByLoginId(request.getLoginId())){
+            throw new GeneralException(DUPLICATE_LOGINID);
+        }
+
+        String passwordHash = passwordEncoder.encode(request.getPassword());
+
+        Admin newAdmin = Admin.builder()
+                .loginId(request.getLoginId())
+                .loginPw(passwordHash)
+                .status(AdminStatus.ACTIVE)
+                .build();
+
+        return adminRepository.save(newAdmin);
     }
 
 }

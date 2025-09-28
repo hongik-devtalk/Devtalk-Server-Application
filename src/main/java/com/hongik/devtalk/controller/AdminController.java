@@ -1,5 +1,6 @@
 package com.hongik.devtalk.controller;
 
+import com.hongik.devtalk.domain.Admin;
 import com.hongik.devtalk.domain.login.admin.AdminDTO;
 import com.hongik.devtalk.domain.login.admin.AdminLoginDTO;
 import com.hongik.devtalk.global.apiPayload.ApiResponse;
@@ -34,7 +35,9 @@ public class AdminController {
     @Operation(summary = "관리자 아이디 추가 API -by 남성현", description = "추가할 관리자의 아이디와 비밀번호를 입력합니다.")
     public ApiResponse<AdminDTO.JoinAdminResDTO> joinAdmin(@RequestBody @Valid AdminLoginDTO.LoginReqDTO request) {
 
-        return ApiResponse.onSuccess("관리자 추가 완료", toJoinAdminResDTO(null));
+        Admin admin = adminCommandService.joinAdmin(request);
+
+        return ApiResponse.onSuccess("관리자 추가 완료", toJoinAdminResDTO(admin));
     }
 
     @DeleteMapping("/authority/loginIds/{adminId}")

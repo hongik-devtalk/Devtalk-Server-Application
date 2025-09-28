@@ -37,7 +37,7 @@ public class AdminDTO {
     }
 
     public static JoinAdminResDTO toJoinAdminResDTO (Admin admin) {
-        return null;
+        return JoinAdminResDTO.builder().adminId(admin.getId()).build();
     }
 
 }
