@@ -1,4 +1,4 @@
-package com.hongik.devtalk.repository;
+package com.hongik.devtalk.repository.admin;
 
 import com.hongik.devtalk.domain.Admin;
 import org.springframework.data.jpa.repository.JpaRepository;
