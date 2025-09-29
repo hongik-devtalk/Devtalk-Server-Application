@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 public enum GeneralErrorCode implements BaseErrorCode {
 
     // 인증 에러
+    DUPLICATE_LOGINID(HttpStatus.BAD_REQUEST,"AUTH_4001","중복되는 아이디가 존재합니다."),
     MISSING_AUTH_INFO(HttpStatus.UNAUTHORIZED, "AUTH_4011", "인증 정보가 누락되었습니다."),
     INVALID_LOGIN(HttpStatus.UNAUTHORIZED, "AUTH_4012", "올바르지 않은 아이디, 혹은 비밀번호입니다."),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH_4012", "유효하지 않은 토큰입니다."),
@@ -25,6 +26,9 @@ public enum GeneralErrorCode implements BaseErrorCode {
     MISSING_PARAMETER(HttpStatus.BAD_REQUEST, "REQ_4001", "필수 파라미터가 누락되었습니다."),
     INVALID_PARAMETER(HttpStatus.BAD_REQUEST, "REQ_4002", "파라미터 형식이 잘못되었습니다."),
     UNSUPPORTED_CONTENT_TYPE(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "REQ_4151", "지원하지 않는 Content-Type입니다."),
+
+    // 관리자 에러
+    ADMIN_NOT_FOUND(HttpStatus.NOT_FOUND, "ADMIN_4041", "관리자 정보가 없습니다."),
 
     // API/라우팅 에러
     API_NOT_FOUND(HttpStatus.NOT_FOUND, "API_4041", "존재하지 않는 API입니다."),

@@ -29,6 +29,9 @@ public class JwtTokenProvider {
 
     private final JwtProperties jwtProperties;
 
+    private final long ACCESS_TOKEN_VALID_TIME = 1000L * 60 * 30;     // 30분
+    private final long REFRESH_TOKEN_VALID_TIME = 1000L * 60 * 60 * 24 * 7; // 7일
+
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(jwtProperties.getSecretKey().getBytes());
     }
@@ -42,13 +45,28 @@ public class JwtTokenProvider {
                 .orElse("ROLE_ADMIN");
 
         long now = System.currentTimeMillis();
-        long expMs = jwtProperties.getExpiration().getAccess();
+        //long expMs = jwtProperties.getExpiration().getAccess();
 
         return Jwts.builder()
                 .setSubject(loginId)
                 .claim("role", role)
+                .claim("type","access_token")
                 .setIssuedAt(new Date(now))
-                .setExpiration(new Date(now + expMs))
+                .setExpiration(new Date(now + ACCESS_TOKEN_VALID_TIME))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public String generateRefreshToken(Authentication authentication) {
+        String loginId = authentication.getName();
+
+        long now = System.currentTimeMillis();
+
+        return Jwts.builder()
+                .setSubject(loginId)
+                .claim("type","refresh_token")
+                .setIssuedAt(new Date(now))
+                .setExpiration(new Date(now + REFRESH_TOKEN_VALID_TIME))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
