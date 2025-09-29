@@ -1,4 +1,4 @@
-package com.hongik.devtalk.domain.mainpage;
+package com.hongik.devtalk.domain.mainpage.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MainpageImagesResponseDto {
+public class ReorderResponseDto {
     
-    private ImageInfoDto intro;
-    private ImageInfoDto previousSeminar;
+    private Integer updatedCount;
 }

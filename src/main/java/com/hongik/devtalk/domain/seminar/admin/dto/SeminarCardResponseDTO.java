@@ -1,4 +1,4 @@
-package com.hongik.devtalk.domain.mainpage;
+package com.hongik.devtalk.domain.seminar.admin.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -9,18 +9,17 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Getter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ImageInfoDto {
-    
-    private String imageId;
-    private String url;
-    private String fileName;
-    private String contentType;
+@Builder
+public class SeminarCardResponseDTO {
+    private Long seminarId;
+    private Integer seminarNum;
+    private String thumbnail;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd (E) HH:mm", timezone = "Asia/Seoul")
-    private LocalDateTime updatedAt;
-    
-    private String updatedBy;
+    private LocalDateTime seminarDate;
+
+    private String place;
+    private String topic;
 }
