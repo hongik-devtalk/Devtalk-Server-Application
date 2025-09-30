@@ -5,7 +5,7 @@ import com.hongik.devtalk.domain.seminar.admin.dto.QuestionResponseDTO;
 import com.hongik.devtalk.domain.seminar.admin.dto.SeminarCardResponseDTO;
 import com.hongik.devtalk.domain.seminar.admin.dto.SeminarReviewResponseDTO;
 import com.hongik.devtalk.global.apiPayload.ApiResponse;
-import com.hongik.devtalk.service.seminar.admin.SeminarAdminQueryService;
+import com.hongik.devtalk.service.seminar.SeminarAdminQueryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -91,10 +91,11 @@ public class SeminarAdminController {
 
     @Operation(summary = "세미나 연사별 질문 조회", description = "세미나 연사별 질문 정보를 조회합니다.")
     @GetMapping("/{seminarId}/questions")
-    public ApiResponse<List<QuestionResponseDTO.QuestionListDTO>> getSpeakerQuestions(
+    public ApiResponse<QuestionResponseDTO> getSpeakerQuestions(
             @Parameter(description = "세미나 ID", required = true)
             @PathVariable Long seminarId
     ) {
-        return ApiResponse.onSuccess("세미나 연사별 질문 조회에 성공했습니다.");
+        QuestionResponseDTO result = seminarAdminQueryService.getQuestions(seminarId);
+        return ApiResponse.onSuccess("세미나 연사별 질문 조회에 성공했습니다.", result);
     }
 }
