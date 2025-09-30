@@ -18,5 +18,5 @@ public interface ApplicantRepository extends JpaRepository<Applicant,Long> {
     Applicant findFirstByStudentOrderBySeminar_SeminarDateDesc(Student student);
 
     //학생과 세미나 정보로 신청 내역이 있는지 확입합니다.
-    boolean existsBySeminarAndStudent(Seminar seminar, Student student);
+    boolean existsByStudentAndSeminar(Student student, Seminar seminar);
 }

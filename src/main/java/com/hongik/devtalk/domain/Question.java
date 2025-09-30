@@ -17,7 +17,7 @@ public class Question extends BaseTimeEntity {
     @Column(name = "question_id")
     private Long id;
 
-    @Column(length = 80)
+    @Column(length = 500)
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)

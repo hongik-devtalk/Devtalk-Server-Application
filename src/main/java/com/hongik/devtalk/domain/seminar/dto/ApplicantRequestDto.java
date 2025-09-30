@@ -1,5 +1,7 @@
 package com.hongik.devtalk.domain.seminar.dto;
 
+import com.hongik.devtalk.domain.StudentDepartment;
+import com.hongik.devtalk.domain.enums.Department;
 import com.hongik.devtalk.domain.enums.InflowPath;
 import com.hongik.devtalk.domain.enums.ParticipationType;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -9,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Builder
@@ -32,13 +35,19 @@ public class ApplicantRequestDto {
     private String phone;
 
     @Schema(description = "학과명", example = "컴퓨터공학과")
-    private String departmentName;
+    private Set<Department> departments;
+
+    @Schema(description = "학과명 기타", example = "화학공학과")
+    private String departmentEtc;
 
     @Schema(description = "참여 방식 (ONLINE or OFFLINE)", example = "ONLINE")
     private ParticipationType participationType;
 
     @Schema(description = "유입 경로 (ex. INSTAGRAM, EVERYTIME, HOMEPAGE)", example = "INSTAGRAM")
     private InflowPath inflowPath;
+
+    @Schema(description = "유입 경로 기타", example = "검색")
+    private String inflowPathEtc;
 
     @Schema(description = "사전 질문 목록")
     private List<QuestionDto> questions;

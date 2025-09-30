@@ -37,8 +37,9 @@ public class Applicant {
     private ParticipationType participationType; // 참여 방식 (ONLINE / OFFLINE)
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private InflowPath inflowPath; // 유입 경로
+
+    private String inflowPathEtc; //유입 경로 기타
 
     @CreatedDate
     @Column(nullable = false)

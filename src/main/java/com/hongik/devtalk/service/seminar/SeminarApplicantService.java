@@ -1,12 +1,15 @@
 package com.hongik.devtalk.service.seminar;
 
 import com.hongik.devtalk.domain.*;
+import com.hongik.devtalk.domain.enums.AttendanceStatus;
+import com.hongik.devtalk.domain.enums.StudentStatus;
 import com.hongik.devtalk.domain.seminar.CustomSeminarApplicantErrorCode;
 import com.hongik.devtalk.domain.seminar.dto.ApplicantRequestDto;
 import com.hongik.devtalk.domain.seminar.dto.ApplicantResponseDto;
 import com.hongik.devtalk.global.apiPayload.ApiResponse;
 import com.hongik.devtalk.global.apiPayload.exception.GeneralException;
 import com.hongik.devtalk.repository.ApplicantRepository;
+import com.hongik.devtalk.repository.AttendanceRepository;
 import com.hongik.devtalk.repository.QuestionRepository;
 import com.hongik.devtalk.repository.SessionRepository;
 import com.hongik.devtalk.repository.seminar.SeminarRepository;
@@ -27,18 +30,26 @@ public class SeminarApplicantService {
     private final ApplicantRepository applicantRepository;
     private final QuestionRepository questionRepository;
     private final SessionRepository sessionRepository;
+    private final AttendanceRepository attendanceRepository;
 
     public ApiResponse<ApplicantResponseDto> createApplicant(ApplicantRequestDto applicantRequestDto) {
-        //학생 정보 저장 (없다면)
+        //학생 정보 확인
         Student student = studentRepository.findByStudentNum(applicantRequestDto.getStudentNum())
-                .orElseGet(() -> studentRepository.save(Student.builder()
+                .orElseGet(() -> Student.builder()
                         .studentNum(applicantRequestDto.getStudentNum())
-                        .name(applicantRequestDto.getName())
-                        .phone(applicantRequestDto.getPhone())
-                        .grade(applicantRequestDto.getGrade())
-                        .gradeEtc(applicantRequestDto.getGradeEtc())
-                        .build()));
+                        .status(StudentStatus.ACTIVE)
+                        .build());
 
+        // 학생 정보 업데이트 (기존 학생이든 새로운 학생이든 모두 적용)
+        student.updateDetails(
+                applicantRequestDto.getName(),
+                applicantRequestDto.getPhone(),
+                applicantRequestDto.getGrade(),
+                applicantRequestDto.getGradeEtc(),
+                applicantRequestDto.getDepartments(),
+                applicantRequestDto.getDepartmentEtc()
+        );
+        studentRepository.save(student);
 
         //현재 신청 가능한 세미나
         Seminar seminar = seminarRepository.findSeminarInApplicationPeriod(LocalDateTime.now());
@@ -46,10 +57,15 @@ public class SeminarApplicantService {
             throw new GeneralException(CustomSeminarApplicantErrorCode.SEMINAR_APPLICANT_ERROR);
         }
 
+        if (applicantRepository.existsByStudentAndSeminar(student, seminar)) {
+            throw new GeneralException(CustomSeminarApplicantErrorCode.ALREADY_APPLIED_SEMINAR);
+        }
+
         Applicant applicant = Applicant.builder()
                 .student(student)
                 .seminar(seminar)
                 .inflowPath(applicantRequestDto.getInflowPath())
+                .inflowPathEtc(applicantRequestDto.getInflowPathEtc())
                 .participationType(applicantRequestDto.getParticipationType())
                 .build();
 
@@ -72,6 +88,13 @@ public class SeminarApplicantService {
 
             questionRepository.saveAll(questionsToSave);
         }
+
+        Attendance initialAttendance = Attendance.builder()
+                .applicant(applicant)
+                .seminar(seminar)
+                .status(AttendanceStatus.ABSENT) // 기본 상태는 '결석'
+                .build();
+        attendanceRepository.save(initialAttendance);
 
         ApplicantResponseDto applicantResponseDto = ApplicantResponseDto.builder()
                 .studentId(student.getId())
