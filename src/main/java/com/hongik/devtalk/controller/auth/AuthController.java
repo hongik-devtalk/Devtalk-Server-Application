@@ -29,6 +29,13 @@ public class AuthController {
         return ApiResponse.onSuccess("로그인에 성공하였습니다.", adminCommandService.loginAdmin(request));
     }
 
+    @PostMapping("/refresh")
+    @Operation(summary = "관리자 accessToken 재발급 API -by 남성현", description = "리프레시 토큰을통해 엑세스 토큰 재발급")
+    public ApiResponse<AdminLoginDTO.LoginResDTO> refresh(@RequestHeader("refreshToken") String refreshToken) {
+
+        return ApiResponse.onSuccess("accessToken 재발급 성공.", adminCommandService.refreshAdmin(refreshToken));
+    }
+
     @PostMapping("/logout")
     @Operation(
             summary = "관리자 로그아웃",
