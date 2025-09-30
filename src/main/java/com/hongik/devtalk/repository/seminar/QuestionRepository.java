@@ -12,7 +12,6 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
             "join fetch q.student s " +
             "join fetch q.session ss " +
             "join fetch ss.speaker sp " +
-            "join fetch ss.seminar se " +
-            "where se.id = :seminarId")
+            "where ss.seminar.id = :seminarId")
     List<Question> findQuestionsBySeminarId(Long seminarId);
 }
