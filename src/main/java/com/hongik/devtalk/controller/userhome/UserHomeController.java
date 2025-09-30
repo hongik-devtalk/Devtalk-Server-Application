@@ -21,7 +21,7 @@ public class UserHomeController {
     private final SeminarInfoService seminarInfoService;
 
     @GetMapping("/{seminarId}")
-    @Operation(summary = "현재 신청받고 있는 세미나 정보를 보여줍니다.")
+    @Operation(summary = "현재 신청받고 있는 세미나 정보 조회")
     public ResponseEntity<ApiResponse<SeminarInfoResponseDTO>> getSeminar(@PathVariable Long seminarId) {
         SeminarInfoResponseDTO result = seminarInfoService.getSeminarById(seminarId);
         return ResponseEntity.ok(ApiResponse.onSuccess("", result));
