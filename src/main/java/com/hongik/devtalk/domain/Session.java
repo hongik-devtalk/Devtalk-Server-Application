@@ -1,7 +1,7 @@
 package com.hongik.devtalk.domain;
 
 import com.hongik.devtalk.domain.common.BaseTimeEntity;
-import com.hongik.devtalk.domain.enums.SessionStatus;
+import com.hongik.devtalk.domain.enums.SeminarStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,17 +34,6 @@ public class Session extends BaseTimeEntity {
 
     @Lob
     private String description;
-
-    @Column(nullable = false)
-    private LocalDateTime startAt;
-
-    @Column(nullable = false)
-    private LocalDateTime endAt;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private SessionStatus status;
-
 
     @OneToMany(mappedBy = "session", cascade = CascadeType.ALL)
     private List<SessionImage> seminarImages = new ArrayList<>();
