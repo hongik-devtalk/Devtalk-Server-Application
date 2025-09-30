@@ -26,7 +26,7 @@ public class ApplicantResponseDTO {
     private ParticipationType participationType;
     private InflowPath inflowPath;
 
-    public static ApplicantResponseDTO from(Applicant applicant) {
+    public static ApplicantResponseDTO from(Applicant applicant, String topic) {
         Student student = applicant.getStudent();
 
         String departmentNames = student.getStudentDepartments().stream()
@@ -38,7 +38,7 @@ public class ApplicantResponseDTO {
                 : student.getGradeEtc();
 
         return ApplicantResponseDTO.builder()
-                .topic(applicant.getSeminar().getTopic())
+                .topic(topic)   // 외부에서 받은 값
                 .studentId(student.getId().toString())
                 .studentNum(student.getStudentNum())
                 .department(departmentNames)

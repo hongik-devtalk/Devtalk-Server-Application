@@ -5,7 +5,7 @@ import com.hongik.devtalk.domain.seminar.admin.dto.ApplicantResponseDTO;
 import com.hongik.devtalk.domain.seminar.admin.dto.QuestionResponseDTO;
 import com.hongik.devtalk.global.apiPayload.code.GeneralErrorCode;
 import com.hongik.devtalk.global.apiPayload.exception.GeneralException;
-import com.hongik.devtalk.repository.seminar.ApplicantRepository;
+import com.hongik.devtalk.repository.ApplicantRepository;
 import com.hongik.devtalk.repository.seminar.QuestionRepository;
 import com.hongik.devtalk.repository.seminar.SeminarRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,14 +33,16 @@ public class SeminarAdminQueryService {
      */
     public List<ApplicantResponseDTO> getApplicants(Long seminarId) {
         // 세미나 존재 여부 확인
-        seminarRepository.findById(seminarId)
+        Seminar seminar = seminarRepository.findById(seminarId)
                 .orElseThrow(() -> new GeneralException(GeneralErrorCode.SEMINARINFO_NOT_FOUND));
+
+        String topic = seminar.getTopic();
 
         // 세미나 신청자 목록 조회
         List<Applicant> applicants = applicantRepository.findApplicantsBySeminarId(seminarId);
 
         return applicants.stream()
-                .map(ApplicantResponseDTO::from)
+                .map(applicant -> ApplicantResponseDTO.from(applicant, topic))
                 .toList();
     }
 
@@ -60,7 +61,6 @@ public class SeminarAdminQueryService {
         // 세미나 → 세션 → 연사 목록 추출
         List<QuestionResponseDTO.SpeakerDTO> speakers = seminar.getSessions().stream()
                 .map(Session::getSpeaker)
-                .distinct()
                 .map(speaker -> QuestionResponseDTO.SpeakerDTO.builder()
                         .speakerId(speaker.getId())
                         .speakerName(speaker.getName())
