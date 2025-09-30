@@ -5,6 +5,7 @@ import com.hongik.devtalk.domain.seminar.admin.dto.QuestionResponseDTO;
 import com.hongik.devtalk.domain.seminar.admin.dto.SeminarCardResponseDTO;
 import com.hongik.devtalk.domain.seminar.admin.dto.SeminarReviewResponseDTO;
 import com.hongik.devtalk.global.apiPayload.ApiResponse;
+import com.hongik.devtalk.service.seminar.admin.SeminarAdminQueryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,6 +19,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/admin/seminars")
 public class SeminarAdminController {
+
+    private final SeminarAdminQueryService seminarAdminQueryService;
 
     @Operation(summary = "세미나 카드리스트 조회", description = "세미나 카드리스트를 조회합니다.")
     @GetMapping("/card")
@@ -82,7 +85,8 @@ public class SeminarAdminController {
             @Parameter(description = "세미나 ID", required = true)
             @PathVariable Long seminarId
     ) {
-        return ApiResponse.onSuccess("세미나 신청자 조회에 성공했습니다.");
+        List<ApplicantResponseDTO> result = seminarAdminQueryService.getApplicants(seminarId);
+        return ApiResponse.onSuccess("세미나 신청자 조회에 성공했습니다.", result);
     }
 
     @Operation(summary = "세미나 연사별 질문 조회", description = "세미나 연사별 질문 정보를 조회합니다.")
