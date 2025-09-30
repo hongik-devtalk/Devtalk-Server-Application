@@ -19,8 +19,8 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - /etc/letsencrypt/live:/etc/letsencrypt/live:ro
-      - /etc/letsencrypt/archive:/etc/letsencrypt/archive:ro
+      - /etc/letsencrypt/live/api.hongikdevtalk.com/fullchain.pem:/etc/letsencrypt/live/api.hongikdevtalk.com/fullchain.pem:ro
+      - /etc/letsencrypt/live/api.hongikdevtalk.com/privkey.pem:/etc/letsencrypt/live/api.hongikdevtalk.com/privkey.pem:ro
     depends_on:
       - spring-boot
       # 이미지 빌드 순서: spring-boot -> nginx
