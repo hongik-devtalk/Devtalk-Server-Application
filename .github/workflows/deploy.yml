@@ -1,5 +1,10 @@
 name: Deploy Devtalk Project
 
+on:
+  push:
+    branches:
+      - main
+
 env:
   SPRING_REPOSITORY: devtalk-server-ecr
   NGINX_REPOSITORY: devtalk-nginx-ecr
