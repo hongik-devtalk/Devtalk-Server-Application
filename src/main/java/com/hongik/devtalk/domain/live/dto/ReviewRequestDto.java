@@ -20,5 +20,8 @@ public class ReviewRequestDto {
     private String nextTopic;
 
     @Schema(description = "별점 (1~5)", example = "4")
-    private Integer score;
+    private byte score;
+
+    @Schema(description = "공개 여부", example = "true")
+    private boolean isPublic;
 }
