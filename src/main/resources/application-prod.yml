@@ -1,1 +1,30 @@
-# prod 시작하면 작성
+server:
+  port: 8080
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${RDS_ENDPOINT}:3306/devtalk_prod_db?serverTimezone=Asia/Seoul&useSSL=false&characterEncoding=UTF-8
+    username: ${RDS_USERNAME}
+    password: ${RDS_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: none  # 운영에서는 보통 none 또는 validate
+    properties:
+      hibernate:
+        show_sql: false
+        format_sql: false
+    open-in-view: false  # 운영에서는 비활성화 권장
+
+
+logging:
+  level:
+    root: INFO
+    org.hibernate.SQL: OFF
+
+jwt:
+  token:
+    secretKey: ${JWT_SECRET_KEY}
+    expiration:
+      access: 14400000
