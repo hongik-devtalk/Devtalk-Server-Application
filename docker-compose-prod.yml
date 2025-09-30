@@ -17,6 +17,9 @@ services:
     image: ${ECR_REGISTRY}/devtalk-nginx-ecr:latest
     ports:
       - 80:80
+      - 443:443
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt:ro
     depends_on:
       - spring-boot
       # 이미지 빌드 순서: spring-boot -> nginx
