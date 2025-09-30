@@ -1,10 +1,10 @@
-package com.hongik.devtalk.service;
+package com.hongik.devtalk.service.userhome;
 
 import com.hongik.devtalk.domain.Seminar;
 import com.hongik.devtalk.domain.userhome.dto.SeminarInfoResponseDTO;
 import com.hongik.devtalk.global.apiPayload.code.GeneralErrorCode;
 import com.hongik.devtalk.global.apiPayload.exception.GeneralException;
-import com.hongik.devtalk.repository.SeminarInfoRepository;
+import com.hongik.devtalk.repository.userhome.SeminarInfoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
