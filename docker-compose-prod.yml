@@ -19,7 +19,8 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - /etc/letsencrypt/live:/etc/letsencrypt/live:ro
+      - /etc/letsencrypt/archive:/etc/letsencrypt/archive:ro
     depends_on:
       - spring-boot
       # 이미지 빌드 순서: spring-boot -> nginx
