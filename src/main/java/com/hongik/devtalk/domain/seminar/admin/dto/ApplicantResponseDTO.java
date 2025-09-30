@@ -29,16 +29,18 @@ public class ApplicantResponseDTO {
     public static ApplicantResponseDTO from(Applicant applicant, String topic) {
         Student student = applicant.getStudent();
 
+        // 복수 전공일 경우 학과명을 ,로 연결
         String departmentNames = student.getStudentDepartments().stream()
                 .map(sd -> sd.getDepartment().getDepartmentName())
                 .collect(Collectors.joining(","));
 
+        // 숫자 학년이 있으면 숫자를, 없으면 gradeEtc를 사용
         String gradeInfo = (student.getGrade() != null)
                 ? student.getGrade().toString()
                 : student.getGradeEtc();
 
         return ApplicantResponseDTO.builder()
-                .topic(topic)   // 외부에서 받은 값
+                .topic(topic)
                 .studentId(student.getId().toString())
                 .studentNum(student.getStudentNum())
                 .department(departmentNames)
