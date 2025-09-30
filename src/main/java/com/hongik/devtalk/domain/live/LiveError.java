@@ -1,5 +1,6 @@
 package com.hongik.devtalk.domain.live;
 
+import com.hongik.devtalk.domain.live.LiveBaseError;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

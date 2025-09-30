@@ -10,6 +10,9 @@ import lombok.*;
 @Schema(description = "사전 질문 DTO")
 public class QuestionDto {
 
+    @Schema(description = "세션 아이디", example = "1")
+    private Long sessionId;
+
     @Schema(description = "사전 질문 내용", example = "LLM의 미래가 궁금해요")
-    private String question;
+    private String content;
 }
