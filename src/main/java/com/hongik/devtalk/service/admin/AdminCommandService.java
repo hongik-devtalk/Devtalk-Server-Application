@@ -83,4 +83,8 @@ public class AdminCommandService {
         return adminRepository.save(newAdmin);
     }
 
+    public void deleteAdmin (Long adminId) {
+
+        adminRepository.deleteById(adminId);
+    }
 }

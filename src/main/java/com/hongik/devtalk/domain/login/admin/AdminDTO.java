@@ -25,7 +25,29 @@ public class AdminDTO {
     }
 
     public static LoginIdResDTOList toLoginIdResDTOList (List<Admin> adminList) {
-        return null;
+        List<LoginIdResDTO> dtoList = adminList.stream()
+                .map(admin -> {
+                    String rawId = admin.getLoginId();
+                    String maskedId = maskLoginId(rawId);
+                    return LoginIdResDTO.builder()
+                            .adminId(admin.getId())
+                            .loginId(maskedId)
+                            .build();
+                })
+                .toList();
+
+        return LoginIdResDTOList.builder()
+                .adminIdList(dtoList)
+                .build();
+    }
+
+    private static String maskLoginId(String loginId) {
+        if (loginId == null || loginId.length() <= 2) {
+            return loginId;
+        }
+        String prefix = loginId.substring(0, 2);
+        String masked = "*".repeat(loginId.length() - 2);
+        return prefix + masked;
     }
 
     @Builder
