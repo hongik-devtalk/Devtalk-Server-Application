@@ -61,19 +61,18 @@ jobs:
 
       - name: Deploy to Server
         uses: appleboy/ssh-action@master
+        env:
+            ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+            ECR_PASSWORD: ${{ steps.login-ecr.outputs.docker_password_061391278365_dkr_ecr_ap_northeast_2_amazonaws_com }}
         with:
-          host: ${{ secrets.DEPLOY_SERVER_HOST }}
-          username: ${{ secrets.DEPLOY_SERVER_USER }}
-          key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
-          port: ${{ secrets.DEPLOY_SERVER_PORT }}
-          envs: ECR_REGISTRY,ECR_PASSWORD,SPRING_REPOSITORY,NGINX_REPOSITORY,IMAGE_TAG
-          script: |
-            echo "$ECR_PASSWORD" | docker login --username AWS --password-stdin "$ECR_REGISTRY"
-
-            cd /home/ubuntu/Devtalk-Server-Application   
-
-            # 환경변수 치환 확인
-            echo "Using Registry: $ECR_REGISTRY"
-
-            docker-compose -f docker-compose-prod.yml pull
-            docker-compose -f docker-compose-prod.yml up -d
+            host: ${{ secrets.DEPLOY_SERVER_HOST }}
+            username: ${{ secrets.DEPLOY_SERVER_USER }}
+            key: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
+            port: ${{ secrets.DEPLOY_SERVER_PORT }}
+            envs: ECR_REGISTRY,ECR_PASSWORD,SPRING_REPOSITORY,NGINX_REPOSITORY,IMAGE_TAG   # ② EC2로 전달
+            script: |
+              echo "Using Registry: $ECR_REGISTRY"
+              echo "$ECR_PASSWORD" | docker login --username AWS --password-stdin "$ECR_REGISTRY"
+              cd /home/ubuntu/Devtalk-Server-Application
+              docker-compose -f docker-compose-prod.yml pull
+              docker-compose -f docker-compose-prod.yml up -d
