@@ -1,8 +1,10 @@
 package com.hongik.devtalk.domain;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
 @Entity
+@Getter
 @IdClass(StudentDepartmentId.class)
 public class StudentDepartment {
 

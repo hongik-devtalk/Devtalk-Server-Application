@@ -16,7 +16,7 @@ public class ApplicantResponseDTO {
     private String studentId;
     private String studentNum;
     private String department;
-    private Integer grade;
+    private String grade;
     private String name;
     private String phone;
     private ParticipationType participationType;
