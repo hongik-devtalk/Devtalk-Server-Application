@@ -1,8 +1,8 @@
-package com.hongik.devtalk.controller;
+package com.hongik.devtalk.controller.userhome;
 
 import com.hongik.devtalk.domain.userhome.dto.SeminarInfoResponseDTO;
 import com.hongik.devtalk.global.apiPayload.ApiResponse;
-import com.hongik.devtalk.service.SeminarInfoService;
+import com.hongik.devtalk.service.userhome.SeminarInfoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
