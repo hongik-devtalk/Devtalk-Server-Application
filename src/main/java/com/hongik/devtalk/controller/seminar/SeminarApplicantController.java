@@ -10,16 +10,18 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 @Tag(name = "Applicant", description = "세미나 신청 API")
 @RequestMapping("/user/seminars")
 public class SeminarApplicantController {
-    private SeminarApplicantService seminarApplicantService;
+    private  final SeminarApplicantService seminarApplicantService;
 
     @PostMapping
     @Operation(summary = "세미나 신청 API", description = "세미나에 대한 신청 정보를 받아 처리합니다.")
@@ -43,13 +45,6 @@ public class SeminarApplicantController {
                             )))
     })
     public ApiResponse<ApplicantResponseDto> createApplicant(@RequestBody ApplicantRequestDto applicantRequestDto) {
-        // 임시 더미 데이터로 응답 생성
-        ApplicantResponseDto responseDto = ApplicantResponseDto.builder()
-                .studentId(10L)
-                .seminarId(5L)
-                .applicantId(3L)
-                .build();
-
-        return ApiResponse.onSuccess("성공적으로 신청이 완료되었습니다.", responseDto);
+        return seminarApplicantService.createApplicant(applicantRequestDto);
     }
 }

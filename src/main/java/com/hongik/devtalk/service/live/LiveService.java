@@ -7,6 +7,7 @@ import com.hongik.devtalk.domain.live.LiveError;
 import com.hongik.devtalk.domain.live.dto.*;
 import com.hongik.devtalk.global.apiPayload.ApiResponse;
 import com.hongik.devtalk.global.apiPayload.code.GeneralErrorCode;
+import com.hongik.devtalk.global.apiPayload.exception.GeneralException;
 import com.hongik.devtalk.global.security.JwtTokenProvider;
 import com.hongik.devtalk.repository.ApplicantRepository;
 import com.hongik.devtalk.repository.AttendanceRepository;
@@ -105,54 +106,44 @@ public class LiveService {
             return ApiResponse.onFailure(CustomLiveErrorCode.LIVEURL_NOT_FOUND, LiveError.LIVEURL_NOT_FOUND);
         }
 
-        Optional<Attendance> existingAttendance = attendanceRepository.findByApplicantAndSeminar(latestApplicant, seminar);
+        Attendance attendance = attendanceRepository.findByApplicantAndSeminar(latestApplicant, seminar)
+                .orElseThrow(() -> new GeneralException(CustomLiveErrorCode.APPLICANT_NOT_FOUND, "신청 정보를 찾을 수 없습니다."));
 
-        // 3. 이미 출석 기록이 있는 경우 -> 바로 성공 응답을 반환하고 종료합니다.
-        if (existingAttendance.isPresent()) {
-            Attendance attendance = existingAttendance.get();
+        // 3. 이미 출석(PRESENT) 또는 지각(LATE) 처리된 경우, 상태를 바꾸지 않고 바로 반환합니다.
+        if (attendance.getStatus() != AttendanceStatus.ABSENT) {
             AttendanceResponseDto responseDto = AttendanceResponseDto.builder()
-                    .liveUrl(seminar.getLive() != null ? seminar.getLive().getLiveUrl() : null)
-                    .attendanceStatus(attendance.getStatus())
+                    .liveUrl(seminar.getLive().getLiveUrl())
+                    .attendanceStatus(attendance.getStatus()) // 기존 상태를 그대로 반환
                     .build();
-
-            return ApiResponse.onSuccess("이미 출석 처리된 사용자입니다. 입장을 허용합니다.", responseDto);
+            return ApiResponse.onSuccess("이미 출석 처리된 사용자입니다.", responseDto);
         }
 
-        // 3. 시간 기준 정의
-        LocalDateTime seminarStartTime = seminar.getSeminarDate().minusMinutes(10);
-        LocalDateTime onTimeDeadline = seminarStartTime.plusMinutes(10); // 출석 마감 (세미나 시작 + 10분)
-        LocalDateTime lateDeadline = seminarStartTime.plusHours(2);   // 지각 마감 (세미나 시작 + 2시간)
+        LocalDateTime realSeminarTime = seminar.getSeminarDate(); // 실제 세미나 시작 시간
+        LocalDateTime checkInStartTime = realSeminarTime.minusMinutes(10); // 출석 체크 시작 시간 (시작 10분 전)
+        LocalDateTime onTimeDeadline = realSeminarTime.plusMinutes(80);   // 출석(PRESENT) 마감 시간 (시작 80분 후)
 
-        // 4. 출석 상태(Status) 결정 로직
-        AttendanceStatus status;
-        if (attendTime.isBefore(seminarStartTime)) {
-            // 세미나 시작 시간 전에는 체크 불가
-            return ApiResponse.onFailure(CustomLiveErrorCode.ATTENDANCE_NOT_YET_OPEN, LiveError.ATTENDANCE_NOT_YET_OPEN);
+        // 5. 출석 상태 결정
+        AttendanceStatus newStatus;
+        if (attendTime.isBefore(checkInStartTime)) {
+            // 출석 체크 시작 시간보다 이전인 경우
+            return ApiResponse.onFailure(CustomLiveErrorCode.ATTENDANCE_NOT_YET_OPEN, "아직 출석 체크 시간이 아닙니다.");
         } else if (!attendTime.isAfter(onTimeDeadline)) {
-            // 출석 마감 시간(10분)을 넘지 않았다면 '출석'
-            status = AttendanceStatus.PRESENT;
-        } else if (!attendTime.isAfter(lateDeadline)) {
-            // 지각 마감 시간(2시간)을 넘지 않았다면 '지각'
-            status = AttendanceStatus.LATE;
+            // 출석 마감 시간(onTimeDeadline) 이후가 아닌 경우 (즉, 마감 시간과 같거나 이전인 경우)
+            newStatus = AttendanceStatus.PRESENT;
         } else {
-            // 지각 마감 시간을 넘었다면 '결석'
-            status = AttendanceStatus.ABSENT;
+            // 그 외 모든 경우 (출석 마감 시간 이후)
+            newStatus = AttendanceStatus.LATE;
         }
 
-        // 5. Attendance 엔티티 생성 및 저장
-        Attendance newAttendance = Attendance.builder()
-                .applicant(latestApplicant)
-                .seminar(seminar)
-                .status(status)
-                .checkInTime(attendTime)
-                .build();
+        // 6. 조회한 엔티티의 상태와 체크인 시간을 '수정'합니다.
+        attendance.updateAttendance(newStatus, attendTime);
 
-        attendanceRepository.save(newAttendance);
-
+        // 7. 최종 응답 반환
         AttendanceResponseDto responseDto = AttendanceResponseDto.builder()
                 .liveUrl(seminar.getLive().getLiveUrl())
-                .attendanceStatus(status)
+                .attendanceStatus(newStatus) // 새로 변경된 상태를 반환
                 .build();
+
         return ApiResponse.onSuccess("성공적으로 출석 인증 되었습니다.", responseDto);
     }
 
