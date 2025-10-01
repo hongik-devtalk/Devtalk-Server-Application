@@ -4,13 +4,17 @@ import com.hongik.devtalk.global.apiPayload.ApiResponse;
 import com.hongik.devtalk.domain.mainpage.dto.*;
 import com.hongik.devtalk.domain.enums.ImageType;
 import com.hongik.devtalk.service.mainpage.MainpageImagesService;
+import com.hongik.devtalk.service.mainpage.InquiryLinkService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,12 +28,14 @@ import java.util.List;
 public class MainpageController {
 
     private final MainpageImagesService mainpageImagesService;
+    private final InquiryLinkService inquiryLinkService;
 
     // Images APIs
     @GetMapping("/images")
     @Operation(
             summary = "홍보 사진 현재 상태 조회",
-            description = "Devtalk 소개 사진과 이전 세미나 보러가기 사진(각 1장)의 현재 상태를 조회합니다."
+            description = "Devtalk 소개 사진과 이전 세미나 보러가기 사진(각 1장)의 현재 상태를 조회합니다.",
+            security = { @SecurityRequirement(name = "bearer-key") }
     )
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -59,7 +65,8 @@ public class MainpageController {
     @PostMapping("/images")
     @Operation(
             summary = "홍보 사진 업로드/교체",
-            description = "홍보 사진 업로드/교체 (1장 제한, 업로드 시 기존 이미지 자동 교체)"
+            description = "홍보 사진 업로드/교체 (1장 제한, 업로드 시 기존 이미지 자동 교체)",
+            security = { @SecurityRequirement(name = "bearer-key") }
     )
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -89,15 +96,13 @@ public class MainpageController {
             )
     })
     public ApiResponse<ImageInfoDto> uploadMainpageImage(
-//            @Parameter(description = "인증 토큰", required = true)
-//            @RequestHeader("Authorization") String authorization,
+            @AuthenticationPrincipal User user,
             @Parameter(description = "이미지 종류 (INTRO 또는 PREVIOUS_SEMINAR)", required = true)
             @RequestParam("type") ImageType type,
             @Parameter(description = "업로드할 이미지 파일 (최대 10MB, 허용 MIME: image/jpeg, image/png, image/webp)", required = true)
             @RequestParam("file") MultipartFile file
     ) {
-        // TODO: 추후 인증 기능 구현 시 authorization에서 사용자 정보 추출
-        String updatedBy = "admin"; // 임시값 - 추후 실제 사용자 정보로 대체
+        String updatedBy = user.getUsername(); // 인증된 관리자의 loginId
         
         ImageInfoDto result = mainpageImagesService.uploadOrReplaceMainpageImage(type, file, updatedBy);
         
@@ -107,7 +112,8 @@ public class MainpageController {
     @DeleteMapping("/images")
     @Operation(
             summary = "홍보 사진 삭제",
-            description = "홍보 사진 삭제 (해당 종류 1장 삭제)"
+            description = "홍보 사진 삭제 (해당 종류 1장 삭제)",
+            security = { @SecurityRequirement(name = "bearer-key") }
     )
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -127,11 +133,10 @@ public class MainpageController {
             )
     })
     public ApiResponse<DeleteImageResponseDto> deleteMainpageImage(
-//            @Parameter(description = "인증 토큰", required = true)
-//            @RequestHeader("Authorization") String authorization,
+            @AuthenticationPrincipal User user,
             @Valid @RequestBody DeleteImageRequestDto request
     ) {
-        // TODO: 추후 인증 기능 구현 시 authorization에서 사용자 정보 추출 및 권한 검증
+        // 인증은 Spring Security에서 자동으로 처리됨 (ROLE_ADMIN 권한 필요)
         
         DeleteImageResponseDto result = mainpageImagesService.deleteMainpageImage(request.getType());
         
@@ -142,7 +147,8 @@ public class MainpageController {
     @GetMapping("/inquiry-link")
     @Operation(
             summary = "문의하기(카카오톡) 링크 조회",
-            description = "문의하기(카카오톡) 링크 조회"
+            description = "문의하기(카카오톡) 링크 조회",
+            security = { @SecurityRequirement(name = "bearer-key") }
     )
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -157,17 +163,18 @@ public class MainpageController {
             )
     })
     public ApiResponse<InquiryLinkResponseDto> getInquiryLink(
-//            @Parameter(description = "인증 토큰", required = true)
-//            @RequestHeader("Authorization") String authorization
+            @AuthenticationPrincipal User user
     ) {
-        // TODO: 문의하기 링크 조회 로직 구현
-        return ApiResponse.onSuccess("문의하기 링크를 조회했습니다.", null);
+        // 인증은 Spring Security에서 자동으로 처리됨 (ROLE_ADMIN 권한 필요)
+        InquiryLinkResponseDto result = inquiryLinkService.getInquiryLink();
+        return ApiResponse.onSuccess("문의하기 링크를 조회했습니다.", result);
     }
 
     @PostMapping("/inquiry-link")
     @Operation(
             summary = "문의하기(카카오톡) 링크 추가/수정",
-            description = "문의하기(카카오톡) 링크 추가/수정"
+            description = "문의하기(카카오톡) 링크 추가/수정",
+            security = { @SecurityRequirement(name = "bearer-key") }
     )
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -187,18 +194,20 @@ public class MainpageController {
             )
     })
     public ApiResponse<InquiryLinkResponseDto> upsertInquiryLink(
-//            @Parameter(description = "인증 토큰", required = true)
-//            @RequestHeader("Authorization") String authorization,
+            @AuthenticationPrincipal User user,
             @Valid @RequestBody InquiryLinkRequestDto request
     ) {
-        // TODO: 문의하기 링크 추가/수정 로직 구현
-        return ApiResponse.onSuccess("문의하기 링크를 저장했습니다.", null);
+        String updatedBy = user.getUsername(); // 인증된 관리자의 loginId
+        
+        InquiryLinkResponseDto result = inquiryLinkService.upsertInquiryLink(request, updatedBy);
+        return ApiResponse.onSuccess("문의하기 링크를 저장했습니다.", result);
     }
 
     @DeleteMapping("/inquiry-link")
     @Operation(
             summary = "문의하기(카카오톡) 링크 삭제",
-            description = "문의하기(카카오톡) 링크 삭제"
+            description = "문의하기(카카오톡) 링크 삭제",
+            security = { @SecurityRequirement(name = "bearer-key") }
     )
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -213,11 +222,12 @@ public class MainpageController {
             )
     })
     public ApiResponse<DeleteLinkResponseDto> deleteInquiryLink(
-//            @Parameter(description = "인증 토큰", required = true)
-//            @RequestHeader("Authorization") String authorization
+            @AuthenticationPrincipal User user
     ) {
-        // TODO: 문의하기 링크 삭제 로직 구현
-        return ApiResponse.onSuccess("문의하기 링크를 삭제했습니다.", null);
+        // 인증은 Spring Security에서 자동으로 처리됨 (ROLE_ADMIN 권한 필요)
+        
+        DeleteLinkResponseDto result = inquiryLinkService.deleteInquiryLink();
+        return ApiResponse.onSuccess("문의하기 링크를 삭제했습니다.", result);
     }
 
     // Reviews APIs
