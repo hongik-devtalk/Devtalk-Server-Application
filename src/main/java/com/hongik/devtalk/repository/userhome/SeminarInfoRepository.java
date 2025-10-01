@@ -1,4 +1,4 @@
-package com.hongik.devtalk.repository;
+package com.hongik.devtalk.repository.userhome;
 
 
 import com.hongik.devtalk.domain.Seminar;
