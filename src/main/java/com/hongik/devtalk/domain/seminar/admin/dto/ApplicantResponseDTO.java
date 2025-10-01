@@ -30,13 +30,13 @@ public class ApplicantResponseDTO {
         Student student = applicant.getStudent();
 
         // 복수 전공일 경우 학과명을 ,로 연결
-        String departmentNames = student.getStudentDepartments().stream()
-                .map(sd -> sd.getDepartment().getDepartmentName())
-                .collect(Collectors.joining(","));
+        String departmentNames = student.getDepartments().stream()
+                .map(Enum::name)
+                .collect(Collectors.joining(", "));
 
         // 숫자 학년이 있으면 숫자를, 없으면 gradeEtc를 사용
         String gradeInfo = (student.getGrade() != null)
-                ? student.getGrade().toString()
+                ? student.getGrade() + "학년"
                 : student.getGradeEtc();
 
         return ApplicantResponseDTO.builder()

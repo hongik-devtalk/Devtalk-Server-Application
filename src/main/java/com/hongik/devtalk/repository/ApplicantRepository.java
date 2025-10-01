@@ -20,13 +20,11 @@ public interface ApplicantRepository extends JpaRepository<Applicant,Long> {
     Applicant findFirstByStudentOrderBySeminar_SeminarDateDesc(Student student);
 
     //학생과 세미나 정보로 신청 내역이 있는지 확입합니다.
-    boolean existsBySeminarAndStudent(Seminar seminar, Student student);
+    boolean existsByStudentAndSeminar(Student student, Seminar seminar);
 
     //특정 세미나 ID에 속한 모든 신청자 정보를 조회합니다.
     @Query("select distinct a from Applicant a " +
             "join fetch a.student s " +
-            "join fetch s.studentDepartments sd " +
-            "join fetch sd.department d " +
             "where a.seminar.id = :seminarId")
     List<Applicant> findApplicantsBySeminarId(Long seminarId);
 }

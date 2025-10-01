@@ -6,7 +6,7 @@ import com.hongik.devtalk.domain.seminar.admin.dto.QuestionResponseDTO;
 import com.hongik.devtalk.global.apiPayload.code.GeneralErrorCode;
 import com.hongik.devtalk.global.apiPayload.exception.GeneralException;
 import com.hongik.devtalk.repository.ApplicantRepository;
-import com.hongik.devtalk.repository.seminar.QuestionRepository;
+import com.hongik.devtalk.repository.QuestionRepository;
 import com.hongik.devtalk.repository.seminar.SeminarRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
