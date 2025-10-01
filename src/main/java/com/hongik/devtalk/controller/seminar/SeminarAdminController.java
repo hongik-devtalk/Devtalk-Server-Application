@@ -67,7 +67,7 @@ public class SeminarAdminController {
             @Parameter(description = "후기 ID", required = true)
             @PathVariable Long reviewId
     ) {
-
+        seminarAdminCommandService.hideReviewFromHome(reviewId);
         return ApiResponse.onSuccess("후기를 홈 화면에서 제외했습니다.");
     }
 
