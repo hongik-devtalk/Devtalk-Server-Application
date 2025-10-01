@@ -32,7 +32,7 @@ spring:
 
 jwt:
   token:
-    secretKey: umceightfightingjwttokenauthentication
+    secretKey: ${JWT_SECRET}
     expiration:
       access: 14400000
 
