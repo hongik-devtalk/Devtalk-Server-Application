@@ -26,6 +26,7 @@ public class SeminarListService {
                                 .seminarTopic(s.getTopic())
                                 .seminarDate(s.getSeminarDate())
                                 .place(s.getPlace())
+                                .imageUrl(s.getThumbnailUrl())
                                 .build())
                         .toList();
 
