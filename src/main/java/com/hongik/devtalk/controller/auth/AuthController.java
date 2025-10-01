@@ -60,10 +60,14 @@ public class AuthController {
     })
     public ApiResponse<Void> logout(
             @Parameter(description = "인증 토큰", required = true)
-            @RequestHeader("Authorization") String authorization,
-            @RequestBody LogoutRequestDto logoutRequest
-    ) {
-        // TODO: 로그아웃 로직 구현
+            @RequestHeader(name = "Authorization", required = false) String authHeader,
+            @CookieValue(name = "refresh_token", required = false) String refreshCookie) {
+
+        //refreshToken 폐기
+        if (refreshCookie != null && !refreshCookie.isBlank()) {
+            adminCommandService.deleteRefreshToken(refreshCookie);
+        }
+
         return ApiResponse.onSuccess("정상적으로 로그아웃되었습니다.");
     }
 }
