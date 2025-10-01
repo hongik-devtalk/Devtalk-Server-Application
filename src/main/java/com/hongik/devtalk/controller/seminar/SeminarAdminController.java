@@ -77,7 +77,7 @@ public class SeminarAdminController {
             @Parameter(description = "후기 ID", required = true)
             @PathVariable Long reviewId
     ) {
-
+        seminarAdminCommandService.deleteReview(reviewId);
         return ApiResponse.onSuccess("세미나 후기를 삭제했습니다.");
     }
 
