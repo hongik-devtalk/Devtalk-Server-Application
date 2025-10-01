@@ -5,6 +5,7 @@ import com.hongik.devtalk.domain.seminar.admin.dto.QuestionResponseDTO;
 import com.hongik.devtalk.domain.seminar.admin.dto.SeminarCardResponseDTO;
 import com.hongik.devtalk.domain.seminar.admin.dto.SeminarReviewResponseDTO;
 import com.hongik.devtalk.global.apiPayload.ApiResponse;
+import com.hongik.devtalk.service.seminar.SeminarAdminCommandService;
 import com.hongik.devtalk.service.seminar.SeminarAdminQueryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -21,6 +22,7 @@ import java.util.List;
 public class SeminarAdminController {
 
     private final SeminarAdminQueryService seminarAdminQueryService;
+    private final SeminarAdminCommandService seminarAdminCommandService;
 
     @Operation(summary = "세미나 카드리스트 조회", description = "세미나 카드리스트를 조회합니다.")
     @GetMapping("/card")
@@ -55,7 +57,7 @@ public class SeminarAdminController {
             @Parameter(description = "후기 ID", required = true)
             @PathVariable Long reviewId
     ) {
-
+        seminarAdminCommandService.exposeReviewToHome(reviewId);
         return ApiResponse.onSuccess("후기를 홈 화면에 등록했습니다.");
     }
 

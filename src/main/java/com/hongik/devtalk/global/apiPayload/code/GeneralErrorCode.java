@@ -22,6 +22,9 @@ public enum GeneralErrorCode implements BaseErrorCode {
     // 이미지 에러
     IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "IMAGE_4041", "해당 타입의 이미지를 찾을 수 없습니다."),
 
+    // 후기 에러
+    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW_4041", "존재하지 않는 후기입니다."),
+
     // 요청/파라미터 에러
     MISSING_PARAMETER(HttpStatus.BAD_REQUEST, "REQ_4001", "필수 파라미터가 누락되었습니다."),
     INVALID_PARAMETER(HttpStatus.BAD_REQUEST, "REQ_4002", "파라미터 형식이 잘못되었습니다."),

@@ -51,4 +51,9 @@ public class Review extends BaseTimeEntity {
     @Column(nullable = false)
     @ColumnDefault("false")
     private boolean isNote;
+
+    // 홈화면 노출 여부 업데이트
+    public void updateIsNote(boolean isNote) {
+        this.isNote = isNote;
+    }
 }
