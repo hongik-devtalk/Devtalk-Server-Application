@@ -8,6 +8,22 @@ spring:
     username: root
     password: ${MYSQL_PASSWORD}
 
+  # spring-boot-mail
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    protocol: smtp
+    username: dev.hongik@gmail.com # sender
+    password: ${SPRING_MAIL_PASSWORD}
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 5000
+          starttls:
+            enable: true
+
   jpa:
     hibernate:
       ddl-auto: update
