@@ -4,7 +4,6 @@ import com.hongik.devtalk.domain.Seminar;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
 import java.time.LocalDateTime;
 
 public interface SeminarRepository extends JpaRepository<Seminar,Long> {
@@ -15,4 +14,6 @@ public interface SeminarRepository extends JpaRepository<Seminar,Long> {
      */
     @Query("SELECT s FROM Seminar s WHERE s.startDate <= :now AND s.endDate >= :now")
     Seminar findSeminarInApplicationPeriod(@Param("now") LocalDateTime now);
+
+    List<Seminar> findAllByOrderBySeminarNumDesc();
 }
