@@ -118,21 +118,21 @@ public class LiveService {
             return ApiResponse.onSuccess("이미 출석 처리된 사용자입니다.", responseDto);
         }
 
-        // 4. 시간 기준 정의
-        LocalDateTime seminarStartTime = seminar.getSeminarDate().minusMinutes(10);
-        LocalDateTime onTimeDeadline = seminarStartTime.plusMinutes(10);
-        LocalDateTime lateDeadline = seminarStartTime.plusHours(2);
+        LocalDateTime realSeminarTime = seminar.getSeminarDate(); // 실제 세미나 시작 시간
+        LocalDateTime checkInStartTime = realSeminarTime.minusMinutes(10); // 출석 체크 시작 시간 (시작 10분 전)
+        LocalDateTime onTimeDeadline = realSeminarTime.plusMinutes(80);   // 출석(PRESENT) 마감 시간 (시작 80분 후)
 
         // 5. 출석 상태 결정
         AttendanceStatus newStatus;
-        if (attendTime.isBefore(seminarStartTime)) {
+        if (attendTime.isBefore(checkInStartTime)) {
+            // 출석 체크 시작 시간보다 이전인 경우
             return ApiResponse.onFailure(CustomLiveErrorCode.ATTENDANCE_NOT_YET_OPEN, "아직 출석 체크 시간이 아닙니다.");
         } else if (!attendTime.isAfter(onTimeDeadline)) {
+            // 출석 마감 시간(onTimeDeadline) 이후가 아닌 경우 (즉, 마감 시간과 같거나 이전인 경우)
             newStatus = AttendanceStatus.PRESENT;
-        } else if (!attendTime.isAfter(lateDeadline)) {
-            newStatus = AttendanceStatus.LATE;
         } else {
-            newStatus = AttendanceStatus.ABSENT;
+            // 그 외 모든 경우 (출석 마감 시간 이후)
+            newStatus = AttendanceStatus.LATE;
         }
 
         // 6. 조회한 엔티티의 상태와 체크인 시간을 '수정'합니다.
