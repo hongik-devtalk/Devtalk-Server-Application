@@ -1,5 +1,7 @@
 name: Deploy Devtalk Project
 
+
+
 on:
   push:
     branches:
@@ -74,5 +76,6 @@ jobs:
               echo "Using Registry: $ECR_REGISTRY"
               echo "$ECR_PASSWORD" | docker login --username AWS --password-stdin "$ECR_REGISTRY"
               cd /home/ubuntu/Devtalk-Server-Application
+              docker-compose -f docker-compose-prod.yml down --rmi all -v --remove-orphans
               docker-compose -f docker-compose-prod.yml pull
               docker-compose -f docker-compose-prod.yml up -d
