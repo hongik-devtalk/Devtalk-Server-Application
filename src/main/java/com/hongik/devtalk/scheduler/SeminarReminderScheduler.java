@@ -24,6 +24,7 @@ public class SeminarReminderScheduler {
         log.info("세미나 리마인드 스케줄러 실행");
 
         // TODO: 내일 열릴 세미나에 대한 신청자 이메일 목록 조회
+        // TODO: 관련 service 클래스 만들어야함
         //List<String> emails = seminarService.getTomorrowSeminarEmails();
 
         // 예시 이메일 반복문
