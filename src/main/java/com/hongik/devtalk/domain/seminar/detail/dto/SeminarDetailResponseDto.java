@@ -7,6 +7,8 @@ import com.hongik.devtalk.domain.SessionImage;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Getter
@@ -18,7 +20,7 @@ public class SeminarDetailResponseDto {
     private Long seminarId;
     private int seminarNum;
     private String topic;
-    private String ImageUrl;
+    private String thumbnail;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime startDate;
@@ -31,7 +33,25 @@ public class SeminarDetailResponseDto {
 
     private String place;
 
-    private String fileUrl;
+    private List<String> fileUrls;
 
+    public static SeminarDetailResponseDto from(Seminar seminar){
+
+        //발표자료 url
+        List<String> urls = seminar.getLiveFiles().stream()
+                .map(LiveFile::getFileUrl)
+                .toList();
+
+        return SeminarDetailResponseDto.builder()
+                .seminarId(seminar.getId())
+                .seminarNum(seminar.getSeminarNum())
+                .topic(seminar.getTopic())
+                .thumbnail(seminar.getThumbnail())
+                .startDate(seminar.getStartDate())
+                .endDate(seminar.getEndDate())
+                .place(seminar.getPlace())
+                .fileUrls(urls)
+                .build();
+    }
 }
 

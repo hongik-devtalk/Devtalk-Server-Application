@@ -36,6 +36,9 @@ public class Seminar {
 
     private String place;
 
+    //세미나 썸네일 사진
+    private String thumbnail;
+
     @OneToMany(mappedBy = "seminar", cascade = CascadeType.ALL)
     private List<Attendance> attendances = new ArrayList<>();
 
