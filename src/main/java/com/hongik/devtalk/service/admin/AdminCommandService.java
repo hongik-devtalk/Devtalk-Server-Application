@@ -87,4 +87,9 @@ public class AdminCommandService {
 
         adminRepository.deleteById(adminId);
     }
+
+    public void deleteRefreshToken (String refreshToken) {
+
+        refreshTokenRepository.deleteByToken(refreshToken);
+    }
 }
