@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  spring-boot:
+    container_name: spring-boot-container # nginx.conf의 proxy_pass에서 설정한 컨테이너 이름과 동일해야 함. 추후 도커 컨테이너 이름으로 사용
+    image: ${ECR_REGISTRY}/devtalk-server-ecr:latest # ec2에서 빌드 안 하니까 수정합니다
+    env_file:
+      - .env
+    networks:
+      - devtalk-network
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    restart: always
+
+  nginx:
+    container_name: nginx
+    image: ${ECR_REGISTRY}/devtalk-nginx-ecr:latest
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    depends_on:
+      - spring-boot
+      # 이미지 빌드 순서: spring-boot -> nginx
+    networks:
+      - devtalk-network
+
+networks:
+  devtalk-network:

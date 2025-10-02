@@ -1,5 +1,6 @@
 server:
   port: 8080
+
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -14,3 +15,28 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
+
+  # AWS S3 Configuration
+  cloud:
+    aws:
+      region:
+        static: ap-northeast-2  # Seoul region
+      credentials:
+        access-key: ${AWS_ACCESS_KEY_ID}
+        secret-key: ${AWS_SECRET_ACCESS_KEY}
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+jwt:
+  token:
+    secretKey: ${JWT_SECRET}
+    expiration:
+      access: 14400000
+
+aws:
+  s3:
+    bucket: ${AWS_S3_BUCKET_NAME}
+    cloudfront-domain: ${AWS_CLOUDFRONT_DOMAIN:}  # Optional CloudFront domain

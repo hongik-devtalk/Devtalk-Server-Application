@@ -1,5 +1,6 @@
 package com.hongik.devtalk.domain;
 
+import com.hongik.devtalk.domain.enums.SeminarStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,6 +21,9 @@ public class Seminar {
     @Column(name = "seminar_id")
     private Long id;
 
+    @Column(length = 2048)
+    private String thumbnailUrl;
+
     @Column(length = 50, nullable = false, unique = true)
     private int seminarNum; // 몇회차
 
@@ -36,8 +40,9 @@ public class Seminar {
 
     private String place;
 
-    //세미나 썸네일 사진
-    private String thumbnail;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private SeminarStatus status;
 
     @OneToMany(mappedBy = "seminar", cascade = CascadeType.ALL)
     private List<Attendance> attendances = new ArrayList<>();

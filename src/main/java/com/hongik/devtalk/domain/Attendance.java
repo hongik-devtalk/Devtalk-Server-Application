@@ -32,4 +32,9 @@ public class Attendance {
     private AttendanceStatus status;
 
     private LocalDateTime checkInTime;
+
+    public void updateAttendance(AttendanceStatus status, LocalDateTime checkInTime) {
+        this.status = status;
+        this.checkInTime = checkInTime;
+    }
 }

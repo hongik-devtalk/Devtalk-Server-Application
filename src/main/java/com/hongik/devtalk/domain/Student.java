@@ -1,12 +1,15 @@
 package com.hongik.devtalk.domain;
 
 import com.hongik.devtalk.domain.common.BaseTimeEntity;
+import com.hongik.devtalk.domain.enums.Department;
 import com.hongik.devtalk.domain.enums.StudentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -26,10 +29,13 @@ public class Student extends BaseTimeEntity {
     @Column(length = 50, nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private int grade;
+    //기본 선택 (1,2,3,4학년인 경우)
+    private Integer grade;
 
-    @Column(nullable = false, unique = true)
+    //기타 선택 (학생 직접 입력)
+    private String gradeEtc;
+
+    @Column(unique = true)
     private String email;
 
     @Column(length = 20, unique = true)
@@ -37,10 +43,18 @@ public class Student extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private StudentStatus status;
+    private StudentStatus status = StudentStatus.ACTIVE;
 
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
-    private List<StudentDepartment> studentDepartments = new ArrayList<>();
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(
+            name = "student_departments",
+            joinColumns = @JoinColumn(name = "student_id")
+    )
+    @Enumerated(EnumType.STRING)
+    @Column(name = "department_name")
+    private Set<Department> departments = new HashSet<>();
+
+    private String departmentEtc;
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
     private List<Applicant> applicants = new ArrayList<>();
@@ -56,4 +70,14 @@ public class Student extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
     private List<Question> questions = new ArrayList<>();
+
+    public void updateDetails(String name, String phone, Integer grade, String gradeEtc, Set<Department> departments, String departmentEtc) {
+        this.name = name;
+        this.phone = phone;
+        this.grade = grade;
+        this.gradeEtc = gradeEtc;
+        this.departments = departments;
+        this.departmentEtc = departmentEtc;
+    }
+
 }

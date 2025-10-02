@@ -20,7 +20,7 @@ public class SeminarDetailResponseDto {
     private Long seminarId;
     private int seminarNum;
     private String topic;
-    private String thumbnail;
+    private String thumbnailUrl;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime startDate;
@@ -46,7 +46,7 @@ public class SeminarDetailResponseDto {
                 .seminarId(seminar.getId())
                 .seminarNum(seminar.getSeminarNum())
                 .topic(seminar.getTopic())
-                .thumbnail(seminar.getThumbnail())
+                .thumbnailUrl(seminar.getThumbnailUrl())
                 .startDate(seminar.getStartDate())
                 .endDate(seminar.getEndDate())
                 .place(seminar.getPlace())
