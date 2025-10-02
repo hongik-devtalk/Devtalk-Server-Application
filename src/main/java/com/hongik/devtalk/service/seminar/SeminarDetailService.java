@@ -57,7 +57,7 @@ public class SeminarDetailService {
     //세미나 세부정보 조회 ( 세미나 )
 
     public SeminarDetailResponseDto getSeminarDetail(Long seminarId) {
-    //세미나 id 받아와서 seminar 존재하는지 확인
+    //세미나 id를 받아와서 seminar 존재하는지 확인
     Seminar seminar = seminarDetailRepository.findById(seminarId)
             .orElseThrow(()->new GeneralException(GeneralErrorCode.SEMINARINFO_NOT_FOUND));
 
