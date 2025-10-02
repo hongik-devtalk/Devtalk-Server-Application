@@ -27,6 +27,7 @@ public enum GeneralErrorCode implements BaseErrorCode {
 
     // 후기 에러
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW_4041", "존재하지 않는 후기입니다."),
+    INCOMPLETE_REVIEW_ORDER(HttpStatus.BAD_REQUEST, "REVIEW_4002", "화면에 표시되어야 하는 후기 중 누락된 업데이트가 존재합니다."),
 
     // 요청/파라미터 에러
     MISSING_PARAMETER(HttpStatus.BAD_REQUEST, "REQ_4001", "필수 파라미터가 누락되었습니다."),
