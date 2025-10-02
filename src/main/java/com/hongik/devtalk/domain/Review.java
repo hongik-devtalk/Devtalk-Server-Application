@@ -52,8 +52,17 @@ public class Review extends BaseTimeEntity {
     @ColumnDefault("false")
     private boolean isNote;
 
+    // 홈화면 노출 순서 (낮을수록 상단, null이면 노출 안됨)
+    @Column
+    private Integer displayOrder;
+
     // 홈화면 노출 여부 업데이트
     public void updateIsNote(boolean isNote) {
         this.isNote = isNote;
+    }
+
+    // 홈화면 노출 순서 업데이트
+    public void updateDisplayOrder(Integer displayOrder) {
+        this.displayOrder = displayOrder;
     }
 }
