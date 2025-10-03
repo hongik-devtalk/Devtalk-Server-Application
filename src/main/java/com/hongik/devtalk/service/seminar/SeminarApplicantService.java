@@ -57,7 +57,7 @@ public class SeminarApplicantService {
             throw new GeneralException(CustomSeminarApplicantErrorCode.SEMINAR_APPLICANT_ERROR);
         }
 
-        if (applicantRepository.existsByStudentAndSeminar(student, seminar)) {
+        if (applicantRepository.existsBySeminarAndStudent(seminar, student)) {
             throw new GeneralException(CustomSeminarApplicantErrorCode.ALREADY_APPLIED_SEMINAR);
         }
 

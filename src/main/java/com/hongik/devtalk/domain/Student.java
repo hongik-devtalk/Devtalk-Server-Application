@@ -35,8 +35,8 @@ public class Student extends BaseTimeEntity {
     //기타 선택 (학생 직접 입력)
     private String gradeEtc;
 
-    //@Column(unique = true)
-    //private String email;
+    @Column(unique = true)
+    private String email;
 
     @Column(length = 20, unique = true)
     private String phone;
