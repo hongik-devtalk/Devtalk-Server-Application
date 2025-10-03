@@ -26,7 +26,7 @@ public class ApplicantResponseDTO {
     private String phone;
     private String email;
     private ParticipationType participationType;
-    private InflowPath inflowPath;
+    private String inflowPath;
 
     public static ApplicantResponseDTO from(Applicant applicant, String topic) {
         Student student = applicant.getStudent();
@@ -47,6 +47,11 @@ public class ApplicantResponseDTO {
                 ? student.getGrade() + "학년"
                 : student.getGradeEtc();
 
+        // inflowPath가 없으면 inflowPathEtc를 사용
+        String inflowPathInfo = (applicant.getInflowPath() != null)
+                ? applicant.getInflowPath().name()
+                : applicant.getInflowPathEtc();
+
         return ApplicantResponseDTO.builder()
                 .topic(topic)
                 .studentId(student.getId().toString())
@@ -57,7 +62,7 @@ public class ApplicantResponseDTO {
                 .phone(student.getPhone())
                 .email(student.getEmail())
                 .participationType(applicant.getParticipationType())
-                .inflowPath(applicant.getInflowPath())
+                .inflowPath(inflowPathInfo)
                 .build();
     }
 }
