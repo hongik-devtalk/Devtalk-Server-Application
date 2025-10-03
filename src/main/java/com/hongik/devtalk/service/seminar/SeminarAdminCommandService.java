@@ -4,6 +4,7 @@ import com.hongik.devtalk.domain.*;
 import com.hongik.devtalk.domain.enums.SeminarStatus;
 import com.hongik.devtalk.domain.seminar.admin.dto.SeminarRegisterRequestDTO;
 import com.hongik.devtalk.domain.seminar.admin.dto.SeminarInfoResponseDTO;
+import com.hongik.devtalk.domain.seminar.admin.dto.SeminarUpdateRequestDTO;
 import com.hongik.devtalk.global.apiPayload.code.GeneralErrorCode;
 import com.hongik.devtalk.global.apiPayload.exception.GeneralException;
 import com.hongik.devtalk.repository.SessionRepository;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,8 +97,17 @@ public class SeminarAdminCommandService {
             List<MultipartFile> materials,
             List<MultipartFile> speakerProfiles
     ) {
-        validatePeriods(request);
-        validateSpeakersAndProfiles(request, speakerProfiles);
+        // 회차 중복 검증
+        if (seminarRepository.existsBySeminarNum(request.getSeminarNum())) {
+            throw new GeneralException(GeneralErrorCode.SEMINAR_NUM_ALREADY_EXISTS);
+        }
+
+        // 세미나 기간 검증
+        validatePeriods(
+                request.getActiveStartDate(), request.getActiveEndDate(),
+                request.getApplyStartDate(), request.getApplyEndDate()
+        );
+        validateSpeakersAndProfiles(request.getSpeakers().size(), speakerProfiles);
 
         // 세미나 정보
         // 이미지 타입 확인
@@ -126,51 +137,47 @@ public class SeminarAdminCommandService {
         seminarRepository.save(seminar);
 
         // 세미나 라이브 링크 저장
+        Live live = null;
         if (request.getLiveLink() != null && !request.getLiveLink().isBlank()) {
-            Live live = Live.builder()
+            live = Live.builder()
                     .seminar(seminar)
                     .liveUrl(request.getLiveLink())
                     .build();
-            liveRepository.save(live);
+            liveRepository.save(live);;
         }
 
         // 세미나 자료
-        List<SeminarInfoResponseDTO.FileInfo> materialInfos = new ArrayList<>();
+        List<LiveFile> liveFiles = new ArrayList<>();
         if (materials != null) {
             for (MultipartFile file : materials) {
                 // S3 업로드
                 String url = s3Service.uploadFile(file, "seminar/material");
                 // 세미나 자료 저장
-                LiveFile livefile = LiveFile.builder()
+                LiveFile liveFile = LiveFile.builder()
                         .seminar(seminar)
                         .fileUrl(url)
                         .fileName(getFileName(file.getOriginalFilename()))
                         .fileExtension(getExtension(file.getOriginalFilename()))
                         .fileSize(file.getSize())
                         .build();
-                liveFileRepository.save(livefile);
+                liveFileRepository.save(liveFile);
 
-                materialInfos.add(toFileInfo(file, url));
+                liveFiles.add(liveFile);
             }
         }
 
-        // 연사 + 세션 정보
-        // 이미지 타입 확인
-        for (MultipartFile profile : speakerProfiles) {
-            if (!s3Service.isValidImageFile(profile)) {
-                throw new GeneralException(GeneralErrorCode.UNSUPPORTED_FILE_TYPE);
-            }
-        }
-
-        List<SeminarInfoResponseDTO.SpeakerResponse> speakerInfos = new ArrayList<>();
+        // 연사 정보
+        List<Session> sessions = new ArrayList<>();
         for (int i = 0; i < request.getSpeakers().size(); i++) {
             SeminarRegisterRequestDTO.SpeakerRegisterRequest sp = request.getSpeakers().get(i);
             MultipartFile profile = speakerProfiles.get(i);
 
-            // S3 업로드
+            if (!s3Service.isValidImageFile(profile)) {
+                throw new GeneralException(GeneralErrorCode.UNSUPPORTED_FILE_TYPE);
+            }
+
             String profileUrl = s3Service.uploadFile(profile, "seminar/speaker");
 
-            // 연사 + 세션 저장
             Speaker speaker = Speaker.builder()
                     .name(sp.getName())
                     .organization(sp.getOrganization())
@@ -189,53 +196,89 @@ public class SeminarAdminCommandService {
                     .description(sp.getSessionContent())
                     .build();
             sessionRepository.save(session);
-
-            speakerInfos.add(
-                    SeminarInfoResponseDTO.SpeakerResponse.builder()
-                            .speakerId(speaker.getId())
-                            .name(speaker.getName())
-                            .organization(speaker.getOrganization())
-                            .history(speaker.getHistory())
-                            .sessionTitle(session.getTitle())
-                            .sessionContent(session.getDescription())
-                            .profile(toFileInfo(profile, profileUrl))
-                            .build()
-            );
+            sessions.add(session);
         }
 
-        return SeminarInfoResponseDTO.builder()
-                .seminarId(seminar.getId())
-                .seminarNum(seminar.getSeminarNum())
-                .topic(seminar.getTopic())
-                .seminarDate(seminar.getSeminarDate())
-                .place(seminar.getPlace())
-                .liveLink(request.getLiveLink())
-                .activeStartDate(seminar.getActiveStartDate())
-                .activeEndDate(seminar.getActiveEndDate())
-                .applyStartDate(seminar.getStartDate())
-                .applyEndDate(seminar.getEndDate())
-                .thumbnail(toFileInfo(thumbnailFile, thumbnailUrl))
-                .materials(materialInfos)
-                .speakers(speakerInfos)
-                .build();
+        return SeminarInfoResponseDTO.from(seminar, live, liveFiles, sessions);
     }
 
-    // 세미나 기간 검증
-    private void validatePeriods(SeminarRegisterRequestDTO req) {
-        if (!req.getActiveStartDate().isBefore(req.getActiveEndDate())
-                || !req.getApplyStartDate().isBefore(req.getApplyEndDate())) {
-            throw new GeneralException(GeneralErrorCode.INVALID_PERIOD_ORDER);
+    @Transactional
+    public SeminarInfoResponseDTO updateSeminar(Long seminarId, SeminarUpdateRequestDTO request) {
+        // 세미나 존재 여부 확인
+        Seminar seminar = seminarRepository.findById(seminarId)
+                .orElseThrow(() -> new GeneralException(GeneralErrorCode.SEMINARINFO_NOT_FOUND));
+
+        // 회차 중복 검증
+        if (seminarRepository.existsBySeminarNumAndIdNot(request.getSeminarNum(), seminarId)) {
+            throw new GeneralException(GeneralErrorCode.SEMINAR_NUM_ALREADY_EXISTS);
         }
 
-        if (req.getApplyStartDate().isBefore(req.getActiveStartDate())
-                || req.getApplyEndDate().isAfter(req.getActiveEndDate())) {
+        // 세미나 기간 검증
+        validatePeriods(
+                request.getActiveStartDate(), request.getActiveEndDate(),
+                request.getApplyStartDate(), request.getApplyEndDate()
+        );
+
+        // 세미나 기본 정보 업데이트
+        seminar.updateInfo(
+                request.getSeminarNum(),
+                request.getSeminarDate(),
+                request.getPlace(),
+                request.getTopic(),
+                request.getActiveStartDate(),
+                request.getActiveEndDate(),
+                request.getApplyStartDate(),
+                request.getApplyEndDate()
+        );
+
+        // 라이브 링크 처리
+        if (request.getLiveLink() == null || request.getLiveLink().isBlank()) {
+            seminar.updateLive(null);
+        } else {
+            // 값이 있으면 등록/수정
+            Live live = liveRepository.findBySeminar(seminar)
+                    .orElse(Live.builder().seminar(seminar).build());
+            live.updateUrl(request.getLiveLink());
+            liveRepository.save(live);
+        }
+
+
+        // 연사 정보 업데이트
+        for (SeminarUpdateRequestDTO.SpeakerUpdateRequest spReq : request.getSpeakers()) {
+            Speaker speaker = speakerRepository.findById(spReq.getSpeakerId())
+                    .orElseThrow(() -> new GeneralException(GeneralErrorCode.SPEAKER_NOT_FOUND));
+
+            Session session = sessionRepository.findBySeminarAndSpeaker(seminar, speaker)
+                    .orElseThrow(() -> new GeneralException(GeneralErrorCode.SESSION_NOT_FOUND));
+
+            speaker.updateInfo(spReq.getName(), spReq.getOrganization(), spReq.getHistory());
+            session.updateInfo(spReq.getSessionTitle(), spReq.getSessionContent());
+        }
+
+        // 응답 DTO 생성
+        Live live = liveRepository.findBySeminar(seminar).orElse(null);
+        List<LiveFile> liveFiles = liveFileRepository.findBySeminar(seminar);
+        List<Session> sessions = sessionRepository.findSessionsBySeminar(seminar);
+
+        return SeminarInfoResponseDTO.from(seminar, live, liveFiles, sessions);
+    }
+
+
+    // 세미나 기간 검증
+    // 시작일은 종료일 보다 항상 먼저 + 세미나 신청 기간은 세미나 활성화 기간 안에 포함되어야 함
+    private void validatePeriods(LocalDateTime activeStart, LocalDateTime activeEnd,
+                                 LocalDateTime applyStart, LocalDateTime applyEnd) {
+        if (!activeStart.isBefore(activeEnd) || !applyStart.isBefore(applyEnd)) {
+            throw new GeneralException(GeneralErrorCode.INVALID_PERIOD_ORDER);
+        }
+        if (applyStart.isBefore(activeStart) || applyEnd.isAfter(activeEnd)) {
             throw new GeneralException(GeneralErrorCode.INVALID_SEMINAR_PERIOD);
         }
     }
 
-    // 연사 수와 프로필 이미지 수가 일치하는지 검증
-    private void validateSpeakersAndProfiles(SeminarRegisterRequestDTO req, List<MultipartFile> speakerProfiles) {
-        if (req.getSpeakers().size() != speakerProfiles.size()) {
+    // 연사 수와 프로필 이미지 수 일치하는지 검증
+    private void validateSpeakersAndProfiles(int speakerCount, List<MultipartFile> speakerProfiles) {
+        if (speakerCount != speakerProfiles.size()) {
             throw new GeneralException(GeneralErrorCode.INVALID_SPEAKER_PROFILE_COUNT);
         }
     }
@@ -251,14 +294,5 @@ public class SeminarAdminCommandService {
         if (fileName == null) return null;
         int dotIndex = fileName.lastIndexOf('.');
         return (dotIndex == -1) ? fileName : fileName.substring(0, dotIndex);
-    }
-
-    private SeminarInfoResponseDTO.FileInfo toFileInfo(MultipartFile file, String url) {
-        return SeminarInfoResponseDTO.FileInfo.builder()
-                .fileName(getFileName(file.getOriginalFilename()))
-                .fileExtension(getExtension(file.getOriginalFilename()))
-                .fileSize(file.getSize())
-                .fileUrl(url)
-                .build();
     }
 }

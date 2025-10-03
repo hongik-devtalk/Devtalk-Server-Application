@@ -40,4 +40,9 @@ public class Session extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "session", cascade = CascadeType.ALL)
     private List<Question> questions = new ArrayList<>();
+
+    public void updateInfo(String title, String description) {
+        this.title = title;
+        this.description = description;
+    }
 }

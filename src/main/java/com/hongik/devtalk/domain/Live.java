@@ -22,4 +22,8 @@ public class Live {
 
     @Column(length = 2048, nullable = false)
     private String liveUrl;
+
+    public void updateUrl(String url) {
+        this.liveUrl = url;
+    }
 }

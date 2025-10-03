@@ -63,7 +63,7 @@ public class Seminar {
     @OneToMany(mappedBy = "seminar", cascade = CascadeType.ALL)
     private List<Review> reviews = new ArrayList<>();
 
-    @OneToOne(mappedBy = "seminar", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "seminar", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Live live;
 
     @OneToMany(mappedBy = "seminar", cascade = CascadeType.ALL)
@@ -77,4 +77,21 @@ public class Seminar {
 
     @OneToMany(mappedBy = "seminar", cascade = CascadeType.ALL)
     private List<Remind> reminds = new ArrayList<>();
+
+    public void updateInfo(Integer seminarNum, LocalDateTime seminarDate, String place, String topic,
+                           LocalDateTime activeStartDate, LocalDateTime activeEndDate,
+                           LocalDateTime applyStartDate, LocalDateTime applyEndDate) {
+        this.seminarNum = seminarNum;
+        this.seminarDate = seminarDate;
+        this.place = place;
+        this.topic = topic;
+        this.activeStartDate = activeStartDate;
+        this.activeEndDate = activeEndDate;
+        this.startDate = applyStartDate;
+        this.endDate = applyEndDate;
+    }
+
+    public void updateLive(Live live) {
+        this.live = live;
+    }
 }

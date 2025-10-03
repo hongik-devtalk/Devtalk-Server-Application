@@ -44,6 +44,18 @@ public class SeminarAdminController {
         return ApiResponse.onSuccess("세미나 등록에 성공했습니다.", result);
     }
 
+    @Operation(summary = "세미나 정보 수정", description = "세미나 기본 정보, 연사 정보, 라이브 링크 등을 수정합니다. " +
+            "PUT 메서드로, 수정하지 않는 필드까지 모두 보내주셔야 합니다. 라이브 링크를 삭제하는 경우에는 null로 보내주세요.")
+    @PutMapping("/{seminarId}")
+    public ApiResponse<SeminarInfoResponseDTO> updateSeminar(
+            @Parameter(description = "세미나 ID", required = true)
+            @PathVariable Long seminarId,
+            @Valid @RequestBody SeminarUpdateRequestDTO request
+    ) {
+        SeminarInfoResponseDTO response = seminarAdminCommandService.updateSeminar(seminarId, request);
+        return ApiResponse.onSuccess("세미나 정보 수정에 성공했습니다.", response);
+    }
+
     @Operation(summary = "세미나 삭제", description = "해당 세미나를 영구적으로 삭제합니다.")
     @DeleteMapping("/{seminarId}")
     public ApiResponse<Void> deleteSeminar(

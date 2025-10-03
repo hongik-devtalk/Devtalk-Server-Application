@@ -51,4 +51,10 @@ public class Speaker {
 
     @OneToMany(mappedBy = "speaker", cascade = CascadeType.ALL)
     private List<Session> sessions = new ArrayList<>();
+
+    public void updateInfo(String name, String organization, String history) {
+        this.name = name;
+        this.organization = organization;
+        this.history = history;
+    }
 }
