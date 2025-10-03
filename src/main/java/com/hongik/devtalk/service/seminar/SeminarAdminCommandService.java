@@ -7,6 +7,7 @@ import com.hongik.devtalk.domain.seminar.admin.dto.SeminarInfoResponseDTO;
 import com.hongik.devtalk.global.apiPayload.code.GeneralErrorCode;
 import com.hongik.devtalk.global.apiPayload.exception.GeneralException;
 import com.hongik.devtalk.repository.SessionRepository;
+import com.hongik.devtalk.repository.live.LiveRepository;
 import com.hongik.devtalk.repository.review.ReviewRepository;
 import com.hongik.devtalk.repository.seminar.LiveFileRepository;
 import com.hongik.devtalk.repository.seminar.SeminarRepository;
@@ -29,6 +30,7 @@ public class SeminarAdminCommandService {
     private final SpeakerRepository speakerRepository;
     private final SessionRepository sessionRepository;
     private final LiveFileRepository liveFileRepository;
+    private final LiveRepository liveRepository;
     private final S3Service s3Service;
 
     /**
@@ -123,6 +125,15 @@ public class SeminarAdminCommandService {
                 .build();
         seminarRepository.save(seminar);
 
+        // 세미나 라이브 링크 저장
+        if (request.getLiveLink() != null && !request.getLiveLink().isBlank()) {
+            Live live = Live.builder()
+                    .seminar(seminar)
+                    .liveUrl(request.getLiveLink())
+                    .build();
+            liveRepository.save(live);
+        }
+
         // 세미나 자료
         List<SeminarInfoResponseDTO.FileInfo> materialInfos = new ArrayList<>();
         if (materials != null) {
@@ -185,8 +196,8 @@ public class SeminarAdminCommandService {
                             .name(speaker.getName())
                             .organization(speaker.getOrganization())
                             .history(speaker.getHistory())
-                            .sessionTitle(sp.getSessionTitle())
-                            .sessionContent(sp.getSessionContent())
+                            .sessionTitle(session.getTitle())
+                            .sessionContent(session.getDescription())
                             .profile(toFileInfo(profile, profileUrl))
                             .build()
             );
@@ -200,9 +211,9 @@ public class SeminarAdminCommandService {
                 .place(seminar.getPlace())
                 .liveLink(request.getLiveLink())
                 .activeStartDate(seminar.getActiveStartDate())
-                .activeEndDate(request.getActiveEndDate())
-                .applyStartDate(request.getApplyStartDate())
-                .applyEndDate(request.getApplyEndDate())
+                .activeEndDate(seminar.getActiveEndDate())
+                .applyStartDate(seminar.getStartDate())
+                .applyEndDate(seminar.getEndDate())
                 .thumbnail(toFileInfo(thumbnailFile, thumbnailUrl))
                 .materials(materialInfos)
                 .speakers(speakerInfos)
