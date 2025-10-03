@@ -47,7 +47,8 @@ public class SeminarApplicantService {
                 applicantRequestDto.getGrade(),
                 applicantRequestDto.getGradeEtc(),
                 applicantRequestDto.getDepartments(),
-                applicantRequestDto.getDepartmentEtc()
+                applicantRequestDto.getDepartmentEtc(),
+                applicantRequestDto.getEmail()
         );
         studentRepository.save(student);
 

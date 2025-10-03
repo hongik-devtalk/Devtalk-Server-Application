@@ -18,7 +18,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class SeminarAdminQueryService {
+public class
+SeminarAdminQueryService {
 
     private final ApplicantRepository applicantRepository;
     private final SeminarRepository seminarRepository;
