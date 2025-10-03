@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface LiveFileRepository extends JpaRepository<LiveFile, Long> {
     List<LiveFile> findBySeminar(Seminar seminar);
     Optional<LiveFile> findByFileUrl(String fileUrl);
+    List<LiveFile> findBySeminarId(Long seminarId);
 }

@@ -33,6 +33,16 @@ public class SeminarAdminController {
         return ApiResponse.onSuccess("세미나 카드 리스트 조회에 성공했습니다.");
     }
 
+    @Operation(summary = "세미나 상세 조회", description = "등록된 세미나의 상세 정보를 조회합니다.")
+    @GetMapping("/{seminarId}")
+    public ApiResponse<SeminarInfoResponseDTO> getSeminarInfo(
+            @Parameter(description = "세미나 ID", required = true)
+            @PathVariable Long seminarId
+    ) {
+        SeminarInfoResponseDTO result = seminarAdminQueryService.getSeminarInfo(seminarId);
+        return ApiResponse.onSuccess("세미나 상세 조회에 성공했습니다.", result);
+    }
+
     @Operation(summary = "세미나 등록", description = "세미나 기본 정보와 파일을 함께 등록합니다.")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<SeminarInfoResponseDTO> registerSeminar(

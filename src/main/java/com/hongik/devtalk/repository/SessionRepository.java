@@ -13,4 +13,5 @@ import java.util.Optional;
 public interface SessionRepository extends JpaRepository<Session, Long> {
     List<Session> findSessionsBySeminar(Seminar seminar);
     Optional<Session> findBySeminarAndSpeaker(Seminar seminar, Speaker speaker);
+    List<Session> findBySeminarId(Long seminarId);
 }
