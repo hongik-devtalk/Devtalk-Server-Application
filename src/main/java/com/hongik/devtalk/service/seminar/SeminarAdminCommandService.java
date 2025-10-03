@@ -81,7 +81,6 @@ public class SeminarAdminCommandService {
                 .activeEndDate(request.getActiveEndDate())
                 .startDate(request.getApplyStartDate())
                 .endDate(request.getApplyEndDate())
-                .status(SeminarStatus.UPCOMING)
                 .thumbnailUrl(thumbnailUrl)
                 .thumbnailFileName(getFileName(thumbnailFile.getOriginalFilename()))
                 .thumbnailFileExtension(getExtension(thumbnailFile.getOriginalFilename()))

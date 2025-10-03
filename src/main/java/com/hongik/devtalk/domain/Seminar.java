@@ -54,7 +54,6 @@ public class Seminar {
     private String place;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private SeminarStatus status;
 
     @OneToMany(mappedBy = "seminar", cascade = CascadeType.ALL)
