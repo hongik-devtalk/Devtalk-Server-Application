@@ -217,7 +217,7 @@ public class SeminarAdminController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "SERVER_5001", description = "서버 내부 오류",
                     content = @Content(schema = @Schema(implementation = ApiResponse.class)))
     })
-    @PostMapping("/reviews/{reviewId}/home/on")
+    @PatchMapping("/reviews/{reviewId}/home/on")
     public ApiResponse<Void> exposeReviewOnHome(
             @Parameter(description = "후기 ID", required = true)
             @PathVariable Long reviewId
@@ -234,7 +234,7 @@ public class SeminarAdminController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "SERVER_5001", description = "서버 내부 오류",
                     content = @Content(schema = @Schema(implementation = ApiResponse.class)))
     })
-    @PostMapping("/reviews/{reviewId}/home/off")
+    @PatchMapping("/reviews/{reviewId}/home/off")
     public ApiResponse<Void> removeReviewFromHome(
             @Parameter(description = "후기 ID", required = true)
             @PathVariable Long reviewId
