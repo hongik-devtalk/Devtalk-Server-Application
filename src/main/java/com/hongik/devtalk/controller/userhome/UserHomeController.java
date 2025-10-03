@@ -7,6 +7,10 @@ import com.hongik.devtalk.domain.userhome.dto.SpeakerListResponseDTO;
 import com.hongik.devtalk.global.apiPayload.ApiResponse;
 import com.hongik.devtalk.service.userhome.SeminarInfoService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,9 +29,23 @@ public class UserHomeController {
 
     @GetMapping("/{seminarId}")
     @Operation(summary = "현재 신청받고 있는 세미나 정보 조회")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "세미나 정보 조회 성공"
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "404",
+                    description = "seminarId를 찾을 수 없습니다.",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class),
+                    examples = {
+                            @ExampleObject(value = "{\"isSuccess\": false, \"code\": \"SEMINARINFO_4041\", \"message\": \"seminarId를 찾을 수 없습니다.\", \"result\": null}")
+                    })
+            )
+    })
     public ResponseEntity<ApiResponse<SeminarInfoResponseDTO>> getSeminar(@PathVariable Long seminarId) {
         SeminarInfoResponseDTO result = seminarInfoService.getSeminarById(seminarId);
-        return ResponseEntity.ok(ApiResponse.onSuccess("", result));
+        return ResponseEntity.ok(ApiResponse.onSuccess("세미나 정보 조회 성공", result));
     }
 
     // 2차 개발 사항
