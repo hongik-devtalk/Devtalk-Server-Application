@@ -174,4 +174,11 @@ public class SeminarAdminController {
         QuestionResponseDTO result = seminarAdminQueryService.getQuestions(seminarId);
         return ApiResponse.onSuccess("세미나 연사별 질문 조회에 성공했습니다.", result);
     }
+
+    @Operation(summary = "세미나 회차 리스트 조회", description = "현재 등록된 세미나의 회차 번호만 리스트로 조회합니다.")
+    @GetMapping("/nums")
+    public ApiResponse<SeminarNumResponseDTO> getSeminarNums() {
+        SeminarNumResponseDTO result = seminarAdminQueryService.getSeminarNums();
+        return ApiResponse.onSuccess("세미나 회차 리스트 조회에 성공했습니다.", result);
+    }
 }

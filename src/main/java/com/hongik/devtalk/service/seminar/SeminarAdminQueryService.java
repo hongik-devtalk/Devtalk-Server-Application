@@ -4,6 +4,7 @@ import com.hongik.devtalk.domain.*;
 import com.hongik.devtalk.domain.seminar.admin.dto.ApplicantResponseDTO;
 import com.hongik.devtalk.domain.seminar.admin.dto.QuestionResponseDTO;
 import com.hongik.devtalk.domain.seminar.admin.dto.SeminarInfoResponseDTO;
+import com.hongik.devtalk.domain.seminar.admin.dto.SeminarNumResponseDTO;
 import com.hongik.devtalk.global.apiPayload.code.GeneralErrorCode;
 import com.hongik.devtalk.global.apiPayload.exception.GeneralException;
 import com.hongik.devtalk.repository.ApplicantRepository;
@@ -111,5 +112,17 @@ public class SeminarAdminQueryService {
         List<Session> sessions = sessionRepository.findBySeminarId(seminarId);
 
         return SeminarInfoResponseDTO.from(seminar, live, materials, sessions);
+    }
+
+    /**
+     * 현재 등록되어 있는 모든 세미나의 회차 번호 리스트를 조회
+     *
+     * @return 세미나 회차 번호(Integer) 리스트 DTO
+     */
+    public SeminarNumResponseDTO getSeminarNums() {
+        List<Integer> seminarNums = seminarRepository.findAllSeminarNums();
+        return SeminarNumResponseDTO.builder()
+                .seminarNums(seminarNums)
+                .build();
     }
 }
