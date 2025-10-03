@@ -1,9 +1,11 @@
 package com.hongik.devtalk.controller.seminar;
 
 import com.hongik.devtalk.domain.seminar.admin.dto.*;
+import com.hongik.devtalk.domain.seminar.dto.SeminarListDto;
 import com.hongik.devtalk.global.apiPayload.ApiResponse;
 import com.hongik.devtalk.service.seminar.SeminarAdminCommandService;
 import com.hongik.devtalk.service.seminar.SeminarAdminQueryService;
+import com.hongik.devtalk.service.seminar.SeminarListService;
 import com.hongik.devtalk.service.seminar.SeminarReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -25,12 +27,13 @@ public class SeminarAdminController {
     private final SeminarAdminQueryService seminarAdminQueryService;
     private final SeminarAdminCommandService seminarAdminCommandService;
     private final SeminarReviewService seminarReviewService;
+    private final SeminarListService seminarListService;
 
     @Operation(summary = "세미나 카드리스트 조회", description = "세미나 카드리스트를 조회합니다.")
     @GetMapping("/card")
-    public ApiResponse<List<SeminarCardResponseDTO>> getSeminarCards() {
-
-        return ApiResponse.onSuccess("세미나 카드 리스트 조회에 성공했습니다.");
+    public ApiResponse<SeminarListDto.SeminarResDtoList> getSeminarCards() {
+        SeminarListDto.SeminarResDtoList result = seminarListService.seminarList();
+        return ApiResponse.onSuccess("세미나 카드 리스트 조회에 성공했습니다.", result);
     }
 
     @Operation(summary = "세미나 상세 조회", description = "등록된 세미나의 상세 정보를 조회합니다.")
