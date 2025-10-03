@@ -1,6 +1,7 @@
 package com.hongik.devtalk.domain.userhome.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,13 +20,16 @@ public class SeminarInfoResponseDTO {
     private String topic;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd (E) HH:mm", timezone = "Asia/Seoul")
+    @Schema(type = "string", example = "2025.10.03 (금) 18:00")
     private LocalDateTime seminarDate;
 
     private String place;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd (E) HH:mm", timezone = "Asia/Seoul")
+    @Schema(type = "string", example = "2025.10.01 (수) 14:00")
     private LocalDateTime startDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd (E) HH:mm", timezone = "Asia/Seoul")
+    @Schema(type = "string",example = "2025.10.02 (목) 21:00")
     private LocalDateTime endDate;
 
 }
