@@ -24,6 +24,7 @@ public class ApplicantResponseDTO {
     private String grade;
     private String name;
     private String phone;
+    private String email;
     private ParticipationType participationType;
     private InflowPath inflowPath;
 
@@ -31,9 +32,15 @@ public class ApplicantResponseDTO {
         Student student = applicant.getStudent();
 
         // 복수 전공일 경우 학과명을 ,로 연결
-        String departmentNames = student.getDepartments().stream()
+        String departments = student.getDepartments().stream()
                 .map(Department::name)
                 .collect(Collectors.joining(", "));
+
+        if (student.getDepartmentEtc() != null && !student.getDepartmentEtc().isBlank()) {
+            departments = departments.isBlank()
+                    ? student.getDepartmentEtc()
+                    : departments + ", " + student.getDepartmentEtc();
+        }
 
         // 숫자 학년이 있으면 숫자를, 없으면 gradeEtc를 사용
         String gradeInfo = (student.getGrade() != null)
@@ -44,10 +51,11 @@ public class ApplicantResponseDTO {
                 .topic(topic)
                 .studentId(student.getId().toString())
                 .studentNum(student.getStudentNum())
-                .department(departmentNames)
+                .department(departments)
                 .grade(gradeInfo)
                 .name(student.getName())
                 .phone(student.getPhone())
+                .email(student.getEmail())
                 .participationType(applicant.getParticipationType())
                 .inflowPath(applicant.getInflowPath())
                 .build();
