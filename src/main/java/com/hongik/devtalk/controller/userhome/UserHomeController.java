@@ -39,7 +39,7 @@ public class UserHomeController {
                     description = "seminarId를 찾을 수 없습니다.",
                     content = @Content(schema = @Schema(implementation = ApiResponse.class),
                     examples = {
-                            @ExampleObject(value = "{\"isSuccess\": false, \"code\": \"SEMINARINFO_4041\", \"message\": \"seminarId를 찾을 수 없습니다.\", \"result\": null}")
+                            @ExampleObject(value = "{\"isSuccess\": false, \"code\": \"SEMINARINFO_4041\", \"message\": \"seminarId를 찾을 수 없습니다.\", \"result\": null,\"error\": null}")
                     })
             )
     })
