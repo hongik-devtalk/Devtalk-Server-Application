@@ -98,7 +98,7 @@ public class SeminarAdminController {
             @Parameter(description = "삭제할 세미나 ID", required = true)
             @PathVariable Long seminarId
     ) {
-
+        seminarAdminCommandService.deleteSeminar(seminarId);
         return ApiResponse.onSuccess("세미나를 삭제했습니다.");
     }
 

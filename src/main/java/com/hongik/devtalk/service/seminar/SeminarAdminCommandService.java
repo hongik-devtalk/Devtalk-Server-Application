@@ -335,6 +335,40 @@ public class SeminarAdminCommandService {
         return SeminarInfoResponseDTO.from(seminar, live, liveFiles, sessions);
     }
 
+    /**
+     * 세미나 영구 삭제
+     *
+     * @param seminarId 삭제할 세미나의 ID
+     * @throws GeneralException 세미나가 존재하지 않는 경우
+     */
+    @Transactional
+    public void deleteSeminar(Long seminarId) {
+        // 세미나 존재 여부 확인
+        Seminar seminar = seminarRepository.findById(seminarId)
+                .orElseThrow(() -> new GeneralException(GeneralErrorCode.SEMINARINFO_NOT_FOUND));
+
+        // 세미나 썸네일, 연사 프로필, 세미나 자료 S3에서 삭제
+        if (seminar.getThumbnailUrl() != null) {
+            String key = s3Service.extractS3KeyFromUrl(seminar.getThumbnailUrl());
+            s3Service.deleteFile(key);
+        }
+
+        for (LiveFile lf : seminar.getLiveFiles()) {
+            String key = s3Service.extractS3KeyFromUrl(lf.getFileUrl());
+            s3Service.deleteFile(key);
+        }
+
+        for (Session session : seminar.getSessions()) {
+            Speaker speaker = session.getSpeaker();
+            if (speaker.getProfileUrl() != null) {
+                String key = s3Service.extractS3KeyFromUrl(speaker.getProfileUrl());
+                s3Service.deleteFile(key);
+            }
+        }
+
+        seminarRepository.delete(seminar);
+    }
+
     // 세미나 기간 검증
     // 시작일은 종료일 보다 항상 먼저 + 세미나 신청 기간은 세미나 활성화 기간 안에 포함되어야 함
     private void validatePeriods(LocalDateTime activeStart, LocalDateTime activeEnd,
