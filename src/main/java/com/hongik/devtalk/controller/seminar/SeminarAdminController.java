@@ -1,17 +1,17 @@
 package com.hongik.devtalk.controller.seminar;
 
-import com.hongik.devtalk.domain.seminar.admin.dto.ApplicantResponseDTO;
-import com.hongik.devtalk.domain.seminar.admin.dto.QuestionResponseDTO;
-import com.hongik.devtalk.domain.seminar.admin.dto.SeminarCardResponseDTO;
-import com.hongik.devtalk.domain.seminar.admin.dto.SeminarReviewResponseDTO;
+import com.hongik.devtalk.domain.seminar.admin.dto.*;
 import com.hongik.devtalk.global.apiPayload.ApiResponse;
 import com.hongik.devtalk.service.seminar.SeminarAdminCommandService;
 import com.hongik.devtalk.service.seminar.SeminarAdminQueryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -29,6 +29,19 @@ public class SeminarAdminController {
     public ApiResponse<List<SeminarCardResponseDTO>> getSeminarCards() {
 
         return ApiResponse.onSuccess("세미나 카드 리스트 조회에 성공했습니다.");
+    }
+
+    @Operation(summary = "세미나 등록", description = "세미나 기본 정보와 파일을 함께 등록합니다.")
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ApiResponse<SeminarInfoResponseDTO> registerSeminar(
+            @Valid @RequestPart("seminarRequest") SeminarRegisterRequestDTO request,
+            @RequestPart("thumbnailFile") MultipartFile thumbnailFile,
+            @RequestPart(value = "materials", required = false) List<MultipartFile> materials,
+            @RequestPart("speakerProfiles") List<MultipartFile> speakerProfiles
+    ) {
+        SeminarInfoResponseDTO result =
+                seminarAdminCommandService.registerSeminar(request, thumbnailFile, materials, speakerProfiles);
+        return ApiResponse.onSuccess("세미나 등록에 성공했습니다.", result);
     }
 
     @Operation(summary = "세미나 삭제", description = "해당 세미나를 영구적으로 삭제합니다.")

@@ -4,7 +4,6 @@ import com.hongik.devtalk.domain.enums.SeminarStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +23,14 @@ public class Seminar {
     @Column(length = 2048)
     private String thumbnailUrl;
 
+    @Column(length = 255)
+    private String thumbnailFileName;
+
+    @Column(length = 20)
+    private String thumbnailFileExtension;
+
+    private Long thumbnailFileSize;
+
     @Column(length = 50, nullable = false, unique = true)
     private int seminarNum; // 몇회차
 
@@ -31,6 +38,12 @@ public class Seminar {
 
     //세미나가 진행되는 시간
     private LocalDateTime seminarDate;
+
+    // 세미나 활성화 시작 시간
+    private LocalDateTime activeStartDate;
+
+    // 세미나 활성화 종료 시간
+    private LocalDateTime activeEndDate;
 
     //신청 시작 시간
     private LocalDateTime startDate;

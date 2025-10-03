@@ -16,9 +16,12 @@ public enum GeneralErrorCode implements BaseErrorCode {
     FORBIDDEN(HttpStatus.FORBIDDEN, "AUTH_4031", "접근 권한이 없습니다."),
     TOKEN_EXPIRED(HttpStatus.valueOf(419), "AUTH_4191", "토큰이 만료되었습니다."),
 
-    // 유저 에러
+    // 세미나 에러
     SEMINARINFO_NOT_FOUND(HttpStatus.NOT_FOUND,"SEMINARINFO_4041","seminarId를 찾을 수 없습니다."),
-    
+    INVALID_SEMINAR_PERIOD(HttpStatus.BAD_REQUEST, "SEMINAR_4001", "세미나 신청 기간이 활성화 기간을 벗어났습니다."),
+    INVALID_SPEAKER_PROFILE_COUNT(HttpStatus.BAD_REQUEST, "SEMINAR_4002", "연사 정보 수와 프로필 파일 수가 일치하지 않습니다."),
+    INVALID_PERIOD_ORDER(HttpStatus.BAD_REQUEST, "SEMINAR_4003", "시작일은 종료일보다 이전이어야 합니다."),
+
     // 이미지 에러
     IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "IMAGE_4041", "해당 타입의 이미지를 찾을 수 없습니다."),
     
