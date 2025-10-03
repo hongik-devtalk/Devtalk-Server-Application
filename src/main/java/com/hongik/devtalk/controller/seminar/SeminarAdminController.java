@@ -118,8 +118,8 @@ public class SeminarAdminController {
             @Parameter(description = "세미나 ID", required = true)
             @PathVariable Long seminarId
     ) {
-
-        return ApiResponse.onSuccess("세미나 후기 리스트 조회에 성공했습니다.");
+        List<SeminarReviewResponseDTO> result = seminarReviewService.getSeminarReviews(seminarId);
+        return ApiResponse.onSuccess("세미나 후기 리스트 조회에 성공했습니다.", result);
     }
 
     @Operation(summary = "세미나 후기 홈 노출 ON", description = "세미나 후기를 홈 화면에 노출되게 설정합니다.")

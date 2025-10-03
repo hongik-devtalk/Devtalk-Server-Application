@@ -2,6 +2,7 @@ package com.hongik.devtalk.domain.seminar.admin.dto;
 
 import com.hongik.devtalk.domain.Applicant;
 import com.hongik.devtalk.domain.Student;
+import com.hongik.devtalk.domain.enums.Department;
 import com.hongik.devtalk.domain.enums.InflowPath;
 import com.hongik.devtalk.domain.enums.ParticipationType;
 import lombok.AllArgsConstructor;
@@ -31,7 +32,7 @@ public class ApplicantResponseDTO {
 
         // 복수 전공일 경우 학과명을 ,로 연결
         String departmentNames = student.getDepartments().stream()
-                .map(Enum::name)
+                .map(Department::name)
                 .collect(Collectors.joining(", "));
 
         // 숫자 학년이 있으면 숫자를, 없으면 gradeEtc를 사용
