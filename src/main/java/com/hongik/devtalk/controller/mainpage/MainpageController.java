@@ -5,6 +5,7 @@ import com.hongik.devtalk.domain.mainpage.dto.*;
 import com.hongik.devtalk.domain.enums.ImageType;
 import com.hongik.devtalk.service.mainpage.MainpageImagesService;
 import com.hongik.devtalk.service.mainpage.InquiryLinkService;
+import com.hongik.devtalk.service.mainpage.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -29,6 +30,7 @@ public class MainpageController {
 
     private final MainpageImagesService mainpageImagesService;
     private final InquiryLinkService inquiryLinkService;
+    private final ReviewService reviewService;
 
     // Images APIs
     @GetMapping("/images")
@@ -234,7 +236,8 @@ public class MainpageController {
     @GetMapping("/reviews")
     @Operation(
             summary = "후기 카드 전체 조회",
-            description = "후기 카드 전체 조회 (순위/표시 여부 포함)"
+            description = "후기 카드 전체 조회 (순위/표시 여부 포함)",
+            security = { @SecurityRequirement(name = "bearer-key") }
     )
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -249,17 +252,17 @@ public class MainpageController {
             )
     })
     public ApiResponse<List<ReviewResponseDto>> getReviews(
-//            @Parameter(description = "인증 토큰", required = true)
-//            @RequestHeader("Authorization") String authorization
+            @AuthenticationPrincipal User user
     ) {
-        // TODO: 후기 카드 전체 조회 로직 구현
-        return ApiResponse.onSuccess("후기 카드를 조회했습니다.", null);
+        List<ReviewResponseDto> result = reviewService.getAllReviews();
+        return ApiResponse.onSuccess("후기 카드를 조회했습니다.", result);
     }
 
     @PutMapping("/reviews/order")
     @Operation(
             summary = "후기 카드 순위 일괄 변경",
-            description = "후기 카드 순위 일괄 변경"
+            description = "후기 카드 순위 일괄 변경",
+            security = { @SecurityRequirement(name = "bearer-key") }
     )
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -279,18 +282,18 @@ public class MainpageController {
             )
     })
     public ApiResponse<ReorderResponseDto> reorderReviews(
-//            @Parameter(description = "인증 토큰", required = true)
-//            @RequestHeader("Authorization") String authorization,
+            @AuthenticationPrincipal User user,
             @Valid @RequestBody ReorderRequestDto request
     ) {
-        // TODO: 후기 카드 순위 변경 로직 구현
-        return ApiResponse.onSuccess("후기 카드 순서를 갱신했습니다.", null);
+        ReorderResponseDto result = reviewService.reorderReviews(request.getOrderedIds());
+        return ApiResponse.onSuccess("후기 카드 순서를 갱신했습니다.", result);
     }
 
     @DeleteMapping("/reviews/{reviewId}")
     @Operation(
             summary = "후기 카드 삭제",
-            description = "후기 카드 삭제"
+            description = "후기 카드 삭제",
+            security = { @SecurityRequirement(name = "bearer-key") }
     )
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -310,12 +313,11 @@ public class MainpageController {
             )
     })
     public ApiResponse<DeleteReviewResponseDto> deleteReview(
-//            @Parameter(description = "인증 토큰", required = true)
-//            @RequestHeader("Authorization") String authorization,
+            @AuthenticationPrincipal User user,
             @Parameter(description = "후기 ID", required = true)
             @PathVariable("reviewId") String reviewId
     ) {
-        // TODO: 후기 카드 삭제 로직 구현
-        return ApiResponse.onSuccess("후기 카드를 삭제했습니다.", null);
+        DeleteReviewResponseDto result = reviewService.deleteReview(reviewId);
+        return ApiResponse.onSuccess("후기 카드를 삭제했습니다.", result);
     }
 }

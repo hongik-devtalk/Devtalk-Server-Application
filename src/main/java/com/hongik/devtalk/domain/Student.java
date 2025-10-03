@@ -35,8 +35,8 @@ public class Student extends BaseTimeEntity {
     //기타 선택 (학생 직접 입력)
     private String gradeEtc;
 
-    //@Column(unique = true)
-    //private String email;
+    @Column(unique = true)
+    private String email;
 
     @Column(length = 20, unique = true)
     private String phone;
@@ -71,13 +71,14 @@ public class Student extends BaseTimeEntity {
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
     private List<Question> questions = new ArrayList<>();
 
-    public void updateDetails(String name, String phone, Integer grade, String gradeEtc, Set<Department> departments, String departmentEtc) {
+    public void updateDetails(String name, String phone, Integer grade, String gradeEtc, Set<Department> departments, String departmentEtc, String email) {
         this.name = name;
         this.phone = phone;
         this.grade = grade;
         this.gradeEtc = gradeEtc;
         this.departments = departments;
         this.departmentEtc = departmentEtc;
+        this.email = email;
     }
 
 }

@@ -1,4 +1,7 @@
 package com.hongik.devtalk.repository.seminar;
 
-public interface SeminarDetailRepository {
+import com.hongik.devtalk.domain.Seminar;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface SeminarDetailRepository extends JpaRepository<Seminar, Long> {
 }

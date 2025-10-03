@@ -31,6 +31,9 @@ public class ApplicantRequestDto {
     @Schema(description = "학년", example = "3학년 휴학")
     private String gradeEtc;
 
+    @Schema(description ="이메일", example = "devtalk123@example.com")
+    private String email;
+
     @Schema(description = "전화번호", example = "010-1234-5678")
     private String phone;
 
