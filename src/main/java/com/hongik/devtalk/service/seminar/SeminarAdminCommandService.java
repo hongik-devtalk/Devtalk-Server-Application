@@ -10,7 +10,6 @@ import com.hongik.devtalk.global.apiPayload.exception.GeneralException;
 import com.hongik.devtalk.repository.SessionRepository;
 import com.hongik.devtalk.repository.live.LiveRepository;
 import com.hongik.devtalk.repository.liveFile.LiveFileRepository;
-import com.hongik.devtalk.repository.review.ReviewRepository;
 import com.hongik.devtalk.repository.seminar.SeminarRepository;
 import com.hongik.devtalk.repository.speaker.SpeakerRepository;
 import com.hongik.devtalk.service.S3Service;
@@ -27,58 +26,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SeminarAdminCommandService {
 
-    private final ReviewRepository reviewRepository;
     private final SeminarRepository seminarRepository;
     private final SpeakerRepository speakerRepository;
     private final SessionRepository sessionRepository;
     private final LiveFileRepository liveFileRepository;
     private final LiveRepository liveRepository;
     private final S3Service s3Service;
-
-    /**
-     * 후기 ID로 특정 후기를 홈 화면에 노출
-     *
-     * @param reviewId 후기 ID
-     * @throws GeneralException 후기가 존재하지 않을 경우
-     */
-    @Transactional
-    public void exposeReviewToHome(Long reviewId) {
-        // 후기 존재 여부 확인
-        Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new GeneralException(GeneralErrorCode.REVIEW_NOT_FOUND));
-
-        review.updateIsNote(true);
-    }
-
-    /**
-     * 후기 ID로 특정 후기를 홈 화면에서 숨김
-     *
-     * @param reviewId 후기 ID
-     * @throws GeneralException 후기가 존재하지 않을 경우
-     */
-    @Transactional
-    public void hideReviewFromHome(Long reviewId) {
-        // 후기 존재 여부 확인
-        Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new GeneralException(GeneralErrorCode.REVIEW_NOT_FOUND));
-
-        review.updateIsNote(false);
-    }
-
-    /**
-     * 후기 ID로 특정 후기를 영구 삭제
-     *
-     * @param reviewId 후기 ID
-     * @throws GeneralException 후기가 존재하지 않을 경우
-     */
-    @Transactional
-    public void deleteReview(Long reviewId) {
-        // 후기 존재 여부 확인
-        Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new GeneralException(GeneralErrorCode.REVIEW_NOT_FOUND));
-
-        reviewRepository.delete(review);
-    }
 
     /**
      * 세미나 등록
@@ -110,7 +63,7 @@ public class SeminarAdminCommandService {
         validateSpeakersAndProfiles(request.getSpeakers().size(), speakerProfiles);
 
         // 세미나 정보
-        // 이미지 타입 확인
+        // 썸네일 이미지 타입 검증
         if (!s3Service.isValidImageFile(thumbnailFile)) {
             throw new GeneralException(GeneralErrorCode.UNSUPPORTED_FILE_TYPE);
         }
@@ -172,6 +125,7 @@ public class SeminarAdminCommandService {
             SeminarRegisterRequestDTO.SpeakerRegisterRequest sp = request.getSpeakers().get(i);
             MultipartFile profile = speakerProfiles.get(i);
 
+            // 연사 프로필 이미지 타입 검증
             if (!s3Service.isValidImageFile(profile)) {
                 throw new GeneralException(GeneralErrorCode.UNSUPPORTED_FILE_TYPE);
             }
@@ -373,6 +327,7 @@ public class SeminarAdminCommandService {
             }
         }
 
+        // 응답 DTO 생성
         Live live = liveRepository.findBySeminar(seminar).orElse(null);
         List<LiveFile> liveFiles = liveFileRepository.findBySeminar(seminar);
         List<Session> sessions = sessionRepository.findSessionsBySeminar(seminar);

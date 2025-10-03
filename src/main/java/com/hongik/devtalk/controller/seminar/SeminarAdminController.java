@@ -4,6 +4,7 @@ import com.hongik.devtalk.domain.seminar.admin.dto.*;
 import com.hongik.devtalk.global.apiPayload.ApiResponse;
 import com.hongik.devtalk.service.seminar.SeminarAdminCommandService;
 import com.hongik.devtalk.service.seminar.SeminarAdminQueryService;
+import com.hongik.devtalk.service.seminar.SeminarReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,6 +24,7 @@ public class SeminarAdminController {
 
     private final SeminarAdminQueryService seminarAdminQueryService;
     private final SeminarAdminCommandService seminarAdminCommandService;
+    private final SeminarReviewService seminarReviewService;
 
     @Operation(summary = "세미나 카드리스트 조회", description = "세미나 카드리스트를 조회합니다.")
     @GetMapping("/card")
@@ -116,7 +118,7 @@ public class SeminarAdminController {
             @Parameter(description = "후기 ID", required = true)
             @PathVariable Long reviewId
     ) {
-        seminarAdminCommandService.exposeReviewToHome(reviewId);
+        seminarReviewService.exposeReviewToHome(reviewId);
         return ApiResponse.onSuccess("후기를 홈 화면에 등록했습니다.");
     }
 
@@ -126,7 +128,7 @@ public class SeminarAdminController {
             @Parameter(description = "후기 ID", required = true)
             @PathVariable Long reviewId
     ) {
-        seminarAdminCommandService.hideReviewFromHome(reviewId);
+        seminarReviewService.hideReviewFromHome(reviewId);
         return ApiResponse.onSuccess("후기를 홈 화면에서 제외했습니다.");
     }
 
@@ -136,7 +138,7 @@ public class SeminarAdminController {
             @Parameter(description = "후기 ID", required = true)
             @PathVariable Long reviewId
     ) {
-        seminarAdminCommandService.deleteReview(reviewId);
+        seminarReviewService.deleteReview(reviewId);
         return ApiResponse.onSuccess("세미나 후기를 삭제했습니다.");
     }
 
