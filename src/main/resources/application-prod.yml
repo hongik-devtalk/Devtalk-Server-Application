@@ -10,7 +10,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none  # 운영에서는 보통 none 또는 validate
+      ddl-auto: update  # 운영에서는 보통 none 또는 validate
     properties:
       hibernate:
         show_sql: false
@@ -38,7 +38,7 @@ logging:
 
 jwt:
   token:
-    secretKey: ${JWT_SECRET_KEY}
+    secretKey: ${JWT_SECRET}
     expiration:
       access: 14400000
 

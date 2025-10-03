@@ -71,13 +71,14 @@ public class Student extends BaseTimeEntity {
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
     private List<Question> questions = new ArrayList<>();
 
-    public void updateDetails(String name, String phone, Integer grade, String gradeEtc, Set<Department> departments, String departmentEtc) {
+    public void updateDetails(String name, String phone, Integer grade, String gradeEtc, Set<Department> departments, String departmentEtc, String email) {
         this.name = name;
         this.phone = phone;
         this.grade = grade;
         this.gradeEtc = gradeEtc;
         this.departments = departments;
         this.departmentEtc = departmentEtc;
+        this.email = email;
     }
 
 }

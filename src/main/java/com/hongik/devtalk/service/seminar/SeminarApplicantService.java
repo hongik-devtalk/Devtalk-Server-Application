@@ -47,7 +47,8 @@ public class SeminarApplicantService {
                 applicantRequestDto.getGrade(),
                 applicantRequestDto.getGradeEtc(),
                 applicantRequestDto.getDepartments(),
-                applicantRequestDto.getDepartmentEtc()
+                applicantRequestDto.getDepartmentEtc(),
+                applicantRequestDto.getEmail()
         );
         studentRepository.save(student);
 
@@ -57,7 +58,7 @@ public class SeminarApplicantService {
             throw new GeneralException(CustomSeminarApplicantErrorCode.SEMINAR_APPLICANT_ERROR);
         }
 
-        if (applicantRepository.existsBySeminarAndStudent(seminar, student)) {
+        if (applicantRepository.existsByStudentAndSeminar(student, seminar)) {
             throw new GeneralException(CustomSeminarApplicantErrorCode.ALREADY_APPLIED_SEMINAR);
         }
 
