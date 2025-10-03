@@ -34,9 +34,16 @@ public class SeminarAdminController {
     @Operation(summary = "세미나 등록", description = "세미나 기본 정보와 파일을 함께 등록합니다.")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<SeminarInfoResponseDTO> registerSeminar(
+            @Parameter(description = "세미나 등록 요청 DTO (회차, 주제, 장소, 일정, 연사 정보 등 기본 정보)")
             @Valid @RequestPart("seminarRequest") SeminarRegisterRequestDTO request,
+
+            @Parameter(description = "세미나 대표 썸네일 이미지 파일 (필수)")
             @RequestPart("thumbnailFile") MultipartFile thumbnailFile,
+
+            @Parameter(description = "세미나 자료 파일 리스트 (선택)")
             @RequestPart(value = "materials", required = false) List<MultipartFile> materials,
+
+            @Parameter(description = "연사 프로필 이미지 파일 리스트 (연사 수와 동일 개수 필수)")
             @RequestPart("speakerProfiles") List<MultipartFile> speakerProfiles
     ) {
         SeminarInfoResponseDTO result =
@@ -54,6 +61,33 @@ public class SeminarAdminController {
     ) {
         SeminarInfoResponseDTO response = seminarAdminCommandService.updateSeminar(seminarId, request);
         return ApiResponse.onSuccess("세미나 정보 수정에 성공했습니다.", response);
+    }
+
+    @Operation(summary = "세미나 파일 수정", description = "세미나 썸네일, 자료 파일 추가/삭제, 연사 프로필을 수정합니다.")
+    @PatchMapping(value = "/{seminarId}/files", consumes = {"multipart/form-data"})
+    public ApiResponse<SeminarInfoResponseDTO> updateSeminarFiles(
+            @Parameter(description = "세미나 ID", required = true)
+            @PathVariable Long seminarId,
+
+            @Parameter(description = "새로 교체할 세미나 대표 썸네일 이미지 (있으면 기존 썸네일 교체)")
+            @RequestPart(value = "thumbnailFile", required = false) MultipartFile thumbnailFile,
+
+            @Parameter(description = "추가할 세미나 자료 파일 리스트")
+            @RequestPart(value = "materials", required = false) List<MultipartFile> materials,
+
+            @Parameter(description = "삭제할 세미나 자료 파일 URL 리스트")
+            @RequestParam(value = "deleteMaterialUrls", required = false) List<String> deleteMaterialUrls,
+
+            @Parameter(description = "프로필 이미지를 교체할 연사 ID 리스트 (speakerProfiles와 인덱스 매칭)")
+            @RequestParam(value = "speakerIds", required = false) List<Long> speakerIds,
+
+            @Parameter(description = "새로 교체할 연사 프로필 이미지 파일 리스트 (speakerIds와 인덱스 매칭)")
+            @RequestPart(value = "speakerProfiles", required = false) List<MultipartFile> speakerProfiles
+    ) {
+        SeminarInfoResponseDTO result = seminarAdminCommandService.updateSeminarFiles(
+                seminarId, thumbnailFile, materials, deleteMaterialUrls, speakerIds, speakerProfiles
+        );
+        return ApiResponse.onSuccess("세미나 파일 수정에 성공했습니다.", result);
     }
 
     @Operation(summary = "세미나 삭제", description = "해당 세미나를 영구적으로 삭제합니다.")

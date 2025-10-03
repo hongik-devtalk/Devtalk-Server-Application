@@ -94,4 +94,11 @@ public class Seminar {
     public void updateLive(Live live) {
         this.live = live;
     }
+
+    public void updateThumbnail(String url, String name, String ext, Long size) {
+        this.thumbnailUrl = url;
+        this.thumbnailFileName = name;
+        this.thumbnailFileExtension = ext;
+        this.thumbnailFileSize = size;
+    }
 }

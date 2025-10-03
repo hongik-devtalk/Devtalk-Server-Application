@@ -9,8 +9,8 @@ import com.hongik.devtalk.global.apiPayload.code.GeneralErrorCode;
 import com.hongik.devtalk.global.apiPayload.exception.GeneralException;
 import com.hongik.devtalk.repository.SessionRepository;
 import com.hongik.devtalk.repository.live.LiveRepository;
+import com.hongik.devtalk.repository.liveFile.LiveFileRepository;
 import com.hongik.devtalk.repository.review.ReviewRepository;
-import com.hongik.devtalk.repository.seminar.LiveFileRepository;
 import com.hongik.devtalk.repository.seminar.SeminarRepository;
 import com.hongik.devtalk.repository.speaker.SpeakerRepository;
 import com.hongik.devtalk.service.S3Service;
@@ -88,7 +88,7 @@ public class SeminarAdminCommandService {
      * @param materials 세미나 자료 파일 리스트
      * @param speakerProfiles 연사 프로필 이미지 리스트
      * @return 등록된 세미나 정보 DTO
-     * @throws GeneralException 기간 검증, 파일 검증 실패 시
+     * @throws GeneralException 세미나 회차 검증, 기간 검증, 파일 검증 실패 시
      */
     @Transactional
     public SeminarInfoResponseDTO registerSeminar(
@@ -202,6 +202,14 @@ public class SeminarAdminCommandService {
         return SeminarInfoResponseDTO.from(seminar, live, liveFiles, sessions);
     }
 
+    /**
+     * 세미나 정보 수정
+     *
+     * @param seminarId 세미나 ID
+     * @param request 세미나 수정 요청 DTO
+     * @return 수정된 세미나 정보 DTO
+     * @throws GeneralException 세미나 검증, 회차 중복, 기간 검증, 연사/세션 검증 실패 시
+     */
     @Transactional
     public SeminarInfoResponseDTO updateSeminar(Long seminarId, SeminarUpdateRequestDTO request) {
         // 세미나 존재 여부 확인
@@ -263,6 +271,114 @@ public class SeminarAdminCommandService {
         return SeminarInfoResponseDTO.from(seminar, live, liveFiles, sessions);
     }
 
+    /**
+     * 세미나 파일(썸네일, 자료, 연사 프로필) 수정
+     *
+     * @param seminarId 세미나 ID
+     * @param thumbnailFile 교체할 썸네일 파일
+     * @param materials 추가할 세미나 자료 파일 리스트
+     * @param deleteMaterialUrls 삭제할 세미나 자료 URL 리스트
+     * @param speakerIds 교체할 연사 ID 리스트
+     * @param speakerProfiles 교체할 연사 프로필 파일 리스트
+     * @return 수정된 세미나 정보 DTO
+     * @throws GeneralException 세미나 검증, 파일 검증, 연사 검증 실패 시
+     */
+    @Transactional
+    public SeminarInfoResponseDTO updateSeminarFiles(
+            Long seminarId,
+            MultipartFile thumbnailFile,
+            List<MultipartFile> materials,
+            List<String> deleteMaterialUrls,
+            List<Long> speakerIds,
+            List<MultipartFile> speakerProfiles
+    ) {
+        // 세미나 존재 여부 확인
+        Seminar seminar = seminarRepository.findById(seminarId)
+                .orElseThrow(() -> new GeneralException(GeneralErrorCode.SEMINARINFO_NOT_FOUND));
+
+        // 썸네일 교체
+        if (thumbnailFile != null && !thumbnailFile.isEmpty()) {
+            if (!s3Service.isValidImageFile(thumbnailFile)) {
+                throw new GeneralException(GeneralErrorCode.UNSUPPORTED_FILE_TYPE);
+            }
+            // 기존 파일 삭제
+            if (seminar.getThumbnailUrl() != null) {
+                String oldKey = s3Service.extractS3KeyFromUrl(seminar.getThumbnailUrl());
+                if (oldKey != null) s3Service.deleteFile(oldKey);
+            }
+            // 새 파일 업로드
+            String newUrl = s3Service.uploadFile(thumbnailFile, "seminar/thumbnail");
+            seminar.updateThumbnail(
+                    newUrl,
+                    getFileName(thumbnailFile.getOriginalFilename()),
+                    getExtension(thumbnailFile.getOriginalFilename()),
+                    thumbnailFile.getSize()
+            );
+        }
+
+        // 자료 파일 삭제
+        if (deleteMaterialUrls != null) {
+            for (String url : deleteMaterialUrls) {
+                LiveFile liveFile = liveFileRepository.findByFileUrl(url)
+                        .orElseThrow(() -> new GeneralException(GeneralErrorCode.LIVE_FILE_NOT_FOUND));
+                String s3Key = s3Service.extractS3KeyFromUrl(liveFile.getFileUrl());
+                if (s3Key != null) s3Service.deleteFile(s3Key);
+                liveFileRepository.delete(liveFile);
+            }
+        }
+
+        // 자료 파일 추가
+        if (materials != null) {
+            for (MultipartFile file : materials) {
+                String url = s3Service.uploadFile(file, "seminar/material");
+                LiveFile newLiveFile = LiveFile.builder()
+                        .seminar(seminar)
+                        .fileUrl(url)
+                        .fileName(getFileName(file.getOriginalFilename()))
+                        .fileExtension(getExtension(file.getOriginalFilename()))
+                        .fileSize(file.getSize())
+                        .build();
+                liveFileRepository.save(newLiveFile);
+            }
+        }
+
+        // 연사 프로필 사진 교체
+        if (speakerIds != null && speakerProfiles != null && speakerIds.size() == speakerProfiles.size()) {
+            for (int i = 0; i < speakerIds.size(); i++) {
+                Long speakerId = speakerIds.get(i);
+                MultipartFile newProfile = speakerProfiles.get(i);
+
+                Speaker speaker = speakerRepository.findById(speakerId)
+                        .orElseThrow(() -> new GeneralException(GeneralErrorCode.SPEAKER_NOT_FOUND));
+
+                // 기존 프로필 삭제
+                if (speaker.getProfileUrl() != null) {
+                    String oldKey = s3Service.extractS3KeyFromUrl(speaker.getProfileUrl());
+                    if (oldKey != null) s3Service.deleteFile(oldKey);
+                }
+
+                // 새 프로필 업로드
+                if (!s3Service.isValidImageFile(newProfile)) {
+                    throw new GeneralException(GeneralErrorCode.UNSUPPORTED_FILE_TYPE);
+                }
+                String newUrl = s3Service.uploadFile(newProfile, "seminar/speaker");
+
+                speaker.updateProfile(
+                        newUrl,
+                        getFileName(newProfile.getOriginalFilename()),
+                        getExtension(newProfile.getOriginalFilename()),
+                        newProfile.getSize()
+                );
+                speakerRepository.save(speaker);
+            }
+        }
+
+        Live live = liveRepository.findBySeminar(seminar).orElse(null);
+        List<LiveFile> liveFiles = liveFileRepository.findBySeminar(seminar);
+        List<Session> sessions = sessionRepository.findSessionsBySeminar(seminar);
+
+        return SeminarInfoResponseDTO.from(seminar, live, liveFiles, sessions);
+    }
 
     // 세미나 기간 검증
     // 시작일은 종료일 보다 항상 먼저 + 세미나 신청 기간은 세미나 활성화 기간 안에 포함되어야 함

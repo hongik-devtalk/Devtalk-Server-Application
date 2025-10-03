@@ -57,4 +57,11 @@ public class Speaker {
         this.organization = organization;
         this.history = history;
     }
+
+    public void updateProfile(String url, String name, String ext, Long size) {
+        this.profileUrl = url;
+        this.profileFileName = name;
+        this.profileFileExtension = ext;
+        this.profileFileSize = size;
+    }
 }
