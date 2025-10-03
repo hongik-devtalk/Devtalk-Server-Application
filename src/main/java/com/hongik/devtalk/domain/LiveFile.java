@@ -32,7 +32,9 @@ public class LiveFile {
     private String fileUrl;
 
     @Column(length = 50)
-    private String fileType;
+    private String fileExtension;
+
+    private Long fileSize;
 
     @CreatedDate
     @Column(nullable = false)

@@ -17,4 +17,8 @@ public interface SeminarRepository extends JpaRepository<Seminar,Long> {
     Seminar findSeminarInApplicationPeriod(@Param("now") LocalDateTime now);
 
     List<Seminar> findAllByOrderBySeminarNumDesc();
+
+    boolean existsBySeminarNum(Integer seminarNum);
+
+    boolean existsBySeminarNumAndIdNot(Integer seminarNum, Long id);
 }
