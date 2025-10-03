@@ -1,15 +1,11 @@
 package com.hongik.devtalk.scheduler;
 
 
-import com.hongik.devtalk.domain.enums.MailType;
-import com.hongik.devtalk.domain.mail.dto.MailHtmlSendDTO;
 import com.hongik.devtalk.service.mail.MailSendService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Slf4j
 @Component

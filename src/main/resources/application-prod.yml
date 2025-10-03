@@ -62,3 +62,12 @@ aws:
   s3:
     bucket: ${AWS_S3_BUCKET_NAME}
     cloudfront-domain: ${AWS_CLOUDFRONT_DOMAIN:}  # Optional CloudFront domain
+
+mail:
+  from:
+    address: dev.hongik@gmail.com
+  templates:
+    confirmation: https://hongik-devtalk-images.s3.ap-northeast-2.amazonaws.com/templates/confirmation/email_seminar_confirm.html
+    reminder:
+      offline: https://hongik-devtalk-images.s3.ap-northeast-2.amazonaws.com/templates/reminder/email_seminar_d-1_offline.html
+      online: https://hongik-devtalk-images.s3.ap-northeast-2.amazonaws.com/templates/reminder/email_seminar_d-1_online.html
