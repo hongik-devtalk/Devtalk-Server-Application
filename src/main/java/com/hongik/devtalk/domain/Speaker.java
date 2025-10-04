@@ -21,14 +21,24 @@ public class Speaker {
     @Column(length = 50, nullable = false)
     private String name;
 
+    // 소속
     @Column(length = 100)
     private String organization;
 
+    // 이력
     @Lob
     private String history;
 
     @Column(length = 2048)
     private String profileUrl;
+
+    @Column(length = 255)
+    private String profileFileName;
+
+    @Column(length = 20)
+    private String profileFileExtension;
+
+    private Long profileFileSize;
 
     @Column(unique = true)
     private String email;
@@ -41,4 +51,17 @@ public class Speaker {
 
     @OneToMany(mappedBy = "speaker", cascade = CascadeType.ALL)
     private List<Session> sessions = new ArrayList<>();
+
+    public void updateInfo(String name, String organization, String history) {
+        this.name = name;
+        this.organization = organization;
+        this.history = history;
+    }
+
+    public void updateProfile(String url, String name, String ext, Long size) {
+        this.profileUrl = url;
+        this.profileFileName = name;
+        this.profileFileExtension = ext;
+        this.profileFileSize = size;
+    }
 }

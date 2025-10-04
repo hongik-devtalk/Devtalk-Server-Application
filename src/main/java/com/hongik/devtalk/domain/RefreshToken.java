@@ -15,5 +15,12 @@ public class RefreshToken {
     @Id
     private Long adminId;
 
+    private Long studentId;
+
     private String token;
+
+    public RefreshToken(Long studentId, String token) {
+        this.studentId = studentId;
+        this.token = token;
+    }
 }

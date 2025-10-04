@@ -59,6 +59,18 @@ public class LiveController {
         return liveService.authStudent(authStudentRequestDto);
     }
 
+    @Operation(summary = "토큰 재발급 API", description = "Refresh Token을 사용하여 새로운 Access Token과 Refresh Token을 발급합니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "토큰 재발급 성공", content = @Content(schema = @Schema(implementation = ApiResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "유효하지 않은 Refresh Token 입니다. (AUTH_4012)", content = @Content(schema = @Schema(implementation = ApiResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Refresh Token에 해당하는 학생 정보를 찾을 수 없습니다.", content = @Content(schema = @Schema(implementation = ApiResponse.class)))
+    })
+    @PostMapping("/reissue")
+    public ApiResponse<ReissueResponseDto> reissue(@RequestBody ReissueRequestDto reissueRequestDto) {
+        ReissueResponseDto reissueResponseDto = liveService.reissueToken(reissueRequestDto);
+        return ApiResponse.onSuccess("토큰이 성공적으로 재발급되었습니다.", reissueResponseDto);
+    }
+
     @PostMapping("/review")
     @Operation(summary = "세미나 리뷰 작성 API", description = "세미나 종료 후 리뷰를 작성합니다. Authorization 헤더에 Bearer 토큰이 필요합니다.",
             security = {@SecurityRequirement(name = "bearer-key")})
