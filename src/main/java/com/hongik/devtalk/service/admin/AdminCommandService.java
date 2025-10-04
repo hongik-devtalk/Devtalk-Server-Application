@@ -45,7 +45,7 @@ public class AdminCommandService {
             token.setToken(refreshToken);
         }
         else {
-            refreshTokenRepository.save(new RefreshToken(admin.getId(), refreshToken));
+            refreshTokenRepository.save(RefreshToken.createAdminToken(admin.getId(), refreshToken));
         }
 
         return toLoginResDTO(admin.getId(), accessToken, refreshToken);
