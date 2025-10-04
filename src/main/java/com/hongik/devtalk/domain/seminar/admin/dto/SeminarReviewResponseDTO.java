@@ -26,7 +26,7 @@ public class SeminarReviewResponseDTO {
     private String nextTopic;
     private Boolean isPublic;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd HH:mm", timezone = "Asia/Seoul")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd (E) HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime createdAt;
 
     public static SeminarReviewResponseDTO from(Review review) {
