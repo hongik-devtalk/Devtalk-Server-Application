@@ -24,4 +24,18 @@ public interface SeminarRepository extends JpaRepository<Seminar,Long> {
 
     @Query("select s.seminarNum from Seminar s order by s.seminarNum desc")
     List<Integer> findAllSeminarNums();
+
+    // 활성화 기간이 겹치는 세미나 존재 여부 확인
+    @Query("SELECT COUNT(s) > 0 FROM Seminar s " +
+            "WHERE s.activeStartDate <= :activeEndDate " +
+            "AND s.activeEndDate >= :activeStartDate")
+    boolean overlapsSeminar(LocalDateTime activeStartDate, LocalDateTime activeEndDate);
+
+    // 활성화 기간이 겹치는 세미나 존재 여부 확인 (자기 자신 제외 - 수정용)
+    @Query("SELECT COUNT(s) > 0 FROM Seminar s " +
+            "WHERE s.id <> :seminarId " +
+            "AND s.activeStartDate <= :activeEndDate " +
+            "AND s.activeEndDate >= :activeStartDate")
+    boolean overlapsSeminarAndIdNot(Long seminarId, LocalDateTime activeStartDate, LocalDateTime activeEndDate);
+
 }

@@ -22,6 +22,7 @@ public enum GeneralErrorCode implements BaseErrorCode {
     INVALID_SPEAKER_PROFILE_COUNT(HttpStatus.BAD_REQUEST, "SEMINAR_4002", "연사 정보 수와 프로필 파일 수가 일치하지 않습니다."),
     INVALID_PERIOD_ORDER(HttpStatus.BAD_REQUEST, "SEMINAR_4003", "시작일은 종료일보다 이전이어야 합니다."),
     SEMINAR_NUM_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "SEMINAR_4004", "이미 존재하는 회차입니다."),
+    SEMINAR_ACTIVE_PERIOD_OVERLAP(HttpStatus.BAD_REQUEST, "SEMINAR4005", "다른 세미나의 활성화 기간과 겹칩니다."),
 
     // 세션 에러
     SESSION_NOT_FOUND(HttpStatus.NOT_FOUND, "SESSION_4041", "해당 세션을 찾을 수 없습니다."),

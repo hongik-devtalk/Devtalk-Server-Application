@@ -60,6 +60,13 @@ public class SeminarAdminCommandService {
                 request.getActiveStartDate(), request.getActiveEndDate(),
                 request.getApplyStartDate(), request.getApplyEndDate()
         );
+
+        // 활성화 기간이 겹치는 세미나가 있는지 검증
+        if (seminarRepository.overlapsSeminar(request.getActiveStartDate(), request.getActiveEndDate())) {
+            throw new GeneralException(GeneralErrorCode.SEMINAR_ACTIVE_PERIOD_OVERLAP);
+        }
+
+        // 연사 수와 프로필 사진 수 일치하는지 검증
         validateSpeakersAndProfiles(request.getSpeakers().size(), speakerProfiles);
 
         // 세미나 정보
@@ -179,6 +186,11 @@ public class SeminarAdminCommandService {
                 request.getActiveStartDate(), request.getActiveEndDate(),
                 request.getApplyStartDate(), request.getApplyEndDate()
         );
+
+        // 활성화 기간이 겹치는 세미나가 있는지 검증
+        if (seminarRepository.overlapsSeminarAndIdNot(seminarId, request.getActiveStartDate(), request.getActiveEndDate())) {
+            throw new GeneralException(GeneralErrorCode.SEMINAR_ACTIVE_PERIOD_OVERLAP);
+        }
 
         // 세미나 기본 정보 업데이트
         seminar.updateInfo(
