@@ -35,7 +35,7 @@ public class MailSendServiceImpl implements MailSendService{
 
     @Override
     public boolean sendConfirmationMail(String email, ParticipationType type, String name, Seminar seminar){
-        String subject = "[DevTalk] 세미나 신청 완료";
+        String subject = "[DevTalk]\u00A0" + seminar.getSeminarNum() +"회차 세미나 신청 완료";
         String htmlContent = mailTemplateLoader.loadTemplate(confirmationTemplateUrl);
 
         if(htmlContent == null){
