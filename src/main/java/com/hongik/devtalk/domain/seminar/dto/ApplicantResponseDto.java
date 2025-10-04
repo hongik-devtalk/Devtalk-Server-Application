@@ -20,4 +20,7 @@ public class ApplicantResponseDto {
 
     @Schema(description = "생성된 신청 정보의 ID", example = "3")
     private Long applicantId;
+
+    @Schema(description = "신청 완료 메일 전송 성공 여부", example = "true")
+    private boolean mailSent;
 }
