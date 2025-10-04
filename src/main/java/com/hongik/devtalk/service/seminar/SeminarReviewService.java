@@ -1,12 +1,15 @@
 package com.hongik.devtalk.service.seminar;
 
 import com.hongik.devtalk.domain.Review;
+import com.hongik.devtalk.domain.seminar.admin.dto.SeminarReviewResponseDTO;
 import com.hongik.devtalk.global.apiPayload.code.GeneralErrorCode;
 import com.hongik.devtalk.global.apiPayload.exception.GeneralException;
 import com.hongik.devtalk.repository.review.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -57,5 +60,19 @@ public class SeminarReviewService {
                 .orElseThrow(() -> new GeneralException(GeneralErrorCode.REVIEW_NOT_FOUND));
 
         reviewRepository.delete(review);
+    }
+
+    /**
+     * 세미나 ID로 해당 세미나의 후기 목록 조회
+     *
+     * @param seminarId 세미나 ID
+     * @return 후기 DTO 리스트
+     */
+    @Transactional(readOnly = true)
+    public List<SeminarReviewResponseDTO> getSeminarReviews(Long seminarId) {
+        return reviewRepository.findBySeminarIdWithStudentAndDepartments(seminarId)
+                .stream()
+                .map(SeminarReviewResponseDTO::from)
+                .toList();
     }
 }

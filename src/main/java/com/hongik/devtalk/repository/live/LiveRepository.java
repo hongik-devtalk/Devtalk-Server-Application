@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface LiveRepository extends JpaRepository<Live, Long> {
     Optional<Live> findBySeminar(Seminar seminar);
+    Optional<Live> findBySeminarId(Long seminarId);
 }
