@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class SeminarInfoResponseDTO {
+public class UserHomeSeminarInfoResponseDTO {
 
     private Long seminarId;
     private int seminarNum;
