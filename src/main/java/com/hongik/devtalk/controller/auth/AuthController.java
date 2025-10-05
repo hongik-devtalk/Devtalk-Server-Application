@@ -38,7 +38,7 @@ public class AuthController {
 
     @PostMapping("/logout")
     @Operation(
-            summary = "관리자 로그아웃",
+            summary = "관리자 로그아웃 - by 남성현, 이태훈",
             description = "관리자 로그아웃 API 호출 (로그아웃 후 '관리자 로그인' 페이지로 이동하도록 프런트 리다이렉션)"
     )
     @ApiResponses(value = {

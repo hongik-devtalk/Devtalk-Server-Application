@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/user/home")
-@Tag(name="[User] MainPage",description = "유저 홈화면 관련 API")
+@Tag(name="[User] MainPage",description = "유저 홈화면 관련 API - by 박소연")
 public class UserHomeController {
 
     private final SeminarInfoService seminarInfoService;

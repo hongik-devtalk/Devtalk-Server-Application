@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
 
 @RestController
-@Tag(name = "Live", description = "세미나 라이브 관련 API")
+@Tag(name = "Live", description = "세미나 라이브 관련 API -by 황신애")
 @RequestMapping("/user/live")
 @RequiredArgsConstructor
 public class LiveController {
