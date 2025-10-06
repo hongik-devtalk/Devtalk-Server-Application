@@ -25,6 +25,7 @@ public class SeminarReviewResponseDTO {
     private String content;
     private String nextTopic;
     private Boolean isPublic;
+    private Boolean isFeatured;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd (E) HH:mm")
     private LocalDateTime createdAt;
@@ -56,6 +57,7 @@ public class SeminarReviewResponseDTO {
                 .content(review.getStrength())
                 .nextTopic(review.getNextTopic())
                 .isPublic(review.isPublic())
+                .isFeatured(review.isNote())
                 .createdAt(review.getCreatedAt())
                 .build();
     }
