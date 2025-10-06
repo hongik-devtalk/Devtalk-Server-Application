@@ -21,17 +21,9 @@ public class SeminarInfoResponseDTO {
     private String topic;
     private LocalDateTime seminarDate;
     private String place;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd (E) HH:mm")
     private LocalDateTime activeStartDate;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd (E) HH:mm")
     private LocalDateTime activeEndDate;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd (E) HH:mm")
     private LocalDateTime applyStartDate;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd (E) HH:mm")
     private LocalDateTime applyEndDate;
     private String liveLink;
 
