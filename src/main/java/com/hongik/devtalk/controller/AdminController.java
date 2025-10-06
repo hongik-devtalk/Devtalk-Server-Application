@@ -22,7 +22,7 @@ import static com.hongik.devtalk.domain.login.admin.AdminDTO.toLoginIdResDTOList
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/admin")
-@Tag(name="Admin",description = "관리자 페이지 API")
+@Tag(name="Admin",description = "관리자 페이지 API - by 남성현")
 public class AdminController {
 
     private final AdminCommandService adminCommandService;

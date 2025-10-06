@@ -21,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@Tag(name = "[Admin]Seminar", description = "어드민 - 세미나 관련 API")
+@Tag(name = "[Admin]Seminar", description = "어드민 - 세미나 관련 API - by 박유정")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/admin/seminars")

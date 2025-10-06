@@ -1,8 +1,7 @@
 package com.hongik.devtalk.controller.userhome;
 
-import com.hongik.devtalk.domain.Speaker;
 import com.hongik.devtalk.domain.userhome.dto.ReviewListResponseDTO;
-import com.hongik.devtalk.domain.userhome.dto.SeminarInfoResponseDTO;
+import com.hongik.devtalk.domain.userhome.dto.UserHomeSeminarInfoResponseDTO;
 import com.hongik.devtalk.domain.userhome.dto.SpeakerListResponseDTO;
 import com.hongik.devtalk.global.apiPayload.ApiResponse;
 import com.hongik.devtalk.service.userhome.SeminarInfoService;
@@ -22,13 +21,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/user/home")
-@Tag(name="[User] MainPage",description = "유저 홈화면 관련 API")
+@Tag(name="[User] MainPage",description = "유저 홈화면 관련 API - by 박소연")
 public class UserHomeController {
 
     private final SeminarInfoService seminarInfoService;
 
     @GetMapping("/{seminarId}")
-    @Operation(summary = "현재 신청받고 있는 세미나 정보 조회")
+    @Operation(summary = "현재 신청받고 있는 세미나 정보 조회", description = "유저 메인 화면에서 현재 진행되고 있는 seminarId로 조회합니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "200",
@@ -43,8 +42,8 @@ public class UserHomeController {
                     })
             )
     })
-    public ResponseEntity<ApiResponse<SeminarInfoResponseDTO>> getSeminar(@PathVariable Long seminarId) {
-        SeminarInfoResponseDTO result = seminarInfoService.getSeminarById(seminarId);
+    public ResponseEntity<ApiResponse<UserHomeSeminarInfoResponseDTO>> getSeminar(@PathVariable Long seminarId) {
+        UserHomeSeminarInfoResponseDTO result = seminarInfoService.getSeminarById(seminarId);
         return ResponseEntity.ok(ApiResponse.onSuccess("세미나 정보 조회 성공", result));
     }
 

@@ -11,6 +11,7 @@ import com.hongik.devtalk.global.apiPayload.exception.GeneralException;
 import com.hongik.devtalk.global.security.JwtTokenProvider;
 import com.hongik.devtalk.repository.ApplicantRepository;
 import com.hongik.devtalk.repository.AttendanceRepository;
+import com.hongik.devtalk.repository.auth.RefreshTokenRepository;
 import com.hongik.devtalk.repository.review.ReviewRepository;
 import com.hongik.devtalk.repository.seminar.SeminarRepository;
 import com.hongik.devtalk.repository.seminar.StudentRepository;
@@ -42,6 +43,7 @@ public class LiveService {
     private final JwtTokenProvider tokenProvider;
     private final ReviewRepository reviewRepository;
     private final AttendanceRepository attendanceRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     //학생 인증 (이 학생이 현재 진행되고 있는 세미나를 신청했는지 확인하는 로직)
     @Transactional
@@ -75,6 +77,12 @@ public class LiveService {
             String accessToken = tokenProvider.generateToken(authentication);
             String refreshToken = tokenProvider.generateRefreshToken(authentication);
 
+            refreshTokenRepository.findByStudentId(student.getId())
+                    .ifPresentOrElse(
+                            token -> token.setToken(refreshToken), // 이미 토큰이 있으면 새 토큰으로 교체 (업데이트)
+                            () -> refreshTokenRepository.save(new RefreshToken(student.getId(), refreshToken)) // 없으면 새로 저장 (생성)
+                    );
+
             // 4. 응답 DTO를 생성하여 성공 응답 반환
             AuthStudentResponseDto responseDto = AuthStudentResponseDto.builder()
                     .studentId(student.getId())
@@ -85,6 +93,38 @@ public class LiveService {
 
             return ApiResponse.onSuccess("신청자 인증에 성공하였습니다.", responseDto);
         }
+    }
+
+    @Transactional
+    public ReissueResponseDto reissueToken(ReissueRequestDto reissueRequestDto) {
+        // 1. Refresh Token 유효성 검증
+        if (!tokenProvider.validateToken(reissueRequestDto.getRefreshToken())) {
+            throw new GeneralException(GeneralErrorCode.INVALID_TOKEN);
+        }
+
+        // 2. DB에서 Refresh Token 조회
+        RefreshToken token = refreshTokenRepository.findByToken(reissueRequestDto.getRefreshToken())
+                .orElseThrow(() -> new GeneralException(GeneralErrorCode.INVALID_TOKEN, "DB에 존재하지 않는 리프레시 토큰입니다."));
+
+        // 3. 토큰에 연결된 학생 정보 조회
+        Student student = studentRepository.findById(token.getStudentId())
+                .orElseThrow(() -> new GeneralException(CustomLiveErrorCode.STUDENT_NOT_FOUND));
+
+        // 4. 새로운 토큰 생성 (Access & Refresh 둘 다 - RTR 적용)
+        List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+        Authentication authentication = new UsernamePasswordAuthenticationToken(student.getStudentNum(), null, authorities);
+
+        String newAccessToken = tokenProvider.generateToken(authentication);
+        String newRefreshToken = tokenProvider.generateRefreshToken(authentication);
+
+        // 5. DB에 있는 기존 Refresh Token을 새로운 Refresh Token으로 업데이트
+        token.setToken(newRefreshToken);
+
+        // 6. 새로운 토큰들을 DTO에 담아 반환
+        return ReissueResponseDto.builder()
+                .accessToken(newAccessToken)
+                .refreshToken(newRefreshToken)
+                .build();
     }
 
     //라이브 출석 체크

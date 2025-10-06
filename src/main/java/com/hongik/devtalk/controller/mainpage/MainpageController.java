@@ -22,7 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import jakarta.validation.Valid;
 import java.util.List;
 
-@Tag(name = "Mainpage", description = "홈페이지 관련 API")
+@Tag(name = "Mainpage", description = "홈페이지 관련 API - by 이태훈")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/admin/home")

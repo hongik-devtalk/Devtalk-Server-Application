@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "Applicant", description = "세미나 신청 API")
+@Tag(name = "Applicant", description = "세미나 신청 API - by 황신애, 박서영 / 메일관련 로직 - 박소연")
 @RequestMapping("/user/seminars")
 public class SeminarApplicantController {
     private final SeminarApplicantService seminarApplicantService;

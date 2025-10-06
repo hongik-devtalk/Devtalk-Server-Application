@@ -29,12 +29,7 @@ public enum InflowPath {
     /**
      * 교내 게시판 포스터
      */
-    CAMPUS_POSTER,
-
-    /**
-     * 교내 X 배너
-     */
-    CAMPUS_BANNER,
+    CAMPUS,
 
     /**
      * 인스타그램

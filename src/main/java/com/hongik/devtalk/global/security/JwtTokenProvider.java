@@ -116,5 +116,11 @@ public class JwtTokenProvider {
         return getAuthentication(accessToken);
     }
 
+    public void validateOrThrow(String token) {
+        Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token);
+    }
 
 }

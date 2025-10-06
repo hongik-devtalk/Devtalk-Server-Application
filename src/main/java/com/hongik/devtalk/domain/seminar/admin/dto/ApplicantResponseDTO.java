@@ -3,7 +3,6 @@ package com.hongik.devtalk.domain.seminar.admin.dto;
 import com.hongik.devtalk.domain.Applicant;
 import com.hongik.devtalk.domain.Student;
 import com.hongik.devtalk.domain.enums.Department;
-import com.hongik.devtalk.domain.enums.InflowPath;
 import com.hongik.devtalk.domain.enums.ParticipationType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

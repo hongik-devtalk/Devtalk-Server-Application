@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Tag(name="SeminarDetail",description = "세미나 세부정보 관련 API")
+@Tag(name="SeminarDetail",description = "세미나 세부정보 관련 API - by 박서영")
 @RestController
 @RequestMapping("/user/seminars")
 @RequiredArgsConstructor

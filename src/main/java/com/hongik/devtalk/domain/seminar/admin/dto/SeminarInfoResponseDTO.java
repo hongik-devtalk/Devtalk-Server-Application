@@ -21,17 +21,9 @@ public class SeminarInfoResponseDTO {
     private String topic;
     private LocalDateTime seminarDate;
     private String place;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd (E) HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime activeStartDate;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd (E) HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime activeEndDate;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd (E) HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime applyStartDate;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd (E) HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime applyEndDate;
     private String liveLink;
 
