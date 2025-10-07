@@ -82,7 +82,7 @@ public class LiveController {
 
     @PostMapping("/review")
     @Operation(summary = "세미나 리뷰 작성 API", description = "세미나 종료 후 리뷰를 작성합니다. Authorization 헤더에 Bearer 토큰이 필요합니다.",
-            security = {@SecurityRequirement(name = "bearer-key")})
+            security = {@SecurityRequirement(name = "JWT TOKEN")})
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
             description = "작성할 리뷰의 내용",
             required = true,
@@ -122,7 +122,7 @@ public class LiveController {
 
     @PostMapping("/attend")
     @Operation(summary = "세미나 라이브 출석 체크 API", description = "세미나 라이브 출석을 체크하고, 성공 시 라이브 URL을 반환합니다. Authorization 헤더에 Bearer 토큰이 필요합니다.",
-            security = {@SecurityRequirement(name = "bearer-key")})
+            security = {@SecurityRequirement(name = "JWT TOKEN")})
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "200", description = "OK, 출석 성공",
