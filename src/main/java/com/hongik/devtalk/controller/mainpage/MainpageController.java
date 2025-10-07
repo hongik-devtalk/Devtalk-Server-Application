@@ -229,7 +229,7 @@ public class MainpageController {
     @GetMapping("/reviews")
     @Operation(
             summary = "후기 카드 전체 조회",
-            description = "후기 카드 전체 조회 (순위/표시 여부 포함)"
+            description = "메인페이지에 노출할 후기 카드 전체 조회 (isPublic=true AND isNote=true인 후기만, 순위순 정렬)"
     )
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
