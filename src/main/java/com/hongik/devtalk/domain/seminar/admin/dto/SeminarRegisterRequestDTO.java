@@ -24,7 +24,6 @@ public class SeminarRegisterRequestDTO {
     private Integer seminarNum;
 
     @NotNull
-    @FutureOrPresent(message = "세미나 날짜는 현재 시각 이후여야 합니다.")
     @Schema(description = "세미나 일시", example = "2025-12-10T10:00:00")
     private LocalDateTime seminarDate;
 
@@ -37,22 +36,18 @@ public class SeminarRegisterRequestDTO {
     private String topic;
 
     @NotNull
-    @FutureOrPresent(message = "세미나 활성화 시작일은 현재 시각 이후여야 합니다.")
     @Schema(description = "세미나 활성화 시작일", example = "2025-12-01T00:00:00")
     private LocalDateTime activeStartDate;
 
     @NotNull
-    @FutureOrPresent(message = "세미나 활성화 종료일은 현재 시각 이후여야 합니다.")
     @Schema(description = "세미나 활성화 종료일", example = "2025-12-15T23:59:59")
     private LocalDateTime activeEndDate;
 
     @NotNull
-    @FutureOrPresent(message = "세미나 신청 시작일은 현재 시각 이후여야 합니다.")
     @Schema(description = "세미나 신청 시작일", example = "2025-12-01T09:00:00")
     private LocalDateTime applyStartDate;
 
     @NotNull
-    @FutureOrPresent(message = "세미나 신청 종료일은 현재 시각 이후여야 합니다.")
     @Schema(description = "세미나 신청 종료일", example = "2025-12-05T18:00:00")
     private LocalDateTime applyEndDate;
 
