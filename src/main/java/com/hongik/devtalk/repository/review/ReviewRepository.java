@@ -9,8 +9,8 @@ import java.util.List;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     
-    // 공개된 후기만 조회 (isPublic = true, displayOrder 오름차순, null은 마지막)
-    @Query("SELECT r FROM Review r WHERE r.isPublic = true ORDER BY CASE WHEN r.displayOrder IS NULL THEN 1 ELSE 0 END, r.displayOrder ASC, r.createdAt DESC")
+    // 메인페이지에 노출할 후기 조회 (isPublic = true AND isNote = true, displayOrder 오름차순, null은 마지막)
+    @Query("SELECT r FROM Review r WHERE r.isPublic = true AND r.isNote = true ORDER BY CASE WHEN r.displayOrder IS NULL THEN 1 ELSE 0 END, r.displayOrder ASC, r.createdAt DESC")
     List<Review> findAllOrderByDisplayOrder();
     
     // 홈 화면에 표시되는 후기 조회 (isNote = true, isPublic = true)

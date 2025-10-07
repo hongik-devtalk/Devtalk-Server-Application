@@ -27,10 +27,11 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
 
     /**
-     * 후기 카드 전체 조회 (공개된 후기만, 순위/표시 여부 포함)
+     * 후기 카드 전체 조회 (메인페이지 노출용)
+     * isPublic = true AND isNote = true인 후기만 반환
      */
     public List<ReviewResponseDto> getAllReviews() {
-        // isPublic = true인 후기만 반환
+        // isPublic = true AND isNote = true인 후기만 반환
         List<Review> reviews = reviewRepository.findAllOrderByDisplayOrder();
         
         return reviews.stream()
