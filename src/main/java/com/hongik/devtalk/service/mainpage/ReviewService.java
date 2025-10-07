@@ -27,9 +27,10 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
 
     /**
-     * 후기 카드 전체 조회 (순위/표시 여부 포함)
+     * 후기 카드 전체 조회 (공개된 후기만, 순위/표시 여부 포함)
      */
     public List<ReviewResponseDto> getAllReviews() {
+        // isPublic = true인 후기만 반환
         List<Review> reviews = reviewRepository.findAllOrderByDisplayOrder();
         
         return reviews.stream()
@@ -47,8 +48,8 @@ public class ReviewService {
             throw new GeneralException(GeneralErrorCode.INVALID_PARAMETER);
         }
 
-        // 1. 홈 화면에 표시되어야 하는 모든 후기 조회 (isNote = true)
-        List<Review> displayedReviews = reviewRepository.findByIsNoteTrue();
+        // 1. 홈 화면에 표시되어야 하는 모든 후기 조회 (isNote = true AND isPublic = true)
+        List<Review> displayedReviews = reviewRepository.findByIsNoteTrueAndIsPublicTrue();
         
         // 2. 요청된 ID 개수와 실제 표시되어야 하는 후기 개수 비교
         if (orderedIds.size() != displayedReviews.size()) {
@@ -92,9 +93,10 @@ public class ReviewService {
             Review review = reviewRepository.findById(reviewId)
                     .orElseThrow(() -> new GeneralException(GeneralErrorCode.REVIEW_NOT_FOUND));
 
-            // isNote가 true인지 재확인 (이중 검증)
-            if (!review.isNote()) {
-                log.error("홈 화면에 표시되지 않는 후기가 포함되었습니다. reviewId: {}", reviewId);
+            // isNote가 true이고 isPublic이 true인지 재확인 (이중 검증)
+            if (!review.isNote() || !review.isPublic()) {
+                log.error("홈 화면에 표시할 수 없는 후기가 포함되었습니다. reviewId: {}, isNote: {}, isPublic: {}", 
+                         reviewId, review.isNote(), review.isPublic());
                 throw new GeneralException(GeneralErrorCode.INCOMPLETE_REVIEW_ORDER);
             }
 
