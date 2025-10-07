@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -36,8 +35,7 @@ public class MainpageController {
     @GetMapping("/images")
     @Operation(
             summary = "홍보 사진 현재 상태 조회",
-            description = "Devtalk 소개 사진과 이전 세미나 보러가기 사진(각 1장)의 현재 상태를 조회합니다.",
-            security = { @SecurityRequirement(name = "bearer-key") }
+            description = "Devtalk 소개 사진과 이전 세미나 보러가기 사진(각 1장)의 현재 상태를 조회합니다."
     )
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -67,8 +65,7 @@ public class MainpageController {
     @PostMapping("/images")
     @Operation(
             summary = "홍보 사진 업로드/교체",
-            description = "홍보 사진 업로드/교체 (1장 제한, 업로드 시 기존 이미지 자동 교체)",
-            security = { @SecurityRequirement(name = "bearer-key") }
+            description = "홍보 사진 업로드/교체 (1장 제한, 업로드 시 기존 이미지 자동 교체)"
     )
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -114,8 +111,7 @@ public class MainpageController {
     @DeleteMapping("/images")
     @Operation(
             summary = "홍보 사진 삭제",
-            description = "홍보 사진 삭제 (해당 종류 1장 삭제)",
-            security = { @SecurityRequirement(name = "bearer-key") }
+            description = "홍보 사진 삭제 (해당 종류 1장 삭제)"
     )
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -149,8 +145,7 @@ public class MainpageController {
     @GetMapping("/inquiry-link")
     @Operation(
             summary = "문의하기(카카오톡) 링크 조회",
-            description = "문의하기(카카오톡) 링크 조회",
-            security = { @SecurityRequirement(name = "bearer-key") }
+            description = "문의하기(카카오톡) 링크 조회"
     )
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -175,8 +170,7 @@ public class MainpageController {
     @PostMapping("/inquiry-link")
     @Operation(
             summary = "문의하기(카카오톡) 링크 추가/수정",
-            description = "문의하기(카카오톡) 링크 추가/수정",
-            security = { @SecurityRequirement(name = "bearer-key") }
+            description = "문의하기(카카오톡) 링크 추가/수정"
     )
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -208,8 +202,7 @@ public class MainpageController {
     @DeleteMapping("/inquiry-link")
     @Operation(
             summary = "문의하기(카카오톡) 링크 삭제",
-            description = "문의하기(카카오톡) 링크 삭제",
-            security = { @SecurityRequirement(name = "bearer-key") }
+            description = "문의하기(카카오톡) 링크 삭제"
     )
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -236,8 +229,7 @@ public class MainpageController {
     @GetMapping("/reviews")
     @Operation(
             summary = "후기 카드 전체 조회",
-            description = "후기 카드 전체 조회 (순위/표시 여부 포함)",
-            security = { @SecurityRequirement(name = "bearer-key") }
+            description = "후기 카드 전체 조회 (순위/표시 여부 포함)"
     )
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -261,8 +253,7 @@ public class MainpageController {
     @PutMapping("/reviews/order")
     @Operation(
             summary = "후기 카드 순위 일괄 변경",
-            description = "후기 카드 순위 일괄 변경",
-            security = { @SecurityRequirement(name = "bearer-key") }
+            description = "후기 카드 순위 일괄 변경"
     )
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -292,8 +283,7 @@ public class MainpageController {
     @DeleteMapping("/reviews/{reviewId}")
     @Operation(
             summary = "후기 카드 삭제",
-            description = "후기 카드 삭제",
-            security = { @SecurityRequirement(name = "bearer-key") }
+            description = "후기 카드 삭제"
     )
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
