@@ -1,10 +1,7 @@
 package com.hongik.devtalk.service.seminar;
 
 import com.hongik.devtalk.domain.*;
-import com.hongik.devtalk.domain.seminar.admin.dto.ApplicantResponseDTO;
-import com.hongik.devtalk.domain.seminar.admin.dto.QuestionResponseDTO;
-import com.hongik.devtalk.domain.seminar.admin.dto.SeminarInfoResponseDTO;
-import com.hongik.devtalk.domain.seminar.admin.dto.SeminarNumResponseDTO;
+import com.hongik.devtalk.domain.seminar.admin.dto.*;
 import com.hongik.devtalk.global.apiPayload.code.GeneralErrorCode;
 import com.hongik.devtalk.global.apiPayload.exception.GeneralException;
 import com.hongik.devtalk.repository.ApplicantRepository;
@@ -123,6 +120,31 @@ public class SeminarAdminQueryService {
         List<Integer> seminarNums = seminarRepository.findAllSeminarNums();
         return SeminarNumResponseDTO.builder()
                 .seminarNums(seminarNums)
+                .build();
+    }
+
+    /**
+     * 세미나 카드 리스트 조회
+     *
+     * @return 세미나 카드 리스트 DTO
+     */
+    public SeminarCardResponseDTO.SeminarCardDTOList getSeminarCardList() {
+
+        List<SeminarCardResponseDTO.SeminarCardDTO> seminarCards =
+                seminarRepository.findAllByOrderBySeminarNumDesc()
+                        .stream()
+                        .map(s -> SeminarCardResponseDTO.SeminarCardDTO.builder()
+                                .seminarId(s.getId())
+                                .seminarNum(s.getSeminarNum())
+                                .seminarTopic(s.getTopic())
+                                .seminarDate(s.getSeminarDate())
+                                .place(s.getPlace())
+                                .imageUrl(s.getThumbnailUrl())
+                                .build())
+                        .toList();
+
+        return SeminarCardResponseDTO.SeminarCardDTOList.builder()
+                .seminarList(seminarCards)
                 .build();
     }
 }

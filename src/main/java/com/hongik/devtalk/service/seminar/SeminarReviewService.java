@@ -21,13 +21,18 @@ public class SeminarReviewService {
      * 후기 ID로 특정 후기를 홈 화면에 노출
      *
      * @param reviewId 후기 ID
-     * @throws GeneralException 후기가 존재하지 않을 경우
+     * @throws GeneralException 후기가 존재하지 않거나 비공개일 경우
      */
     @Transactional
     public void exposeReviewToHome(Long reviewId) {
         // 후기 존재 여부 확인
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new GeneralException(GeneralErrorCode.REVIEW_NOT_FOUND));
+
+        // 비공개 후기일 경우 에러
+        if (!review.isPublic()) {
+            throw new GeneralException(GeneralErrorCode.REVIEW_NOT_PUBLIC);
+        }
 
         review.updateIsNote(true);
     }
