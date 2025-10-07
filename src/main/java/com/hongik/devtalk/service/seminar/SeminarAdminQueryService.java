@@ -114,13 +114,16 @@ public class SeminarAdminQueryService {
     /**
      * 현재 등록되어 있는 모든 세미나의 회차 번호 리스트를 조회
      *
-     * @return 세미나 회차 번호(Integer) 리스트 DTO
+     * @return 세미나 id, 세미나 회차 번호 리스트 DTO
      */
-    public SeminarNumResponseDTO getSeminarNums() {
-        List<Integer> seminarNums = seminarRepository.findAllSeminarNums();
-        return SeminarNumResponseDTO.builder()
-                .seminarNums(seminarNums)
-                .build();
+    public List<SeminarNumResponseDTO> getSeminarNums() {
+        List<Seminar> seminars = seminarRepository.findAllByOrderBySeminarNumDesc();
+        return seminars.stream()
+                .map(seminar -> SeminarNumResponseDTO.builder()
+                        .seminarId(seminar.getId())
+                        .seminarNum(seminar.getSeminarNum())
+                        .build())
+                .toList();
     }
 
     /**

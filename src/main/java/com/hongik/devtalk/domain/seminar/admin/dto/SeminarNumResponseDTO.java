@@ -12,5 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class SeminarNumResponseDTO {
-    private List<Integer> seminarNums;
+    private Long seminarId;
+    private Integer seminarNum;
 }
