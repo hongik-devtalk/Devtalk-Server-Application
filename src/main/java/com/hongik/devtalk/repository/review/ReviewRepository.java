@@ -22,4 +22,8 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
             "left join fetch s.departments " +
             "where r.seminar.id = :seminarId")
     List<Review> findBySeminarIdWithStudentAndDepartments(@Param("seminarId") Long seminarId);
+
+    // 공개 + 홈화면에 노출된 리뷰 중 displayOrder의 최댓값 반환
+    @Query("SELECT MAX(r.displayOrder) FROM Review r WHERE r.isPublic = true AND r.isNote = true")
+    Integer findMaxDisplayOrder();
 }

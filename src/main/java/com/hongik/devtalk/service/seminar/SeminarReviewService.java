@@ -34,7 +34,12 @@ public class SeminarReviewService {
             throw new GeneralException(GeneralErrorCode.REVIEW_NOT_PUBLIC);
         }
 
+        // 다음 순서값 - 현재 노출 중인 후기 중 displayOrder 최댓값 + 1
+        Integer maxDisplayOrder = reviewRepository.findMaxDisplayOrder();
+        int nextDisplayOrder = (maxDisplayOrder == null) ? 1 : maxDisplayOrder + 1;
+
         review.updateIsNote(true);
+        review.updateDisplayOrder(nextDisplayOrder);
     }
 
     /**
@@ -50,6 +55,7 @@ public class SeminarReviewService {
                 .orElseThrow(() -> new GeneralException(GeneralErrorCode.REVIEW_NOT_FOUND));
 
         review.updateIsNote(false);
+        review.updateDisplayOrder(null);
     }
 
     /**
