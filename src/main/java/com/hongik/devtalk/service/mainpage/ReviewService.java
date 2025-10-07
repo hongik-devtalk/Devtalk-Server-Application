@@ -1,6 +1,7 @@
 package com.hongik.devtalk.service.mainpage;
 
 import com.hongik.devtalk.domain.Review;
+import com.hongik.devtalk.domain.Student;
 import com.hongik.devtalk.domain.mainpage.dto.DeleteReviewResponseDto;
 import com.hongik.devtalk.domain.mainpage.dto.ReorderResponseDto;
 import com.hongik.devtalk.domain.mainpage.dto.ReviewResponseDto;
@@ -140,13 +141,39 @@ public class ReviewService {
      * Review 엔티티를 DTO로 변환
      */
     private ReviewResponseDto convertToDto(Review review) {
+        Student student = review.getStudent();
+        
+        // 학과 처리 (복수 전공 가능)
+        String department = null;
+        if (student.getDepartments() != null && !student.getDepartments().isEmpty()) {
+            department = student.getDepartments().stream()
+                    .map(Enum::name)
+                    .collect(Collectors.joining(", "));
+        }
+        if (student.getDepartmentEtc() != null && !student.getDepartmentEtc().isEmpty()) {
+            department = department != null 
+                    ? department + ", " + student.getDepartmentEtc() 
+                    : student.getDepartmentEtc();
+        }
+        
+        // 학년 처리
+        String grade = null;
+        if (student.getGrade() != null) {
+            grade = student.getGrade() + "학년";
+        } else if (student.getGradeEtc() != null) {
+            grade = student.getGradeEtc();
+        }
+        
         return ReviewResponseDto.builder()
+                .visible(review.isNote())
                 .reviewId(String.valueOf(review.getId()))
                 .rating(Integer.valueOf(review.getScore()))
                 .title(null) // 엔티티에 없는 필드
                 .content(review.getStrength())
+                .department(department)
+                .grade(grade)
+                .nextTopic(review.getNextTopic())
                 .order(review.getDisplayOrder())
-                .visible(review.isNote())
                 .createdAt(review.getCreatedAt())
                 .build();
     }
