@@ -301,8 +301,8 @@ public class SeminarAdminController {
                     content = @Content(schema = @Schema(implementation = ApiResponse.class)))
     })
     @GetMapping("/nums")
-    public ApiResponse<SeminarNumResponseDTO> getSeminarNums() {
-        SeminarNumResponseDTO result = seminarAdminQueryService.getSeminarNums();
+    public ApiResponse<List<SeminarNumResponseDTO>> getSeminarNums() {
+        List<SeminarNumResponseDTO> result = seminarAdminQueryService.getSeminarNums();
         return ApiResponse.onSuccess("세미나 회차 리스트 조회에 성공했습니다.", result);
     }
 }
