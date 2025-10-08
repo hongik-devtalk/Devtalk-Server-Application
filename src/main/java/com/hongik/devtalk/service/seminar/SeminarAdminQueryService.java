@@ -36,7 +36,7 @@ public class SeminarAdminQueryService {
      * @return 신청자 정보 DTO 리스트
      * @throws GeneralException 세미나가 존재하지 않을 경우
      */
-    public List<ApplicantResponseDTO> getApplicants(Long seminarId) {
+    public ApplicantResponseDTO getApplicants(Long seminarId) {
         // 세미나 존재 여부 확인
         Seminar seminar = seminarRepository.findById(seminarId)
                 .orElseThrow(() -> new GeneralException(GeneralErrorCode.SEMINARINFO_NOT_FOUND));
@@ -46,9 +46,15 @@ public class SeminarAdminQueryService {
         // 세미나 신청자 목록 조회
         List<Applicant> applicants = applicantRepository.findApplicantsBySeminarId(seminarId);
 
-        return applicants.stream()
-                .map(applicant -> ApplicantResponseDTO.from(applicant, topic))
+        // 학생 정보 DTO 변환
+        List<ApplicantResponseDTO.StudentInfoDTO> students = applicants.stream()
+                .map(applicant -> ApplicantResponseDTO.StudentInfoDTO.from(applicant, topic))
                 .toList();
+
+        return ApplicantResponseDTO.builder()
+                .seminarNum(seminar.getSeminarNum())
+                .students(students)
+                .build();
     }
 
     /**
@@ -85,6 +91,7 @@ public class SeminarAdminQueryService {
                 .toList();
 
         return QuestionResponseDTO.builder()
+                .seminarNum(seminar.getSeminarNum())
                 .speakers(speakers)
                 .students(students)
                 .build();
