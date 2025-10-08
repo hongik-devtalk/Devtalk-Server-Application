@@ -269,11 +269,11 @@ public class SeminarAdminController {
                     content = @Content(schema = @Schema(implementation = ApiResponse.class)))
     })
     @GetMapping("/{seminarId}/applicants")
-    public ApiResponse<List<ApplicantResponseDTO>> getApplicantsInfo(
+    public ApiResponse<ApplicantResponseDTO> getApplicantsInfo(
             @Parameter(description = "세미나 ID", required = true)
             @PathVariable Long seminarId
     ) {
-        List<ApplicantResponseDTO> result = seminarAdminQueryService.getApplicants(seminarId);
+        ApplicantResponseDTO result = seminarAdminQueryService.getApplicants(seminarId);
         return ApiResponse.onSuccess("세미나 신청자 조회에 성공했습니다.", result);
     }
 
