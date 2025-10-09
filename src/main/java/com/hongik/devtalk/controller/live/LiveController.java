@@ -112,6 +112,13 @@ public class LiveController {
                             examples = {
                                     @ExampleObject(name = "리뷰 기간 아님", value = "{\"isSuccess\": false, \"code\": \"REVIEW_4041\", \"message\": \"리뷰 작성 기간이 아닙니다.\", \"result\": null}"),
                                     @ExampleObject(name = "학생 정보 없음", value = "{\"isSuccess\": false, \"code\": \"STUDENT_4041\", \"message\": \"해당 학생을 찾을 수 없습니다.\", \"result\": null}")
+                            })),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "409", description = "CONFLICT, 리소스 충돌",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiResponse.class),
+                            examples = {
+                                    @ExampleObject(name = "리뷰 중복 작성", value = "{\"isSuccess\": false, \"code\": \"REVIEW_4091\", \"message\": \"리뷰는 한 번만 작성 가능합니다.\", \"result\": null}")
                             }))
     })
     public ApiResponse<ReviewResponseDto> createReview(@AuthenticationPrincipal User user,

@@ -1,6 +1,8 @@
 package com.hongik.devtalk.repository.review;
 
 import com.hongik.devtalk.domain.Review;
+import com.hongik.devtalk.domain.Seminar;
+import com.hongik.devtalk.domain.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -26,4 +28,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     // 공개 + 홈화면에 노출된 리뷰 중 displayOrder의 최댓값 반환
     @Query("SELECT MAX(r.displayOrder) FROM Review r WHERE r.isPublic = true AND r.isNote = true")
     Integer findMaxDisplayOrder();
+
+    //학생+세미나로 리뷰 썼는지 여부 확인
+    boolean existsReviewByStudentAndSeminar(Student student, Seminar seminar);
 }
