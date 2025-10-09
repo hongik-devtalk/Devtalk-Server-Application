@@ -231,6 +231,7 @@ public class LiveService {
         ReviewResponseDto responseDto = ReviewResponseDto.builder()
                 .reviewId(savedReview.getId())
                 .studentNum(student.getStudentNum())
+                .seminarId(seminar.getId())
                 .seminarNum(seminar.getSeminarNum())
                 .build();
 

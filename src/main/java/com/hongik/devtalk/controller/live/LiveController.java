@@ -98,7 +98,7 @@ public class LiveController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ApiResponse.class),
                             examples = @ExampleObject(name = "리뷰 작성 성공",
-                                    value = "{\"isSuccess\": true, \"code\": \"COMMON2000\", \"message\": \"성공적으로 리뷰가 등록되었습니다.\", \"result\": {\"reviewId\": 1, \"studentNum\": \"C211182\", \"seminarNum\": 1}}"))),
+                                    value = "{\"isSuccess\": true, \"code\": \"COMMON2000\", \"message\": \"성공적으로 리뷰가 등록되었습니다.\", \"result\": {\"reviewId\": 1, \"studentNum\": \"C211182\", \"seminarNum\": 1, \"seminarId\": 1}}"))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "401", description = "UNAUTHORIZED, 토큰 만료",
                     content = @Content(mediaType = "application/json",
