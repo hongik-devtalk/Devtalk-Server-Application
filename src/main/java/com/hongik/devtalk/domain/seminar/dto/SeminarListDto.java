@@ -23,6 +23,7 @@ public class SeminarListDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class SeminarResDto {
+        Long seminarId;
         int seminarNum;
         String seminarTopic;
         LocalDateTime seminarDate;

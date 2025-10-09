@@ -22,6 +22,7 @@ public class SeminarListService {
                 seminarRepository.findAllByOrderBySeminarNumDesc()
                         .stream()
                         .map(s -> SeminarListDto.SeminarResDto.builder()
+                                .seminarId(s.getId())
                                 .seminarNum(s.getSeminarNum())
                                 .seminarTopic(s.getTopic())
                                 .seminarDate(s.getSeminarDate())
