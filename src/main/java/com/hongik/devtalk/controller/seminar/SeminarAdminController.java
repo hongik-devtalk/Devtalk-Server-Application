@@ -1,7 +1,6 @@
 package com.hongik.devtalk.controller.seminar;
 
 import com.hongik.devtalk.domain.seminar.admin.dto.*;
-import com.hongik.devtalk.domain.seminar.dto.SeminarListDto;
 import com.hongik.devtalk.global.apiPayload.ApiResponse;
 import com.hongik.devtalk.service.seminar.SeminarAdminCommandService;
 import com.hongik.devtalk.service.seminar.SeminarAdminQueryService;
@@ -30,7 +29,6 @@ public class SeminarAdminController {
     private final SeminarAdminQueryService seminarAdminQueryService;
     private final SeminarAdminCommandService seminarAdminCommandService;
     private final SeminarReviewService seminarReviewService;
-    private final SeminarListService seminarListService;
 
     @Operation(summary = "세미나 카드리스트 조회", description = "세미나 카드리스트를 조회합니다.")
     @ApiResponses({
@@ -39,8 +37,8 @@ public class SeminarAdminController {
                     content = @Content(schema = @Schema(implementation = ApiResponse.class)))
     })
     @GetMapping("/card")
-    public ApiResponse<SeminarListDto.SeminarResDtoList> getSeminarCards() {
-        SeminarListDto.SeminarResDtoList result = seminarListService.seminarList();
+    public ApiResponse<SeminarCardResponseDTO.SeminarCardDTOList> getSeminarCards() {
+        SeminarCardResponseDTO.SeminarCardDTOList result = seminarAdminQueryService.getSeminarCardList();
         return ApiResponse.onSuccess("세미나 카드 리스트 조회에 성공했습니다.", result);
     }
 
@@ -214,6 +212,8 @@ public class SeminarAdminController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "COMMON2000", description = "성공"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "REVIEW_4041", description = "후기 없음",
                     content = @Content(schema = @Schema(implementation = ApiResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "REVIEW_4001", description = "비공개 후기는 홈 화면에 노출할 수 없음",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "SERVER_5001", description = "서버 내부 오류",
                     content = @Content(schema = @Schema(implementation = ApiResponse.class)))
     })
@@ -269,11 +269,11 @@ public class SeminarAdminController {
                     content = @Content(schema = @Schema(implementation = ApiResponse.class)))
     })
     @GetMapping("/{seminarId}/applicants")
-    public ApiResponse<List<ApplicantResponseDTO>> getApplicantsInfo(
+    public ApiResponse<ApplicantResponseDTO> getApplicantsInfo(
             @Parameter(description = "세미나 ID", required = true)
             @PathVariable Long seminarId
     ) {
-        List<ApplicantResponseDTO> result = seminarAdminQueryService.getApplicants(seminarId);
+        ApplicantResponseDTO result = seminarAdminQueryService.getApplicants(seminarId);
         return ApiResponse.onSuccess("세미나 신청자 조회에 성공했습니다.", result);
     }
 
@@ -301,8 +301,8 @@ public class SeminarAdminController {
                     content = @Content(schema = @Schema(implementation = ApiResponse.class)))
     })
     @GetMapping("/nums")
-    public ApiResponse<SeminarNumResponseDTO> getSeminarNums() {
-        SeminarNumResponseDTO result = seminarAdminQueryService.getSeminarNums();
+    public ApiResponse<List<SeminarNumResponseDTO>> getSeminarNums() {
+        List<SeminarNumResponseDTO> result = seminarAdminQueryService.getSeminarNums();
         return ApiResponse.onSuccess("세미나 회차 리스트 조회에 성공했습니다.", result);
     }
 }

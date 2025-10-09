@@ -82,7 +82,7 @@ public class LiveController {
 
     @PostMapping("/review")
     @Operation(summary = "세미나 리뷰 작성 API", description = "세미나 종료 후 리뷰를 작성합니다. Authorization 헤더에 Bearer 토큰이 필요합니다.",
-            security = {@SecurityRequirement(name = "bearer-key")})
+            security = {@SecurityRequirement(name = "JWT TOKEN")})
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
             description = "작성할 리뷰의 내용",
             required = true,
@@ -112,6 +112,13 @@ public class LiveController {
                             examples = {
                                     @ExampleObject(name = "리뷰 기간 아님", value = "{\"isSuccess\": false, \"code\": \"REVIEW_4041\", \"message\": \"리뷰 작성 기간이 아닙니다.\", \"result\": null}"),
                                     @ExampleObject(name = "학생 정보 없음", value = "{\"isSuccess\": false, \"code\": \"STUDENT_4041\", \"message\": \"해당 학생을 찾을 수 없습니다.\", \"result\": null}")
+                            })),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "409", description = "CONFLICT, 리소스 충돌",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiResponse.class),
+                            examples = {
+                                    @ExampleObject(name = "리뷰 중복 작성", value = "{\"isSuccess\": false, \"code\": \"REVIEW_4091\", \"message\": \"리뷰는 한 번만 작성 가능합니다.\", \"result\": null}")
                             }))
     })
     public ApiResponse<ReviewResponseDto> createReview(@AuthenticationPrincipal User user,
@@ -122,7 +129,7 @@ public class LiveController {
 
     @PostMapping("/attend")
     @Operation(summary = "세미나 라이브 출석 체크 API", description = "세미나 라이브 출석을 체크하고, 성공 시 라이브 URL을 반환합니다. Authorization 헤더에 Bearer 토큰이 필요합니다.",
-            security = {@SecurityRequirement(name = "bearer-key")})
+            security = {@SecurityRequirement(name = "JWT TOKEN")})
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "200", description = "OK, 출석 성공",

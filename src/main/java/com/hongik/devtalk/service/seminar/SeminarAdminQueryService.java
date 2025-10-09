@@ -1,10 +1,7 @@
 package com.hongik.devtalk.service.seminar;
 
 import com.hongik.devtalk.domain.*;
-import com.hongik.devtalk.domain.seminar.admin.dto.ApplicantResponseDTO;
-import com.hongik.devtalk.domain.seminar.admin.dto.QuestionResponseDTO;
-import com.hongik.devtalk.domain.seminar.admin.dto.SeminarInfoResponseDTO;
-import com.hongik.devtalk.domain.seminar.admin.dto.SeminarNumResponseDTO;
+import com.hongik.devtalk.domain.seminar.admin.dto.*;
 import com.hongik.devtalk.global.apiPayload.code.GeneralErrorCode;
 import com.hongik.devtalk.global.apiPayload.exception.GeneralException;
 import com.hongik.devtalk.repository.ApplicantRepository;
@@ -39,7 +36,7 @@ public class SeminarAdminQueryService {
      * @return 신청자 정보 DTO 리스트
      * @throws GeneralException 세미나가 존재하지 않을 경우
      */
-    public List<ApplicantResponseDTO> getApplicants(Long seminarId) {
+    public ApplicantResponseDTO getApplicants(Long seminarId) {
         // 세미나 존재 여부 확인
         Seminar seminar = seminarRepository.findById(seminarId)
                 .orElseThrow(() -> new GeneralException(GeneralErrorCode.SEMINARINFO_NOT_FOUND));
@@ -49,9 +46,15 @@ public class SeminarAdminQueryService {
         // 세미나 신청자 목록 조회
         List<Applicant> applicants = applicantRepository.findApplicantsBySeminarId(seminarId);
 
-        return applicants.stream()
-                .map(applicant -> ApplicantResponseDTO.from(applicant, topic))
+        // 학생 정보 DTO 변환
+        List<ApplicantResponseDTO.StudentInfoDTO> students = applicants.stream()
+                .map(applicant -> ApplicantResponseDTO.StudentInfoDTO.from(applicant, topic))
                 .toList();
+
+        return ApplicantResponseDTO.builder()
+                .seminarNum(seminar.getSeminarNum())
+                .students(students)
+                .build();
     }
 
     /**
@@ -88,6 +91,7 @@ public class SeminarAdminQueryService {
                 .toList();
 
         return QuestionResponseDTO.builder()
+                .seminarNum(seminar.getSeminarNum())
                 .speakers(speakers)
                 .students(students)
                 .build();
@@ -117,12 +121,40 @@ public class SeminarAdminQueryService {
     /**
      * 현재 등록되어 있는 모든 세미나의 회차 번호 리스트를 조회
      *
-     * @return 세미나 회차 번호(Integer) 리스트 DTO
+     * @return 세미나 id, 세미나 회차 번호 리스트 DTO
      */
-    public SeminarNumResponseDTO getSeminarNums() {
-        List<Integer> seminarNums = seminarRepository.findAllSeminarNums();
-        return SeminarNumResponseDTO.builder()
-                .seminarNums(seminarNums)
+    public List<SeminarNumResponseDTO> getSeminarNums() {
+        List<Seminar> seminars = seminarRepository.findAllByOrderBySeminarNumDesc();
+        return seminars.stream()
+                .map(seminar -> SeminarNumResponseDTO.builder()
+                        .seminarId(seminar.getId())
+                        .seminarNum(seminar.getSeminarNum())
+                        .build())
+                .toList();
+    }
+
+    /**
+     * 세미나 카드 리스트 조회
+     *
+     * @return 세미나 카드 리스트 DTO
+     */
+    public SeminarCardResponseDTO.SeminarCardDTOList getSeminarCardList() {
+
+        List<SeminarCardResponseDTO.SeminarCardDTO> seminarCards =
+                seminarRepository.findAllByOrderBySeminarNumDesc()
+                        .stream()
+                        .map(s -> SeminarCardResponseDTO.SeminarCardDTO.builder()
+                                .seminarId(s.getId())
+                                .seminarNum(s.getSeminarNum())
+                                .seminarTopic(s.getTopic())
+                                .seminarDate(s.getSeminarDate())
+                                .place(s.getPlace())
+                                .imageUrl(s.getThumbnailUrl())
+                                .build())
+                        .toList();
+
+        return SeminarCardResponseDTO.SeminarCardDTOList.builder()
+                .seminarList(seminarCards)
                 .build();
     }
 }

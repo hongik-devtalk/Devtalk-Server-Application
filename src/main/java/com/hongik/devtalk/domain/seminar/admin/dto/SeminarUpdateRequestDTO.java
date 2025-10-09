@@ -24,7 +24,6 @@ public class SeminarUpdateRequestDTO {
     private Integer seminarNum;
 
     @NotNull
-    @FutureOrPresent
     @Schema(description = "세미나 일시", example = "2025-12-10T10:00:00")
     private LocalDateTime seminarDate;
 
@@ -37,22 +36,18 @@ public class SeminarUpdateRequestDTO {
     private String topic;
 
     @NotNull
-    @FutureOrPresent
     @Schema(description = "세미나 활성화 시작일", example = "2025-12-01T00:00:00")
     private LocalDateTime activeStartDate;
 
     @NotNull
-    @FutureOrPresent
     @Schema(description = "세미나 활성화 종료일", example = "2025-12-15T23:59:59")
     private LocalDateTime activeEndDate;
 
     @NotNull
-    @FutureOrPresent
     @Schema(description = "세미나 신청 시작일", example = "2025-12-01T09:00:00")
     private LocalDateTime applyStartDate;
 
     @NotNull
-    @FutureOrPresent
     @Schema(description = "세미나 신청 종료일", example = "2025-12-05T18:00:00")
     private LocalDateTime applyEndDate;
 

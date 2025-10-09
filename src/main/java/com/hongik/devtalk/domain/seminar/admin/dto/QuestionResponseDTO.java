@@ -15,6 +15,7 @@ import java.util.List;
 @Builder
 public class QuestionResponseDTO {
 
+    private int seminarNum;
     private List<SpeakerDTO> speakers;
     private List<StudentQuestionDTO> students;
 

@@ -48,7 +48,7 @@ public class LiveService {
     //학생 인증 (이 학생이 현재 진행되고 있는 세미나를 신청했는지 확인하는 로직)
     @Transactional
     public ApiResponse<AuthStudentResponseDto> authStudent(AuthStudentRequestDto authStudentRequestDto) {
-        Optional<Student> optionalStudent = studentRepository.findByStudentNum(authStudentRequestDto.getStudentNum());
+        Optional<Student> optionalStudent = studentRepository.findByStudentNumAndName(authStudentRequestDto.getStudentNum(),authStudentRequestDto.getName());
         if (optionalStudent.isEmpty()) {
             // 비어있다면 실패 응답을 반환하고 메서드를 종료합니다.
             return ApiResponse.onFailure(GeneralErrorCode.FORBIDDEN, LiveError.STUDENT_NOT_FOUND);
@@ -211,6 +211,9 @@ public class LiveService {
         if(today.isBefore(seminarDate) || today.isAfter(deadline)) {
             // "리뷰 작성 기간이 아닙니다"와 같은 에러 응답 반환
             return ApiResponse.onFailure(CustomLiveErrorCode.REVIEW_PERIOD_INVALID, LiveError.REVIEW_PERIOD_INVALID);
+        }
+        if(reviewRepository.existsReviewByStudentAndSeminar(student, seminar)) {
+            throw new GeneralException(CustomLiveErrorCode.REVIEW_DUPLICATE_ERROR,"리뷰는 세미나당 1회만 작성가능합니다.");
         }
 
         Review review = Review.builder()
