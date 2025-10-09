@@ -29,6 +29,7 @@ public class SeminarListDto {
         LocalDateTime seminarDate;
         String place;
         String imageUrl;
+        Boolean isActive;
     }
 
 
