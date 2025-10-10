@@ -14,13 +14,16 @@ import com.hongik.devtalk.repository.QuestionRepository;
 import com.hongik.devtalk.repository.SessionRepository;
 import com.hongik.devtalk.repository.seminar.SeminarRepository;
 import com.hongik.devtalk.repository.seminar.StudentRepository;
+import com.hongik.devtalk.service.mail.MailSendService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -31,6 +34,9 @@ public class SeminarApplicantService {
     private final QuestionRepository questionRepository;
     private final SessionRepository sessionRepository;
     private final AttendanceRepository attendanceRepository;
+
+    // 메인 전송
+    private final MailSendService mailSendService;
 
     public ApiResponse<ApplicantResponseDto> createApplicant(ApplicantRequestDto applicantRequestDto) {
         //학생 정보 확인
@@ -97,12 +103,25 @@ public class SeminarApplicantService {
                 .build();
         attendanceRepository.save(initialAttendance);
 
+        // 메일 전송 로직 추가
+        boolean isMailSent = mailSendService.sendConfirmationMail(
+                applicantRequestDto.getEmail(),
+                applicantRequestDto.getParticipationType(),
+                applicantRequestDto.getName(),
+                seminar
+        );
+
         ApplicantResponseDto applicantResponseDto = ApplicantResponseDto.builder()
                 .studentId(student.getId())
                 .applicantId(applicant.getId())
                 .seminarId(seminar.getId())
+                .mailSent(isMailSent) // 추가
                 .build();
 
+        if(!isMailSent){
+            log.warn("세미나 신청 완료 메일 전송 실패 - {}",applicantRequestDto.getEmail());
+            return ApiResponse.onSuccess("신청은 완료되었으나, 확인 메일 전송에 실패하였습니다.", applicantResponseDto);
+        }
         return ApiResponse.onSuccess("성공적으로 신청이 완료되었습니다.",applicantResponseDto);
     }
 }

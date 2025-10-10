@@ -16,6 +16,9 @@ public class ReviewResponseDto {
     @Schema(description = "리뷰를 작성한 학생의 학번", example = "C123456")
     private String studentNum;
 
+    @Schema(description = "리뷰가 달린 세미나 아이디", example = "1")
+    private Long seminarId;
+
     @Schema(description = "리뷰가 달린 세미나 회차", example = "4")
     private int seminarNum;
 }

@@ -8,9 +8,25 @@ spring:
     username: ${RDS_USERNAME}
     password: ${RDS_PASSWORD}
 
+  # spring-boot-mail
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    protocol: smtp
+    username: dev.hongik@gmail.com # sender
+    password: ${SPRING_MAIL_PASSWORD}
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 5000
+          starttls:
+            enable: true
+
   jpa:
     hibernate:
-      ddl-auto: update  # 운영에서는 보통 none 또는 validate
+      ddl-auto: none  # 운영에서는 보통 none 또는 validate
     properties:
       hibernate:
         show_sql: false
@@ -28,8 +44,8 @@ spring:
 
   servlet:
     multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
+      max-file-size: 50MB
+      max-request-size: 50MB
 
 logging:
   level:
@@ -46,3 +62,12 @@ aws:
   s3:
     bucket: ${AWS_S3_BUCKET_NAME}
     cloudfront-domain: ${AWS_CLOUDFRONT_DOMAIN:}  # Optional CloudFront domain
+
+mail:
+  from:
+    address: dev.hongik@gmail.com
+  templates:
+    confirmation: https://hongik-devtalk-images.s3.ap-northeast-2.amazonaws.com/templates/confirmation/email_seminar_confirm.html
+    reminder:
+      offline: https://hongik-devtalk-images.s3.ap-northeast-2.amazonaws.com/templates/reminder/email_seminar_d-1_offline.html
+      online: https://hongik-devtalk-images.s3.ap-northeast-2.amazonaws.com/templates/reminder/email_seminar_d-1_online.html

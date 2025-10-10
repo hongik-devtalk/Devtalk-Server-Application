@@ -1,7 +1,7 @@
 package com.hongik.devtalk.service.userhome;
 
 import com.hongik.devtalk.domain.Seminar;
-import com.hongik.devtalk.domain.userhome.dto.SeminarInfoResponseDTO;
+import com.hongik.devtalk.domain.userhome.dto.UserHomeSeminarInfoResponseDTO;
 import com.hongik.devtalk.global.apiPayload.code.GeneralErrorCode;
 import com.hongik.devtalk.global.apiPayload.exception.GeneralException;
 import com.hongik.devtalk.repository.userhome.SeminarInfoRepository;
@@ -16,10 +16,10 @@ public class SeminarInfoService {
 
     private final SeminarInfoRepository seminarInfoRepository;
 
-    public SeminarInfoResponseDTO getSeminarById(Long seminarId){
+    public UserHomeSeminarInfoResponseDTO getSeminarById(Long seminarId){
         Seminar seminar = seminarInfoRepository.findById(seminarId)
                 .orElseThrow(() -> new GeneralException(GeneralErrorCode.SEMINARINFO_NOT_FOUND));
-        return SeminarInfoResponseDTO.builder()
+        return UserHomeSeminarInfoResponseDTO.builder()
                 .seminarId(seminar.getId())
                 .seminarNum(seminar.getSeminarNum())
                 .topic(seminar.getTopic())

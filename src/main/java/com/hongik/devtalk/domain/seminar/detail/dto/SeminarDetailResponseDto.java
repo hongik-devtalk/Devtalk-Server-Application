@@ -49,6 +49,7 @@ public class SeminarDetailResponseDto {
                 .thumbnailUrl(seminar.getThumbnailUrl())
                 .startDate(seminar.getStartDate())
                 .endDate(seminar.getEndDate())
+                .seminarDate(seminar.getSeminarDate())
                 .place(seminar.getPlace())
                 .fileUrls(urls)
                 .build();

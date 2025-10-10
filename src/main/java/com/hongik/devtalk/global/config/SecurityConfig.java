@@ -57,8 +57,9 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         var config = new org.springframework.web.cors.CorsConfiguration();
         config.setAllowedOrigins(java.util.List.of(
-                "https://localhost:5173",
-                "https://hongikdevtalk.com"
+                "http://localhost:5173",
+                "https://hongikdevtalk.com",
+                "https://api.hongikdevtalk.com"
         ));
         config.setAllowedMethods(java.util.List.of("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
         config.setAllowedHeaders(java.util.List.of("*"));
