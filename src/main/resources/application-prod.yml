@@ -26,7 +26,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update  # 운영에서는 보통 none 또는 validate
+      ddl-auto: none  # 운영에서는 보통 none 또는 validate
     properties:
       hibernate:
         show_sql: false
