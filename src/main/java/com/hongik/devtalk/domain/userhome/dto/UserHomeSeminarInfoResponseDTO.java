@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import java.util.List;
 
 import java.time.LocalDateTime;
 
@@ -31,5 +32,8 @@ public class UserHomeSeminarInfoResponseDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd (E) HH:mm", timezone = "Asia/Seoul")
     @Schema(type = "string",example = "2025.10.02 (목) 21:00")
     private LocalDateTime endDate;
+
+    // 해당 세미나의 세션 아이디 리스트
+    private List<Long> sessionIds;
 
 }

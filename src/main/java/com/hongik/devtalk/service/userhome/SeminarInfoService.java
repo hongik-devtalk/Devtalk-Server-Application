@@ -8,6 +8,7 @@ import com.hongik.devtalk.repository.userhome.SeminarInfoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +20,10 @@ public class SeminarInfoService {
     public UserHomeSeminarInfoResponseDTO getSeminarById(Long seminarId){
         Seminar seminar = seminarInfoRepository.findById(seminarId)
                 .orElseThrow(() -> new GeneralException(GeneralErrorCode.SEMINARINFO_NOT_FOUND));
+
+        List<Long> sessionIds = seminar.getSessions().stream()
+                .map(session -> session.getId())
+                .toList();
         return UserHomeSeminarInfoResponseDTO.builder()
                 .seminarId(seminar.getId())
                 .seminarNum(seminar.getSeminarNum())
@@ -27,6 +32,7 @@ public class SeminarInfoService {
                 .place(seminar.getPlace())
                 .startDate(seminar.getStartDate())
                 .endDate(seminar.getEndDate())
+                .sessionIds(sessionIds)
                 .build();
 
     }
