@@ -39,12 +39,6 @@ public class Seminar {
     //세미나가 진행되는 시간
     private LocalDateTime seminarDate;
 
-    // 세미나 활성화 시작 시간
-    private LocalDateTime activeStartDate;
-
-    // 세미나 활성화 종료 시간
-    private LocalDateTime activeEndDate;
-
     //신청 시작 시간
     private LocalDateTime startDate;
 
