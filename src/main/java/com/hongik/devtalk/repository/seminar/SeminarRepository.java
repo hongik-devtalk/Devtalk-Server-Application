@@ -24,5 +24,4 @@ public interface SeminarRepository extends JpaRepository<Seminar,Long> {
     boolean existsBySeminarNumAndIdNot(Integer seminarNum, Long id);
 
     Optional<Seminar> findBySeminarNum(int seminarNum);
-
 }
