@@ -23,7 +23,7 @@ public class ShowSeminar { // single row entity
     private boolean applicantActivate;
 
     // Live 활성화
-    private boolean LiveActivate;
+    private boolean liveActivate;
 
     // 업데이트 될 때마다 새로 찍힘
     @Column(nullable = false)
@@ -38,6 +38,6 @@ public class ShowSeminar { // single row entity
     public void update(Seminar seminar, boolean applicantActivate, boolean liveActivate) {
         this.seminar = seminar;
         this.applicantActivate = applicantActivate;
-        this.LiveActivate = liveActivate;
+        this.liveActivate = liveActivate;
     }
 }
