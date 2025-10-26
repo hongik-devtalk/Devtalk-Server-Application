@@ -35,19 +35,9 @@ public class SeminarRegisterRequestDTO {
     @Schema(description = "세미나 주제", example = "AI와 미래 사회")
     private String topic;
 
-    @NotNull
-    @Schema(description = "세미나 활성화 시작일", example = "2025-12-01T00:00:00")
-    private LocalDateTime activeStartDate;
-
-    @NotNull
-    @Schema(description = "세미나 활성화 종료일", example = "2025-12-15T23:59:59")
-    private LocalDateTime activeEndDate;
-
-    @NotNull
     @Schema(description = "세미나 신청 시작일", example = "2025-12-01T09:00:00")
     private LocalDateTime applyStartDate;
 
-    @NotNull
     @Schema(description = "세미나 신청 종료일", example = "2025-12-05T18:00:00")
     private LocalDateTime applyEndDate;
 
