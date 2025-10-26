@@ -55,17 +55,6 @@ public class SeminarAdminCommandService {
             throw new GeneralException(GeneralErrorCode.SEMINAR_NUM_ALREADY_EXISTS);
         }
 
-        // 세미나 기간 검증
-        validatePeriods(
-                request.getActiveStartDate(), request.getActiveEndDate(),
-                request.getApplyStartDate(), request.getApplyEndDate()
-        );
-
-        // 활성화 기간이 겹치는 세미나가 있는지 검증
-        if (seminarRepository.overlapsSeminar(request.getActiveStartDate(), request.getActiveEndDate())) {
-            throw new GeneralException(GeneralErrorCode.SEMINAR_ACTIVE_PERIOD_OVERLAP);
-        }
-
         // 연사 수와 프로필 사진 수 일치하는지 검증
         validateSpeakersAndProfiles(request.getSpeakers().size(), speakerProfiles);
 
@@ -84,8 +73,6 @@ public class SeminarAdminCommandService {
                 .topic(request.getTopic())
                 .seminarDate(request.getSeminarDate())
                 .place(request.getPlace())
-                .activeStartDate(request.getActiveStartDate())
-                .activeEndDate(request.getActiveEndDate())
                 .startDate(request.getApplyStartDate())
                 .endDate(request.getApplyEndDate())
                 .thumbnailUrl(thumbnailUrl)
@@ -181,25 +168,12 @@ public class SeminarAdminCommandService {
             throw new GeneralException(GeneralErrorCode.SEMINAR_NUM_ALREADY_EXISTS);
         }
 
-        // 세미나 기간 검증
-        validatePeriods(
-                request.getActiveStartDate(), request.getActiveEndDate(),
-                request.getApplyStartDate(), request.getApplyEndDate()
-        );
-
-        // 활성화 기간이 겹치는 세미나가 있는지 검증
-        if (seminarRepository.overlapsSeminarAndIdNot(seminarId, request.getActiveStartDate(), request.getActiveEndDate())) {
-            throw new GeneralException(GeneralErrorCode.SEMINAR_ACTIVE_PERIOD_OVERLAP);
-        }
-
         // 세미나 기본 정보 업데이트
         seminar.updateInfo(
                 request.getSeminarNum(),
                 request.getSeminarDate(),
                 request.getPlace(),
                 request.getTopic(),
-                request.getActiveStartDate(),
-                request.getActiveEndDate(),
                 request.getApplyStartDate(),
                 request.getApplyEndDate()
         );
@@ -378,18 +352,6 @@ public class SeminarAdminCommandService {
         }
 
         seminarRepository.delete(seminar);
-    }
-
-    // 세미나 기간 검증
-    // 시작일은 종료일 보다 항상 먼저 + 세미나 신청 기간은 세미나 활성화 기간 안에 포함되어야 함
-    private void validatePeriods(LocalDateTime activeStart, LocalDateTime activeEnd,
-                                 LocalDateTime applyStart, LocalDateTime applyEnd) {
-        if (!activeStart.isBefore(activeEnd) || !applyStart.isBefore(applyEnd)) {
-            throw new GeneralException(GeneralErrorCode.INVALID_PERIOD_ORDER);
-        }
-        if (applyStart.isBefore(activeStart) || applyEnd.isAfter(activeEnd)) {
-            throw new GeneralException(GeneralErrorCode.INVALID_SEMINAR_PERIOD);
-        }
     }
 
     // 연사 수와 프로필 이미지 수 일치하는지 검증
