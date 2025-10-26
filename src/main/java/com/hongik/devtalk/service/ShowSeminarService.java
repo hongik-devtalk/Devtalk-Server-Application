@@ -21,19 +21,24 @@ public class ShowSeminarService {
 
     @Transactional
     public ShowSeminarResponseDTO updateShowSeminar(ShowSeminarRequestDTO request){
-        // 1. 세미나 찾기
+        // 1. 세미나 찾기 (null 허용)
         Seminar seminar = null;
-        if (request.getSeminarNum() != 0) {
+        if (request.getSeminarNum() != null) {
             seminar = seminarRepository.findBySeminarNum(request.getSeminarNum())
                     .orElseThrow(() -> new IllegalArgumentException("해당 세미나 회차가 존재하지 않습니다."));
         }
+
+        // 2. 기존 노출 세미나 엔티티 가져오기
         ShowSeminar showSeminar = showSeminarRepository.findAll().stream().findFirst()
                 .orElse(ShowSeminar.builder().build()); // 없으면 새로 생성
 
+        // 3. 값 업데이트
         showSeminar.update(seminar, request.isApplicantActivate(), request.isLiveActivate());
 
+        // 4. 저장
         showSeminarRepository.save(showSeminar);
 
+        // 5. 응답 생성
         return ShowSeminarResponseDTO.builder()
                 .seminarId(seminar != null ? seminar.getId() : null)
                 .seminarNum(seminar != null ? seminar.getSeminarNum() : null)
