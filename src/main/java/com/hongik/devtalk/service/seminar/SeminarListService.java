@@ -25,12 +25,6 @@ public class SeminarListService {
                 seminarRepository.findAllByOrderBySeminarNumDesc()
                         .stream()
                         .map(s -> {
-                            boolean isActive = false;
-
-                            if (s.getStartDate() != null && s.getEndDate() != null) {
-                                isActive = now.isAfter(s.getStartDate()) && now.isBefore(s.getEndDate());
-                            }
-
                             return SeminarListDto.SeminarResDto.builder()
                                     .seminarId(s.getId())
                                     .seminarNum(s.getSeminarNum())
@@ -38,7 +32,6 @@ public class SeminarListService {
                                     .seminarDate(s.getSeminarDate())
                                     .place(s.getPlace())
                                     .imageUrl(s.getThumbnailUrl())
-                                    .isActive(isActive) // ✅ 신청 가능 여부
                                     .build();
                         })
                         .toList();
