@@ -72,14 +72,11 @@ public class Seminar {
     private List<Remind> reminds = new ArrayList<>();
 
     public void updateInfo(Integer seminarNum, LocalDateTime seminarDate, String place, String topic,
-                           LocalDateTime activeStartDate, LocalDateTime activeEndDate,
                            LocalDateTime applyStartDate, LocalDateTime applyEndDate) {
         this.seminarNum = seminarNum;
         this.seminarDate = seminarDate;
         this.place = place;
         this.topic = topic;
-        this.activeStartDate = activeStartDate;
-        this.activeEndDate = activeEndDate;
         this.startDate = applyStartDate;
         this.endDate = applyEndDate;
     }

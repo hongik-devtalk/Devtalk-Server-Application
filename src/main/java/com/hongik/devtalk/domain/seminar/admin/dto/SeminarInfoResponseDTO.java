@@ -21,8 +21,6 @@ public class SeminarInfoResponseDTO {
     private String topic;
     private LocalDateTime seminarDate;
     private String place;
-    private LocalDateTime activeStartDate;
-    private LocalDateTime activeEndDate;
     private LocalDateTime applyStartDate;
     private LocalDateTime applyEndDate;
     private String liveLink;
@@ -75,8 +73,6 @@ public class SeminarInfoResponseDTO {
                 .topic(seminar.getTopic())
                 .seminarDate(seminar.getSeminarDate())
                 .place(seminar.getPlace())
-                .activeStartDate(seminar.getActiveStartDate())
-                .activeEndDate(seminar.getActiveEndDate())
                 .applyStartDate(seminar.getStartDate())
                 .applyEndDate(seminar.getEndDate())
                 .liveLink(live != null ? live.getLiveUrl() : null)
