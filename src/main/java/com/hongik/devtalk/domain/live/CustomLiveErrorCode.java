@@ -17,7 +17,8 @@ public enum CustomLiveErrorCode implements BaseErrorCode {
     ATTENDANCE_NOT_YET_OPEN(HttpStatus.NOT_FOUND,"ATTEND_4041","출석체크 기간이 아닙니다."),
     STUDENT_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDENT_4041", "해당 학생을 찾을 수 없습니다."),
     APPLICANT_NOT_FOUND(HttpStatus.NOT_FOUND, "APPLICANT_4041", "해당 학생의 신청 정보를 찾을 수 없습니다."),
-    REVIEW_DUPLICATE_ERROR(HttpStatus.MULTI_STATUS,"REVIEW_4091","리뷰는 한 번만 작성 가능합니다.");
+    REVIEW_DUPLICATE_ERROR(HttpStatus.MULTI_STATUS,"REVIEW_4091","리뷰는 한 번만 작성 가능합니다."),
+    SEMINAR_NOT_FOUND(HttpStatus.NOT_FOUND, "SEMINAR_4041","세미나를 찾을 수 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

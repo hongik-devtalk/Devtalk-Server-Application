@@ -14,6 +14,7 @@ import com.hongik.devtalk.repository.AttendanceRepository;
 import com.hongik.devtalk.repository.auth.RefreshTokenRepository;
 import com.hongik.devtalk.repository.review.ReviewRepository;
 import com.hongik.devtalk.repository.seminar.SeminarRepository;
+import com.hongik.devtalk.repository.seminar.ShowSeminarRepository;
 import com.hongik.devtalk.repository.seminar.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +45,7 @@ public class LiveService {
     private final ReviewRepository reviewRepository;
     private final AttendanceRepository attendanceRepository;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final ShowSeminarRepository showSeminarRepository;
 
     //학생 인증 (이 학생이 현재 진행되고 있는 세미나를 신청했는지 확인하는 로직)
     @Transactional
@@ -138,27 +140,31 @@ public class LiveService {
 
         Student student = optionalStudent.get();
 
+        Seminar liveSeminar = showSeminarRepository.findFirstByLiveActivateTrue()
+                .map(ShowSeminar::getSeminar)
+                .orElseThrow(() -> new GeneralException(CustomLiveErrorCode.SEMINAR_NOT_FOUND, "현재 출석체크가 가능한 세미나가 없습니다."));
+
+        if (liveSeminar == null) {
+            throw new GeneralException(CustomLiveErrorCode.SEMINAR_NOT_FOUND, "현재 진행중인 세미나가 없습니다.");
+        }
+
         Applicant latestApplicant = applicantRepository.findFirstByStudentOrderBySeminar_SeminarDateDesc(student);
         if(latestApplicant == null) {return ApiResponse.onFailure(GeneralErrorCode.FORBIDDEN,LiveError.APPLICANT_NOT_FOUND);}
 
-        Seminar seminar = latestApplicant.getSeminar();
-        if(seminar.getLive() == null || seminar.getLive().getLiveUrl() == null) {
-            return ApiResponse.onFailure(CustomLiveErrorCode.LIVEURL_NOT_FOUND, LiveError.LIVEURL_NOT_FOUND);
-        }
 
-        Attendance attendance = attendanceRepository.findByApplicantAndSeminar(latestApplicant, seminar)
+        Attendance attendance = attendanceRepository.findByApplicantAndSeminar(latestApplicant, liveSeminar)
                 .orElseThrow(() -> new GeneralException(CustomLiveErrorCode.APPLICANT_NOT_FOUND, "신청 정보를 찾을 수 없습니다."));
 
         // 3. 이미 출석(PRESENT) 또는 지각(LATE) 처리된 경우, 상태를 바꾸지 않고 바로 반환합니다.
         if (attendance.getStatus() != AttendanceStatus.ABSENT) {
             AttendanceResponseDto responseDto = AttendanceResponseDto.builder()
-                    .liveUrl(seminar.getLive().getLiveUrl())
+                    .liveUrl(liveSeminar.getLive().getLiveUrl())
                     .attendanceStatus(attendance.getStatus()) // 기존 상태를 그대로 반환
                     .build();
             return ApiResponse.onSuccess("이미 출석 처리된 사용자입니다.", responseDto);
         }
 
-        LocalDateTime realSeminarTime = seminar.getSeminarDate(); // 실제 세미나 시작 시간
+        LocalDateTime realSeminarTime = liveSeminar.getSeminarDate(); // 실제 세미나 시작 시간
         LocalDateTime checkInStartTime = realSeminarTime.minusMinutes(10); // 출석 체크 시작 시간 (시작 10분 전)
         LocalDateTime onTimeDeadline = realSeminarTime.plusMinutes(80);   // 출석(PRESENT) 마감 시간 (시작 80분 후)
 
@@ -180,7 +186,7 @@ public class LiveService {
 
         // 7. 최종 응답 반환
         AttendanceResponseDto responseDto = AttendanceResponseDto.builder()
-                .liveUrl(seminar.getLive().getLiveUrl())
+                .liveUrl(liveSeminar.getLive().getLiveUrl())
                 .attendanceStatus(newStatus) // 새로 변경된 상태를 반환
                 .build();
 

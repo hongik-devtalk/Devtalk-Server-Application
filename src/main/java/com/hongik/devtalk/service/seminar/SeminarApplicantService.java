@@ -13,6 +13,7 @@ import com.hongik.devtalk.repository.AttendanceRepository;
 import com.hongik.devtalk.repository.QuestionRepository;
 import com.hongik.devtalk.repository.SessionRepository;
 import com.hongik.devtalk.repository.seminar.SeminarRepository;
+import com.hongik.devtalk.repository.seminar.ShowSeminarRepository;
 import com.hongik.devtalk.repository.seminar.StudentRepository;
 import com.hongik.devtalk.service.mail.MailSendService;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,7 @@ public class SeminarApplicantService {
     private final QuestionRepository questionRepository;
     private final SessionRepository sessionRepository;
     private final AttendanceRepository attendanceRepository;
+    private final ShowSeminarRepository showSeminarRepository;
 
     // 메인 전송
     private final MailSendService mailSendService;
@@ -59,7 +61,10 @@ public class SeminarApplicantService {
         studentRepository.save(student);
 
         //현재 신청 가능한 세미나
-        Seminar seminar = seminarRepository.findSeminarInApplicationPeriod(LocalDateTime.now());
+        Seminar seminar = showSeminarRepository.findFirstByApplicantActivateTrue()
+                .map(ShowSeminar::getSeminar) // ShowSeminar 객체에서 Seminar 객체를 추출
+                .orElseThrow(() -> new GeneralException(CustomSeminarApplicantErrorCode.SEMINAR_APPLICANT_ERROR));
+
         if (seminar == null) {
             throw new GeneralException(CustomSeminarApplicantErrorCode.SEMINAR_APPLICANT_ERROR);
         }
