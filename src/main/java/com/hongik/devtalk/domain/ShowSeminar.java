@@ -25,7 +25,7 @@ public class ShowSeminar { // single row entity
     // Live 활성화
     private boolean LiveActivate;
 
-    // 가장 최근에 업데이트 된 정보를 기준으로 조회하기
+    // 업데이트 될 때마다 새로 찍힘
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
