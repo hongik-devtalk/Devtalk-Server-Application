@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "홈화면 노출 세미나 등록 DTO")
-public class ShowSeminarRequest {
+public class ShowSeminarRequestDTO {
     @Schema(description = "노출할 SeminarNum 없으면 null")
     Integer seminarNum; // null 값 처리해야함
 

@@ -35,4 +35,9 @@ public class ShowSeminar { // single row entity
         this.updatedAt = LocalDateTime.now();
     }
 
+    public void update(Seminar seminar, boolean applicantActivate, boolean liveActivate) {
+        this.seminar = seminar;
+        this.applicantActivate = applicantActivate;
+        this.LiveActivate = liveActivate;
+    }
 }
