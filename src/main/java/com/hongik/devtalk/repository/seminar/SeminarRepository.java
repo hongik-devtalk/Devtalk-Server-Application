@@ -24,4 +24,8 @@ public interface SeminarRepository extends JpaRepository<Seminar,Long> {
     boolean existsBySeminarNumAndIdNot(Integer seminarNum, Long id);
 
     Optional<Seminar> findBySeminarNum(int seminarNum);
+
+    @Query("select s from Seminar s where s.seminarDate between :from and :to")
+    List<Seminar> findStartingBetween(@Param("from") LocalDateTime from,
+                                      @Param("to")   LocalDateTime to);
 }

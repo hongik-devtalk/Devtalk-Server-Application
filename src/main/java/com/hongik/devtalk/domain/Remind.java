@@ -7,6 +7,11 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "remind",
+        uniqueConstraints = @UniqueConstraint(
+                name = "uq_remind_once",
+                columnNames = {"seminar_id","applicant_id","scheduled_at"}
+        ))
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

@@ -3,6 +3,7 @@ package com.hongik.devtalk.repository;
 import com.hongik.devtalk.domain.Applicant;
 import com.hongik.devtalk.domain.Seminar;
 import com.hongik.devtalk.domain.Student;
+import com.hongik.devtalk.domain.enums.ParticipationType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -27,4 +28,15 @@ public interface ApplicantRepository extends JpaRepository<Applicant,Long> {
             "join fetch a.student s " +
             "where a.seminar.id = :seminarId")
     List<Applicant> findApplicantsBySeminarId(Long seminarId);
+
+    // 신청자 조회 : 세미나별 + 참여유형별 + 학생
+    @Query("""
+      select distinct a from Applicant a
+      join fetch a.student s
+      where a.seminar.id = :seminarId
+      and a.participationType = :type
+    """)
+    List<Applicant> findBySeminarIdAndTypeFetchStudent(Long seminarId,
+                                                       ParticipationType type);
+
 }
