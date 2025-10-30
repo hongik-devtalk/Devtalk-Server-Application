@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum CustomLiveErrorCode implements BaseErrorCode {
     SEMINAR_TIME_ERROR(HttpStatus.NOT_FOUND,"SEMINAR_4041","세미나 진행 및 리뷰작성 기간이 아닙니다"),
-    LIVEURL_NOT_FOUND(HttpStatus.NOT_FOUND,"SEMINARLIVE_4041","세미나 라이브 URL이 아직 등록되지 않았습니다"),
+    LIVE_URL_NOT_FOUND(HttpStatus.NOT_FOUND,"SEMINARLIVE_4041","세미나 라이브 URL이 아직 등록되지 않았습니다"),
     REVIEW_PERIOD_INVALID(HttpStatus.NOT_FOUND,"REVIEW_4041","리뷰 작성 기간이 아닙니다."),
     ALREADY_ATTEND(HttpStatus.MULTI_STATUS,"ATTEND_4000","이미 출석체크 되었습니다."),
     ATTENDANCE_NOT_YET_OPEN(HttpStatus.NOT_FOUND,"ATTEND_4041","출석체크 기간이 아닙니다."),
