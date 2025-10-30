@@ -148,6 +148,10 @@ public class LiveService {
             throw new GeneralException(CustomLiveErrorCode.SEMINAR_NOT_FOUND, "현재 진행중인 세미나가 없습니다.");
         }
 
+        if(liveSeminar.getLive().getLiveUrl() == null){
+            throw new GeneralException(CustomLiveErrorCode.LIVE_URL_NOT_FOUND,"현재 라이브 URL이 등록되지 않았습니다.");
+        }
+
         Applicant latestApplicant = applicantRepository.findFirstByStudentOrderBySeminar_SeminarDateDesc(student);
         if(latestApplicant == null) {return ApiResponse.onFailure(GeneralErrorCode.FORBIDDEN,LiveError.APPLICANT_NOT_FOUND);}
 
