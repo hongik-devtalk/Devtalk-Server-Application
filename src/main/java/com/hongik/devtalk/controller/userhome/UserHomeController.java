@@ -1,8 +1,6 @@
 package com.hongik.devtalk.controller.userhome;
 
-import com.hongik.devtalk.domain.userhome.dto.ReviewListResponseDTO;
 import com.hongik.devtalk.domain.userhome.dto.UserHomeSeminarInfoResponseDTO;
-import com.hongik.devtalk.domain.userhome.dto.SpeakerListResponseDTO;
 import com.hongik.devtalk.global.apiPayload.ApiResponse;
 import com.hongik.devtalk.service.userhome.SeminarInfoService;
 import io.swagger.v3.oas.annotations.Operation;
