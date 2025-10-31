@@ -47,17 +47,4 @@ public class UserHomeController {
         return ResponseEntity.ok(ApiResponse.onSuccess("세미나 정보 조회 성공", result));
     }
 
-    // 2차 개발 사항
-    @GetMapping("/speaker/{seminarId}")
-    @Operation(summary = "[2차] 해당 세미나 연사 리스트 조회")
-    public ResponseEntity<ApiResponse<SpeakerListResponseDTO>> getSpeakerList(@PathVariable Long seminarId){
-        return ResponseEntity.ok().build(); // 임시
-    }
-
-    @GetMapping("/review/{seminarId}")
-    @Operation(summary = "[2차] 해당 세미나 후기 리스트 조회")
-    public ResponseEntity<ApiResponse<ReviewListResponseDTO>> getReviewList(@PathVariable Long seminarId){
-        return ResponseEntity.ok().build(); // 임시
-    }
-
 }
