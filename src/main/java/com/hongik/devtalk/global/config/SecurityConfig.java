@@ -38,6 +38,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/admin/login",
                                 "/admin/refresh").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/admin/home/inquiry-link").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/admin/home/reviews").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/user/live/attend","/user/live/review").authenticated()
                         .anyRequest().permitAll())
