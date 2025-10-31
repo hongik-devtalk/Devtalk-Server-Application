@@ -35,6 +35,7 @@ public enum GeneralErrorCode implements BaseErrorCode {
     
     // 링크 에러
     INQUIRY_LINK_NOT_FOUND(HttpStatus.NOT_FOUND, "LINK_4041", "문의하기 링크를 찾을 수 없습니다."),
+    FAQ_LINK_NOT_FOUND(HttpStatus.NOT_FOUND, "LINK_4042", "FAQ 링크를 찾을 수 없습니다."),
 
     // 후기 에러
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW_4041", "존재하지 않는 후기입니다."),

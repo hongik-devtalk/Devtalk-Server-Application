@@ -5,6 +5,7 @@ import com.hongik.devtalk.domain.mainpage.dto.*;
 import com.hongik.devtalk.domain.enums.ImageType;
 import com.hongik.devtalk.service.mainpage.MainpageImagesService;
 import com.hongik.devtalk.service.mainpage.InquiryLinkService;
+import com.hongik.devtalk.service.mainpage.FaqLinkService;
 import com.hongik.devtalk.service.mainpage.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -29,6 +30,7 @@ public class MainpageController {
 
     private final MainpageImagesService mainpageImagesService;
     private final InquiryLinkService inquiryLinkService;
+    private final FaqLinkService faqLinkService;
     private final ReviewService reviewService;
 
     // Images APIs
@@ -215,6 +217,82 @@ public class MainpageController {
         
         DeleteLinkResponseDto result = inquiryLinkService.deleteInquiryLink();
         return ApiResponse.onSuccess("문의하기 링크를 삭제했습니다.", result);
+    }
+
+    // FAQ Link APIs
+    @GetMapping("/faq-link")
+    @Operation(
+            summary = "FAQ 링크 조회",
+            description = "FAQ 링크 조회 (인증 불필요)"
+    )
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "링크 조회 성공",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class))
+            )
+    })
+    public ApiResponse<FaqLinkResponseDto> getFaqLink() {
+        FaqLinkResponseDto result = faqLinkService.getFaqLink();
+        return ApiResponse.onSuccess("FAQ 링크를 조회했습니다.", result);
+    }
+
+    @PostMapping("/faq-link")
+    @Operation(
+            summary = "FAQ 링크 추가/수정",
+            description = "FAQ 링크 추가/수정"
+    )
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "링크 저장 성공",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class))
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "400",
+                    description = "잘못된 요청 (URL 형식 오류, 필수 필드 누락)",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class))
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "401",
+                    description = "인증 실패",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class))
+            )
+    })
+    public ApiResponse<FaqLinkResponseDto> upsertFaqLink(
+            @AuthenticationPrincipal User user,
+            @Valid @RequestBody FaqLinkRequestDto request
+    ) {
+        String updatedBy = user.getUsername(); // 인증된 관리자의 loginId
+        
+        FaqLinkResponseDto result = faqLinkService.upsertFaqLink(request, updatedBy);
+        return ApiResponse.onSuccess("FAQ 링크를 저장했습니다.", result);
+    }
+
+    @DeleteMapping("/faq-link")
+    @Operation(
+            summary = "FAQ 링크 삭제",
+            description = "FAQ 링크 삭제"
+    )
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "링크 삭제 성공",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class))
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "401",
+                    description = "인증 실패",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class))
+            )
+    })
+    public ApiResponse<DeleteLinkResponseDto> deleteFaqLink(
+            @AuthenticationPrincipal User user
+    ) {
+        // 인증은 Spring Security에서 자동으로 처리됨 (ROLE_ADMIN 권한 필요)
+        
+        DeleteLinkResponseDto result = faqLinkService.deleteFaqLink();
+        return ApiResponse.onSuccess("FAQ 링크를 삭제했습니다.", result);
     }
 
     // Reviews APIs
