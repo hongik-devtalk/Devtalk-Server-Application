@@ -145,24 +145,16 @@ public class MainpageController {
     @GetMapping("/inquiry-link")
     @Operation(
             summary = "문의하기(카카오톡) 링크 조회",
-            description = "문의하기(카카오톡) 링크 조회"
+            description = "문의하기(카카오톡) 링크 조회 (인증 불필요)"
     )
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "200",
                     description = "링크 조회 성공",
                     content = @Content(schema = @Schema(implementation = ApiResponse.class))
-            ),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                    responseCode = "401",
-                    description = "인증 실패",
-                    content = @Content(schema = @Schema(implementation = ApiResponse.class))
             )
     })
-    public ApiResponse<InquiryLinkResponseDto> getInquiryLink(
-            @AuthenticationPrincipal User user
-    ) {
-        // 인증은 Spring Security에서 자동으로 처리됨 (ROLE_ADMIN 권한 필요)
+    public ApiResponse<InquiryLinkResponseDto> getInquiryLink() {
         InquiryLinkResponseDto result = inquiryLinkService.getInquiryLink();
         return ApiResponse.onSuccess("문의하기 링크를 조회했습니다.", result);
     }
@@ -229,23 +221,16 @@ public class MainpageController {
     @GetMapping("/reviews")
     @Operation(
             summary = "후기 카드 전체 조회",
-            description = "메인페이지에 노출할 후기 카드 전체 조회 (isPublic=true AND isNote=true인 후기만, 순위순 정렬)"
+            description = "메인페이지에 노출할 후기 카드 전체 조회 (isPublic=true AND isNote=true인 후기만, 순위순 정렬, 인증 불필요)"
     )
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "200",
                     description = "후기 카드 조회 성공",
                     content = @Content(schema = @Schema(implementation = ApiResponse.class))
-            ),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                    responseCode = "401",
-                    description = "인증 실패",
-                    content = @Content(schema = @Schema(implementation = ApiResponse.class))
             )
     })
-    public ApiResponse<List<ReviewResponseDto>> getReviews(
-            @AuthenticationPrincipal User user
-    ) {
+    public ApiResponse<List<ReviewResponseDto>> getReviews() {
         List<ReviewResponseDto> result = reviewService.getAllReviews();
         return ApiResponse.onSuccess("후기 카드를 조회했습니다.", result);
     }
