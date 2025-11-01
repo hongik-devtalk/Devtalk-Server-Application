@@ -213,6 +213,13 @@ public class LiveService {
 
         Seminar seminar = latestApplicant.getSeminar();
 
+        Attendance attendance = attendanceRepository.findByApplicantAndSeminar(latestApplicant, seminar)
+                .orElseThrow(() -> new GeneralException(CustomLiveErrorCode.APPLICANT_NOT_FOUND, "신청 정보를 찾을 수 없습니다."));
+
+        if(attendance.getStatus() == AttendanceStatus.ABSENT) {
+            throw new GeneralException(CustomLiveErrorCode.ATTEND_ABSENT,"세미나에 출석한 학생만 리뷰작성이 가능합니다.");
+        }
+
         LocalDate seminarDate = seminar.getSeminarDate().toLocalDate();
         LocalDate deadline = seminarDate.plusDays(10);
         LocalDate today = LocalDate.now();
