@@ -56,10 +56,10 @@ public class ApplicantResponseDTO {
                     ? student.getGrade() + "학년"
                     : student.getGradeEtc();
 
-            // inflowPath가 없으면 inflowPathEtc를 사용
-            String inflowPathInfo = (applicant.getInflowPath() != null)
-                    ? applicant.getInflowPath().name()
-                    : applicant.getInflowPathEtc();
+            // inflowPathEtc가 없으면 inflowPath를 사용
+            String inflowPathInfo = (applicant.getInflowPathEtc() != null)
+                    ? applicant.getInflowPathEtc()
+                    : applicant.getInflowPath().name();
 
             return StudentInfoDTO.builder()
                     .topic(topic)
