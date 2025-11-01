@@ -49,6 +49,7 @@ public enum GeneralErrorCode implements BaseErrorCode {
 
     // 관리자 에러
     ADMIN_NOT_FOUND(HttpStatus.NOT_FOUND, "ADMIN_4041", "관리자 정보가 없습니다."),
+    CANNOT_DELETE_MYSELF(HttpStatus.FORBIDDEN,"ADMIN_4031","자신의 계정은 삭제할 수 없습니다."),
 
     // API/라우팅 에러
     API_NOT_FOUND(HttpStatus.NOT_FOUND, "API_4041", "존재하지 않는 API입니다."),

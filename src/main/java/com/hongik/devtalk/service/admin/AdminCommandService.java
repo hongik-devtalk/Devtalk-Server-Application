@@ -66,7 +66,7 @@ public class AdminCommandService {
         return toLoginResDTO(admin.getId(), accessToken, refreshToken);
     }
 
-    public Admin joinAdmin (AdminLoginDTO.LoginReqDTO request) {
+    public Admin joinAdmin (AdminLoginDTO.JoinReqDTO request) {
 
         if (adminRepository.existsByLoginId(request.getLoginId())){
             throw new GeneralException(DUPLICATE_LOGINID);
@@ -75,6 +75,7 @@ public class AdminCommandService {
         String passwordHash = passwordEncoder.encode(request.getPassword());
 
         Admin newAdmin = Admin.builder()
+                .name(request.getName())
                 .loginId(request.getLoginId())
                 .loginPw(passwordHash)
                 .status(AdminStatus.ACTIVE)
@@ -83,7 +84,13 @@ public class AdminCommandService {
         return adminRepository.save(newAdmin);
     }
 
-    public void deleteAdmin (Long adminId) {
+    public void deleteAdmin (Long adminId, String actorLoginId) {
+
+        Admin admin = adminRepository.findByLoginId(actorLoginId).orElseThrow(() -> new GeneralException(ADMIN_NOT_FOUND));
+
+        if (adminId.equals(admin.getId())) {
+            throw new GeneralException(CANNOT_DELETE_MYSELF);
+        }
 
         adminRepository.deleteById(adminId);
     }
