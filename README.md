@@ -1,5 +1,5 @@
 # 🗣️ Devtalk Backend
-
+https://hongikdevtalk.com/
 > **홍익대학교 세미나 플랫폼 ‘Devtalk’**의 백엔드 서버입니다.  
 > 세미나 신청부터 라이브 참여, 후기 작성, 관리자용 세미나 관리까지  
 > 전 과정을 통합 관리하는 **Spring Boot 기반 REST API 서버**입니다.
