@@ -27,6 +27,13 @@ public enum GeneralErrorCode implements BaseErrorCode {
     // 연사 에러
     SPEAKER_NOT_FOUND(HttpStatus.NOT_FOUND, "SPEAKER_4041", "해당 연사를 찾을 수 없습니다."),
 
+    // 학생 에러
+    STUDENT_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDENT_4041", "해당 학생을 찾을 수 없습니다."),
+
+    // 출석 에러
+    ALREADY_PRESENT(HttpStatus.BAD_REQUEST,"ATTEND_4001","이미 출석체크 되어 있습니다."),
+    ALREADY_ABSENT(HttpStatus.BAD_REQUEST,"ATTEND_4002","이미 출석체크해제 되어 있습니다."),
+
     // 세미나 자료 에러
     LIVE_FILE_NOT_FOUND(HttpStatus.NOT_FOUND, "LIVE_FILE_4041", "해당 세미나 자료를 찾을 수 없습니다."),
 

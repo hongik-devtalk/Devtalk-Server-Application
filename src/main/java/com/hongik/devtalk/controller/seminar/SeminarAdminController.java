@@ -7,6 +7,7 @@ import com.hongik.devtalk.service.seminar.SeminarAdminQueryService;
 import com.hongik.devtalk.service.seminar.SeminarReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -19,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@Tag(name = "[Admin]Seminar", description = "어드민 - 세미나 관련 API - by 박유정")
+@Tag(name = "[Admin]Seminar", description = "어드민 - 세미나 관련 API - by 박유정, 남성현")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/admin/seminars")
@@ -286,6 +287,18 @@ public class SeminarAdminController {
     ) {
         ApplicantResponseDTO result = seminarAdminQueryService.getApplicants(seminarId);
         return ApiResponse.onSuccess("세미나 신청자 조회에 성공했습니다.", result);
+    }
+
+    @Operation(summary = "세미나 신청자 출석 체크 -by 남성현", description = "세미나 출석 체크 기능.")
+    @Parameters({@Parameter(name="check",description = "true이면 출석체크, false이면 출석체크해제.")})
+    @PostMapping("/{seminarId}/applicants/{studentId}")
+    public ApiResponse<Void> checkingAttendance(
+            @PathVariable("seminarId") Long seminarId,
+            @PathVariable("studentId") Long studentId,
+            @RequestParam Boolean check ){
+
+        seminarAdminCommandService.checkAttendence(seminarId, studentId, check);
+        return ApiResponse.onSuccess("출석 체크 완료하였습니다.");
     }
 
     @Operation(summary = "세미나 연사별 질문 조회", description = "세미나 연사별 질문 정보를 조회합니다.")

@@ -1,6 +1,8 @@
 package com.hongik.devtalk.domain;
 
 import com.hongik.devtalk.domain.enums.AttendanceStatus;
+import com.hongik.devtalk.global.apiPayload.code.GeneralErrorCode;
+import com.hongik.devtalk.global.apiPayload.exception.GeneralException;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,6 +36,15 @@ public class Attendance {
     private LocalDateTime checkInTime;
 
     public void updateAttendance(AttendanceStatus status, LocalDateTime checkInTime) {
+
+        if (this.status == status) {
+            if (status == AttendanceStatus.PRESENT) {
+                throw new GeneralException(GeneralErrorCode.ALREADY_PRESENT);
+            } else if (status == AttendanceStatus.ABSENT) {
+                throw new GeneralException(GeneralErrorCode.ALREADY_ABSENT);
+            }
+        }
+
         this.status = status;
         this.checkInTime = checkInTime;
     }

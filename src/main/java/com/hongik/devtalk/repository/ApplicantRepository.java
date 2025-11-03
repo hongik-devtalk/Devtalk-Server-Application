@@ -39,4 +39,5 @@ public interface ApplicantRepository extends JpaRepository<Applicant,Long> {
     List<Applicant> findBySeminarIdAndTypeFetchStudent(Long seminarId,
                                                        ParticipationType type);
 
+    Optional<Applicant> findBySeminarAndStudent(Seminar seminar, Student student);
 }
