@@ -7,16 +7,16 @@
 ---
 ## 🚀 Tech Stack
 
-| Category | Stack                     |
-|-----------|---------------------------|
-| **Language** | Java 21                   |
-| **Framework** | Spring Boot 3.x           |
-| **ORM / DB** | Spring Data JPA, MySQL    |
-| **Auth / Security** | Spring Security, JWT      |
-| **Infra / Storage** | AWS S3, EC2/ECS, RDS      |
+| Category | Stack                             |
+|-----------|-----------------------------------|
+| **Language** | Java 17                           |
+| **Framework** | Spring Boot 3.x                   |
+| **ORM / DB** | Spring Data JPA, MySQL            |
+| **Auth / Security** | Spring Security, JWT              |
+| **Infra / Storage** | AWS S3, EC2/ECS, RDS              |
 | **Mail Service** | JavaMailSender, MimeMessageHelper |
-| **Build / Deploy** | Gradle, Docker, GitHub Actions |
-| **Etc** | Lombok, Validation, Scheduler |
+| **Build / Deploy** | Gradle, Docker, GitHub Actions    |
+| **Etc** | Lombok, Validation, Scheduler     |
 
 ## 🧱 Architecture
 
@@ -140,14 +140,14 @@ Developer (push main)
 
 ## 🧑‍💻 Contributors
 
-| 이름                    | 역할 | 담당 기능                                                         |
-|-----------------------|------|---------------------------------------------------------------|
-| **박유정** @yujeong430   | 백엔드 | 어드민 세미나 관리 전반 (등록, 수정, 삭제, 후기/출석/질문 관리)                       |
-| **남성현** @nsh0919      | 백엔드 | 관리자 인증 및 권한 관리 (로그인, 토큰, 아이디 관리), 출석체크 로직 구현                  |
-| **박서영** @Mymyseoyoung | 백엔드 | 유저 세미나 상세 조회 (세미나, 세션, 후기) 및 신청 기능                            |
-| **황신애** @shinae1023   | 백엔드 | 세미나 신청 인증, 라이브 입장/출석체크, 리뷰 작성 기능                              |
-| **이태훈** @LABYRINTH3   | 백엔드 | 홈 화면 관리 기능 (홍보 이미지, FAQ/문의 링크, 후기 카드)                         |
-| **박소연** @soyeoneeii   | 백엔드 | 유저 홈화면 세미나 조회, 어드민 노출 세미나 설정, 이메일 발송 로직, 서버 배포 자동화 및 CI/CD 구축 |
-| **박은서** @weeeeestern  | 백엔드 | 이메일 발송 로직, 서버 배포 자동화 및 CI/CD 구축 , SSM+KMS 기반 런타임 시크릿 주입   | 
+| 이름 | 역할 | 담당 기능 |
+|------|------|------------|
+| [@yujeong430](https://github.com/yujeong430) | 백엔드 | 어드민 세미나 관리 전반 (등록, 수정, 삭제, 후기/출석/질문 관리) |
+| [@nsh0919](https://github.com/nsh0919) | 백엔드 | 관리자 인증 및 권한 관리 (로그인, 토큰, 아이디 관리), 출석체크 로직 구현 |
+| [@Mymyseoyoung](https://github.com/Mymyseoyoung) | 백엔드 | 유저 세미나 상세 조회 (세미나, 세션, 후기) 및 신청 기능 |
+| [@shinae1023](https://github.com/shinae1023) | 백엔드 | 세미나 신청 인증, 라이브 입장/출석체크, 리뷰 작성 기능 |
+| [@LABYRINTH3](https://github.com/LABYRINTH3) | 백엔드 | 홈 화면 관리 기능 (홍보 이미지, FAQ/문의 링크, 후기 카드) |
+| [@soyeoneeii](https://github.com/soyeoneeii) | 백엔드 | 유저 홈화면 세미나 조회, 어드민 노출 세미나 설정, 이메일 발송 로직, 서버 배포 자동화 및 CI/CD 구축 |
+| [@weeeeestern](https://github.com/weeeeestern) | 백엔드 | 이메일 발송 로직, 서버 배포 자동화 및 CI/CD 구축, SSM+KMS 기반 런타임 시크릿 주입 |
 
 ---
