@@ -1,16 +1,20 @@
 package com.hongik.devtalk.service.seminar;
 
 import com.hongik.devtalk.domain.*;
+import com.hongik.devtalk.domain.enums.AttendanceStatus;
 import com.hongik.devtalk.domain.enums.SeminarStatus;
 import com.hongik.devtalk.domain.seminar.admin.dto.SeminarRegisterRequestDTO;
 import com.hongik.devtalk.domain.seminar.admin.dto.SeminarInfoResponseDTO;
 import com.hongik.devtalk.domain.seminar.admin.dto.SeminarUpdateRequestDTO;
 import com.hongik.devtalk.global.apiPayload.code.GeneralErrorCode;
 import com.hongik.devtalk.global.apiPayload.exception.GeneralException;
+import com.hongik.devtalk.repository.ApplicantRepository;
+import com.hongik.devtalk.repository.AttendanceRepository;
 import com.hongik.devtalk.repository.SessionRepository;
 import com.hongik.devtalk.repository.live.LiveRepository;
 import com.hongik.devtalk.repository.liveFile.LiveFileRepository;
 import com.hongik.devtalk.repository.seminar.SeminarRepository;
+import com.hongik.devtalk.repository.seminar.StudentRepository;
 import com.hongik.devtalk.repository.speaker.SpeakerRepository;
 import com.hongik.devtalk.service.S3Service;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +35,9 @@ public class SeminarAdminCommandService {
     private final SessionRepository sessionRepository;
     private final LiveFileRepository liveFileRepository;
     private final LiveRepository liveRepository;
+    private final ApplicantRepository applicantRepository;
+    private final StudentRepository studentRepository;
+    private final AttendanceRepository attendanceRepository;
     private final S3Service s3Service;
 
     /**
@@ -352,6 +359,29 @@ public class SeminarAdminCommandService {
         }
 
         seminarRepository.delete(seminar);
+    }
+
+    @Transactional
+    public void checkAttendence(Long seminarId, Long studentId, Boolean check) {
+        // Applicant 조회
+        Seminar seminar = seminarRepository.findById(seminarId)
+                .orElseThrow(() -> new GeneralException(GeneralErrorCode.SEMINARINFO_NOT_FOUND));
+        Student student =studentRepository.findById(studentId)
+                .orElseThrow(() -> new GeneralException(GeneralErrorCode.STUDENT_NOT_FOUND));
+
+        Applicant applicant = applicantRepository.findBySeminarAndStudent(seminar, student)
+                .orElseThrow(() -> new GeneralException(GeneralErrorCode.STUDENT_NOT_FOUND));
+
+        // Attendance 조회 (현재 세미나 기준)
+        Attendance attendance = attendanceRepository.findByApplicantAndSeminar(applicant, applicant.getSeminar())
+                .orElseThrow(() -> new GeneralException(GeneralErrorCode.STUDENT_NOT_FOUND));
+
+        // 상태 업데이트
+        AttendanceStatus newStatus = (Boolean.TRUE.equals(check))
+                ? AttendanceStatus.PRESENT
+                : AttendanceStatus.ABSENT;
+
+        attendance.updateAttendance(newStatus, LocalDateTime.now());
     }
 
     // 연사 수와 프로필 이미지 수 일치하는지 검증

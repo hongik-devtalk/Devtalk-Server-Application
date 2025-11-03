@@ -2,6 +2,7 @@ package com.hongik.devtalk.domain.seminar.admin.dto;
 
 import com.hongik.devtalk.domain.Applicant;
 import com.hongik.devtalk.domain.Student;
+import com.hongik.devtalk.domain.enums.AttendanceStatus;
 import com.hongik.devtalk.domain.enums.Department;
 import com.hongik.devtalk.domain.enums.ParticipationType;
 import lombok.AllArgsConstructor;
@@ -36,6 +37,7 @@ public class ApplicantResponseDTO {
         private String email;
         private ParticipationType participationType;
         private String inflowPath;
+        private Boolean attendenceCheck;
 
         public static StudentInfoDTO from(Applicant applicant, String topic) {
             Student student = applicant.getStudent();
@@ -61,6 +63,13 @@ public class ApplicantResponseDTO {
                     ? applicant.getInflowPathEtc()
                     : applicant.getInflowPath().name();
 
+            // 출석 여부 확인
+            Boolean attendanceCheck = applicant.getAttendances().stream()
+                    .filter(att -> att.getSeminar().equals(applicant.getSeminar()))
+                    .map(att -> att.getStatus() == AttendanceStatus.PRESENT)
+                    .findFirst()
+                    .orElse(false);
+
             return StudentInfoDTO.builder()
                     .topic(topic)
                     .studentId(student.getId().toString())
@@ -72,6 +81,7 @@ public class ApplicantResponseDTO {
                     .email(student.getEmail())
                     .participationType(applicant.getParticipationType())
                     .inflowPath(inflowPathInfo)
+                    .attendenceCheck(attendanceCheck)
                     .build();
         }
     }
