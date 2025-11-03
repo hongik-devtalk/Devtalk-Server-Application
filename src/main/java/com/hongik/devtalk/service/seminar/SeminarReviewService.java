@@ -1,10 +1,12 @@
 package com.hongik.devtalk.service.seminar;
 
 import com.hongik.devtalk.domain.Review;
+import com.hongik.devtalk.domain.Seminar;
 import com.hongik.devtalk.domain.seminar.admin.dto.SeminarReviewResponseDTO;
 import com.hongik.devtalk.global.apiPayload.code.GeneralErrorCode;
 import com.hongik.devtalk.global.apiPayload.exception.GeneralException;
 import com.hongik.devtalk.repository.review.ReviewRepository;
+import com.hongik.devtalk.repository.seminar.SeminarRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +18,7 @@ import java.util.List;
 public class SeminarReviewService {
 
     private final ReviewRepository reviewRepository;
+    private final SeminarRepository seminarRepository;
 
     /**
      * 후기 ID로 특정 후기를 홈 화면에 노출
@@ -80,10 +83,19 @@ public class SeminarReviewService {
      * @return 후기 DTO 리스트
      */
     @Transactional(readOnly = true)
-    public List<SeminarReviewResponseDTO> getSeminarReviews(Long seminarId) {
-        return reviewRepository.findBySeminarIdWithStudentAndDepartments(seminarId)
-                .stream()
-                .map(SeminarReviewResponseDTO::from)
-                .toList();
+    public SeminarReviewResponseDTO getSeminarReviews(Long seminarId) {
+        Seminar seminar = seminarRepository.findById(seminarId)
+                .orElseThrow(() -> new GeneralException(GeneralErrorCode.SEMINARINFO_NOT_FOUND));
+
+        List<SeminarReviewResponseDTO.ReviewInfoDTO> reviews =
+                reviewRepository.findBySeminarIdWithStudentAndDepartments(seminarId)
+                        .stream()
+                        .map(SeminarReviewResponseDTO.ReviewInfoDTO::from)
+                        .toList();
+
+        return SeminarReviewResponseDTO.builder()
+                .seminarNum(seminar.getSeminarNum())
+                .reviews(reviews)
+                .build();
     }
 }
