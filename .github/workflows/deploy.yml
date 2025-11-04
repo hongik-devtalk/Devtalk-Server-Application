@@ -87,4 +87,4 @@ jobs:
               cd /home/ubuntu/Devtalk-Server-Application
               docker-compose -f docker-compose-prod.yml down --rmi all -v --remove-orphans
               docker-compose -f docker-compose-prod.yml pull
-              AWS_REGION=ap-northeast-2 docker-compose -f docker-compose-prod.yml up -d
+              docker-compose -f docker-compose-prod.yml up -d
