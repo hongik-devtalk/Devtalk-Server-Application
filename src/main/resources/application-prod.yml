@@ -5,8 +5,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://${RDS_ENDPOINT}:3306/devtalk_prod_db?serverTimezone=Asia/Seoul&useSSL=false&characterEncoding=UTF-8
-    username: ${RDS_USERNAME}
-    password: ${RDS_PASSWORD}
+    username: ${db.username}  # /devtalk/prod/db/username
+    password: ${db.password}  # /devtalk/prod/db/password
 
   # spring-boot-mail
   mail:
@@ -14,7 +14,7 @@ spring:
     port: 587
     protocol: smtp
     username: dev.hongik@gmail.com # sender
-    password: ${SPRING_MAIL_PASSWORD}
+    password: ${mail.smtpPassword}  # /devtalk/prod/mail/smtpPassword
     default-encoding: UTF-8
     properties:
       mail:
@@ -47,6 +47,16 @@ spring:
       max-file-size: 50MB
       max-request-size: 50MB
 
+  config:
+    import: "aws-parameterstore:/devtalk/prod"
+    cloud:
+      aws:
+        region:
+          static: ap-northeast-2
+        parameterstore:
+          enabled: true
+          failFast: true
+
 logging:
   level:
     root: INFO
@@ -54,7 +64,7 @@ logging:
 
 jwt:
   token:
-    secretKey: ${JWT_SECRET}
+    secretKey: ${jwt.secret} # /devtalk/prod/jwt/secret
     expiration:
       access: 14400000
 
