@@ -48,7 +48,7 @@ spring:
       max-request-size: 50MB
 
   config:
-    import: "aws-parameterstore:/devtalk/prod/"
+    import: aws-parameterstore:/devtalk/prod/
 
 logging:
   level:
