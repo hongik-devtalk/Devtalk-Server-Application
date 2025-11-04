@@ -1,5 +1,5 @@
 # 도커 이미지 생성을 위한 설정 파일
-FROM openjdk:17-jdk
+FROM eclipse-temurin:17-jdk-jammy
 LABEL authors="hongik-devtalk-server"
 EXPOSE 8080
 ARG JAR_FILE=build/libs/devtalk-0.0.1-SNAPSHOT.jar
