@@ -2,6 +2,7 @@ package com.hongik.devtalk.domain.seminar.admin.dto;
 
 import com.hongik.devtalk.domain.Applicant;
 import com.hongik.devtalk.domain.Student;
+import com.hongik.devtalk.domain.enums.AttendanceStatus;
 import com.hongik.devtalk.domain.enums.Department;
 import com.hongik.devtalk.domain.enums.ParticipationType;
 import lombok.AllArgsConstructor;
@@ -36,6 +37,7 @@ public class ApplicantResponseDTO {
         private String email;
         private ParticipationType participationType;
         private String inflowPath;
+        private Boolean attendenceCheck;
 
         public static StudentInfoDTO from(Applicant applicant, String topic) {
             Student student = applicant.getStudent();
@@ -56,10 +58,17 @@ public class ApplicantResponseDTO {
                     ? student.getGrade() + "학년"
                     : student.getGradeEtc();
 
-            // inflowPath가 없으면 inflowPathEtc를 사용
-            String inflowPathInfo = (applicant.getInflowPath() != null)
-                    ? applicant.getInflowPath().name()
-                    : applicant.getInflowPathEtc();
+            // inflowPathEtc가 없으면 inflowPath를 사용
+            String inflowPathInfo = (applicant.getInflowPathEtc() != null)
+                    ? applicant.getInflowPathEtc()
+                    : applicant.getInflowPath().name();
+
+            // 출석 여부 확인
+            Boolean attendanceCheck = applicant.getAttendances().stream()
+                    .filter(att -> att.getSeminar().equals(applicant.getSeminar()))
+                    .map(att -> att.getStatus() == AttendanceStatus.PRESENT)
+                    .findFirst()
+                    .orElse(false);
 
             return StudentInfoDTO.builder()
                     .topic(topic)
@@ -72,6 +81,7 @@ public class ApplicantResponseDTO {
                     .email(student.getEmail())
                     .participationType(applicant.getParticipationType())
                     .inflowPath(inflowPathInfo)
+                    .attendenceCheck(attendanceCheck)
                     .build();
         }
     }

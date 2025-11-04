@@ -27,6 +27,13 @@ public enum GeneralErrorCode implements BaseErrorCode {
     // 연사 에러
     SPEAKER_NOT_FOUND(HttpStatus.NOT_FOUND, "SPEAKER_4041", "해당 연사를 찾을 수 없습니다."),
 
+    // 학생 에러
+    STUDENT_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDENT_4041", "해당 학생을 찾을 수 없습니다."),
+
+    // 출석 에러
+    ALREADY_PRESENT(HttpStatus.BAD_REQUEST,"ATTEND_4001","이미 출석체크 되어 있습니다."),
+    ALREADY_ABSENT(HttpStatus.BAD_REQUEST,"ATTEND_4002","이미 출석체크해제 되어 있습니다."),
+
     // 세미나 자료 에러
     LIVE_FILE_NOT_FOUND(HttpStatus.NOT_FOUND, "LIVE_FILE_4041", "해당 세미나 자료를 찾을 수 없습니다."),
 
@@ -35,6 +42,7 @@ public enum GeneralErrorCode implements BaseErrorCode {
     
     // 링크 에러
     INQUIRY_LINK_NOT_FOUND(HttpStatus.NOT_FOUND, "LINK_4041", "문의하기 링크를 찾을 수 없습니다."),
+    FAQ_LINK_NOT_FOUND(HttpStatus.NOT_FOUND, "LINK_4042", "FAQ 링크를 찾을 수 없습니다."),
 
     // 후기 에러
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW_4041", "존재하지 않는 후기입니다."),
@@ -48,6 +56,7 @@ public enum GeneralErrorCode implements BaseErrorCode {
 
     // 관리자 에러
     ADMIN_NOT_FOUND(HttpStatus.NOT_FOUND, "ADMIN_4041", "관리자 정보가 없습니다."),
+    CANNOT_DELETE_MYSELF(HttpStatus.FORBIDDEN,"ADMIN_4031","자신의 계정은 삭제할 수 없습니다."),
 
     // API/라우팅 에러
     API_NOT_FOUND(HttpStatus.NOT_FOUND, "API_4041", "존재하지 않는 API입니다."),

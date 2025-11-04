@@ -38,8 +38,8 @@ public class AdminController {
     }
 
     @PostMapping("/authority/loginIds")
-    @Operation(summary = "관리자 아이디 추가 API -by 남성현", description = "추가할 관리자의 아이디와 비밀번호를 입력합니다.")
-    public ApiResponse<AdminDTO.JoinAdminResDTO> joinAdmin(@RequestBody @Valid AdminLoginDTO.LoginReqDTO request) {
+    @Operation(summary = "관리자 아이디 추가 API -by 남성현", description = "추가할 관리자의 이름, 아이디, 비밀번호를 입력합니다.")
+    public ApiResponse<AdminDTO.JoinAdminResDTO> joinAdmin(@RequestBody @Valid AdminLoginDTO.JoinReqDTO request) {
 
         Admin admin = adminCommandService.joinAdmin(request);
 
@@ -51,7 +51,12 @@ public class AdminController {
     @Parameters({@Parameter(name="adminId",description = "삭제할 관리자의 id입니다.")})
     public ApiResponse<Void> deleteAdmin(@PathVariable("adminId") Long adminId) {
 
-        adminCommandService.deleteAdmin(adminId);
+        var auth = org.springframework.security.core.context.SecurityContextHolder
+                .getContext().getAuthentication();
+
+        String actorLoginId = auth.getName();
+
+        adminCommandService.deleteAdmin(adminId, actorLoginId);
 
         return ApiResponse.onSuccess("삭제 완료");
     }

@@ -27,6 +27,9 @@ public class Admin {
     @Column(nullable = false)
     private String loginPw;
 
+    @Column(nullable = false)
+    private String name;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private AdminStatus status;

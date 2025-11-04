@@ -13,6 +13,7 @@ public class AdminDTO {
     @AllArgsConstructor
     public static class LoginIdResDTO {
         Long adminId;
+        String name;
         String loginId;
     }
 
@@ -27,11 +28,10 @@ public class AdminDTO {
     public static LoginIdResDTOList toLoginIdResDTOList (List<Admin> adminList) {
         List<LoginIdResDTO> dtoList = adminList.stream()
                 .map(admin -> {
-                    String rawId = admin.getLoginId();
-                    String maskedId = maskLoginId(rawId);
                     return LoginIdResDTO.builder()
                             .adminId(admin.getId())
-                            .loginId(maskedId)
+                            .name(admin.getName())
+                            .loginId(admin.getLoginId())
                             .build();
                 })
                 .toList();
@@ -41,6 +41,7 @@ public class AdminDTO {
                 .build();
     }
 
+    /*
     private static String maskLoginId(String loginId) {
         if (loginId == null || loginId.length() <= 2) {
             return loginId;
@@ -49,6 +50,7 @@ public class AdminDTO {
         String masked = "*".repeat(loginId.length() - 2);
         return prefix + masked;
     }
+     */
 
     @Builder
     @Getter
