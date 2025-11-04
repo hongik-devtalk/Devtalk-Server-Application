@@ -49,13 +49,6 @@ spring:
 
   config:
     import: "aws-parameterstore:/devtalk/prod/"
-    cloud:
-      aws:
-        region:
-          static: ap-northeast-2
-        parameterstore:
-          enabled: true
-          failFast: true
 
 logging:
   level:

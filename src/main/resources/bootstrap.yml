@@ -1,0 +1,9 @@
+spring:
+  config:
+    cloud:
+      aws:
+        region:
+          static: ap-northeast-2 # ⬅️ 가장 중요!
+        parameterstore:
+          enabled: true
+          failFast: true
