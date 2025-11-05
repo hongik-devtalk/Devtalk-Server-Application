@@ -28,10 +28,11 @@ public class SeminarReviewResponseDTO {
     @Builder
     public static class ReviewInfoDTO {
         private Long reviewId;
-        private Integer score;
+        private String name;
+        private String studentNum;
         private String department;
         private String grade;
-        private String name;
+        private Integer score;
         private String strength;
         private String improvement;
         private String nextTopic;
@@ -62,10 +63,11 @@ public class SeminarReviewResponseDTO {
 
             return ReviewInfoDTO.builder()
                     .reviewId(review.getId())
-                    .score((int) review.getScore())
+                    .name(student.getName())
+                    .studentNum(student.getStudentNum())
                     .department(departments)
                     .grade(gradeInfo)
-                    .name(student.getName())
+                    .score((int) review.getScore())
                     .strength(review.getStrength())
                     .improvement(review.getImprovement())
                     .nextTopic(review.getNextTopic())
