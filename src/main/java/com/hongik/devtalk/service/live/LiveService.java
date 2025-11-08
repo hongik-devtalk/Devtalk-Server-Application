@@ -252,6 +252,7 @@ public class LiveService {
                 .studentNum(student.getStudentNum())
                 .seminarId(seminar.getId())
                 .seminarNum(seminar.getSeminarNum())
+                .isPublic(review.isPublic())
                 .build();
 
         return ApiResponse.onSuccess("성공적으로 리뷰가 등록되었습니다.",responseDto);
