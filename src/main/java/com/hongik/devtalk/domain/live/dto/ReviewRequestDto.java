@@ -24,5 +24,6 @@ public class ReviewRequestDto {
     private byte score;
 
     @Schema(description = "공개 여부", example = "true")
+    @com.fasterxml.jackson.annotation.JsonProperty("isPublic")
     private boolean isPublic;
 }

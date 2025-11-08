@@ -21,4 +21,8 @@ public class ReviewResponseDto {
 
     @Schema(description = "리뷰가 달린 세미나 회차", example = "4")
     private int seminarNum;
+
+    @Schema(description = "공개 여부", example = "true")
+    @com.fasterxml.jackson.annotation.JsonProperty("isPublic")
+    private boolean isPublic;
 }
