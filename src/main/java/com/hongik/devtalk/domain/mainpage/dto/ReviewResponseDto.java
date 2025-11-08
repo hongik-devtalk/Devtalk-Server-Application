@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonPropertyOrder({"visible", "reviewId", "rating", "title", "content", "department", "grade", "nextTopic", "order", "createdAt"})
+@JsonPropertyOrder({"visible", "reviewId", "rating", "title", "content", "department", "grade", "nextTopic", "seminarNum", "order", "createdAt"})
 public class ReviewResponseDto {
     
     private Boolean visible; // 홈 노출 여부
@@ -24,6 +24,7 @@ public class ReviewResponseDto {
     private String department; // 학과
     private String grade; // 학년
     private String nextTopic; // 다음 듣고 싶은 주제
+    private Integer seminarNum; // 몇 회차 세미나
     private Integer order; // 홈 노출 순위 (낮을수록 상단)
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd (E) HH:mm", timezone = "Asia/Seoul")
