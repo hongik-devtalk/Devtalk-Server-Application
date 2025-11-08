@@ -217,22 +217,22 @@ public class LiveService {
         Attendance attendance = attendanceRepository.findByApplicantAndSeminar(latestApplicant, seminar)
                 .orElseThrow(() -> new GeneralException(CustomLiveErrorCode.APPLICANT_NOT_FOUND, "신청 정보를 찾을 수 없습니다."));
 
-        if(attendance.getStatus() == AttendanceStatus.ABSENT) {
-            throw new GeneralException(CustomLiveErrorCode.ATTEND_ABSENT,"세미나에 출석한 학생만 리뷰작성이 가능합니다.");
-        }
+        //if(attendance.getStatus() == AttendanceStatus.ABSENT) {
+         //   throw new GeneralException(CustomLiveErrorCode.ATTEND_ABSENT,"세미나에 출석한 학생만 리뷰작성이 가능합니다.");
+        //}
 
         LocalDate seminarDate = seminar.getSeminarDate().toLocalDate();
         LocalDate deadline = seminarDate.plusDays(10);
         LocalDate today = LocalDate.now();
 
         // 리뷰 작성 가능 기간 확인
-        if(today.isBefore(seminarDate) || today.isAfter(deadline)) {
+        //if(today.isBefore(seminarDate) || today.isAfter(deadline)) {
             // "리뷰 작성 기간이 아닙니다"와 같은 에러 응답 반환
-            return ApiResponse.onFailure(CustomLiveErrorCode.REVIEW_PERIOD_INVALID, LiveError.REVIEW_PERIOD_INVALID);
-        }
-        if(reviewRepository.existsReviewByStudentAndSeminar(student, seminar)) {
-            throw new GeneralException(CustomLiveErrorCode.REVIEW_DUPLICATE_ERROR,"리뷰는 세미나당 1회만 작성가능합니다.");
-        }
+            //return ApiResponse.onFailure(CustomLiveErrorCode.REVIEW_PERIOD_INVALID, LiveError.REVIEW_PERIOD_INVALID);
+        //}
+        //if(reviewRepository.existsReviewByStudentAndSeminar(student, seminar)) {
+          //  throw new GeneralException(CustomLiveErrorCode.REVIEW_DUPLICATE_ERROR,"리뷰는 세미나당 1회만 작성가능합니다.");
+        //}
 
         Review review = Review.builder()
                 .student(student)
