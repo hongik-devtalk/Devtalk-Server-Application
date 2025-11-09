@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,6 +39,7 @@ public class ApplicantResponseDTO {
         private ParticipationType participationType;
         private String inflowPath;
         private Boolean attendenceCheck;
+        private LocalDateTime appliedAt;
 
         public static StudentInfoDTO from(Applicant applicant, String topic) {
             Student student = applicant.getStudent();
@@ -82,6 +84,7 @@ public class ApplicantResponseDTO {
                     .participationType(applicant.getParticipationType())
                     .inflowPath(inflowPathInfo)
                     .attendenceCheck(attendanceCheck)
+                    .appliedAt(applicant.getCreatedAt())
                     .build();
         }
     }
