@@ -15,7 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.LinkedHashMap;
 
 @Service
 @RequiredArgsConstructor
@@ -69,25 +71,35 @@ public class SeminarAdminQueryService {
         Seminar seminar = seminarRepository.findById(seminarId)
                 .orElseThrow(() -> new GeneralException(GeneralErrorCode.SEMINARINFO_NOT_FOUND));
 
-        // 세미나 → 세션 → 연사 목록 추출
-        List<QuestionResponseDTO.SpeakerDTO> speakers = seminar.getSessions().stream()
-                .map(Session::getSpeaker)
+        // 질문 + 학생, 세션, 연사 정보 조회
+        List<Question> questions = questionRepository.findQuestionsBySeminarId(seminarId);
+
+        // 연사 목록 추출
+        List<QuestionResponseDTO.SpeakerDTO> speakers = questions.stream()
+                .map(question -> question.getSession().getSpeaker())
+                .distinct()
                 .map(speaker -> QuestionResponseDTO.SpeakerDTO.builder()
                         .speakerId(speaker.getId())
                         .speakerName(speaker.getName())
                         .build())
                 .toList();
 
-        // 질문 조회
-        List<Question> questions = questionRepository.findQuestionsBySeminarId(seminarId);
+        // 학생별로 그룹핑
+        Map<Long, List<Question>> groupedByStudent = questions.stream()
+                .collect(Collectors.groupingBy(
+                        q -> q.getStudent().getId(),
+                        LinkedHashMap::new,
+                        Collectors.toList()
+                ));
 
-        // 학생별 질문 그룹핑 후 DTO 변환
-        List<QuestionResponseDTO.StudentQuestionDTO> students = questions.stream()
-                .collect(Collectors.groupingBy(q -> q.getStudent().getId()))
-                .values().stream()
-                .map(studentQuestions -> QuestionResponseDTO.StudentQuestionDTO.from(
-                        studentQuestions.get(0).getStudent(), studentQuestions
-                ))
+        // DTO 변환
+        List<QuestionResponseDTO.StudentQuestionDTO> students = groupedByStudent.values().stream()
+                .map(studentQuestions ->
+                        QuestionResponseDTO.StudentQuestionDTO.from(
+                                studentQuestions.get(0).getStudent(),
+                                studentQuestions
+                        )
+                )
                 .toList();
 
         return QuestionResponseDTO.builder()
