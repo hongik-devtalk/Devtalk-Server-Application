@@ -64,12 +64,12 @@ public class LiveService {
         Seminar seminar = latestApplicant.getSeminar();
 
         LocalDate seminarDate = seminar.getSeminarDate().toLocalDate();
-        //LocalDate seminarDateMinus = seminarDate.minusDays(10);
+        LocalDate seminarDateMinus = seminarDate.minusDays(1);
         LocalDate deadline = seminarDate.plusDays(10); // 세미나 날짜 + 10일
         LocalDate today = LocalDate.now();
 
         //세미나 인증 가능 기간 확인 (세미나 당일부터 10일후까지 가능)
-        if(today.isBefore(seminarDate) || today.isAfter(deadline)) {
+        if(today.isBefore(seminarDateMinus) || today.isAfter(deadline)) {
             return ApiResponse.onFailure(CustomLiveErrorCode.SEMINAR_TIME_ERROR,LiveError.SEMINAR_NOT_FOUND);
         } else {
             List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
