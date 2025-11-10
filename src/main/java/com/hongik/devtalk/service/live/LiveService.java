@@ -176,7 +176,7 @@ public class LiveService {
         // 5. 출석 상태 결정
         AttendanceStatus newStatus;
         if (attendTime.isBefore(checkInStartTime)) {
-            출석 체크 시작 시간보다 이전인 경우
+            //출석 체크 시작 시간보다 이전인 경우
             return ApiResponse.onFailure(CustomLiveErrorCode.ATTENDANCE_NOT_YET_OPEN, "아직 출석 체크 시간이 아닙니다.");
         } else if (!attendTime.isAfter(onTimeDeadline)) {
             // 출석 마감 시간(onTimeDeadline) 이후가 아닌 경우 (즉, 마감 시간과 같거나 이전인 경우)
