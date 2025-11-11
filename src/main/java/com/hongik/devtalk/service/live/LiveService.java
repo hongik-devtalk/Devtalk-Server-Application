@@ -64,12 +64,12 @@ public class LiveService {
         Seminar seminar = latestApplicant.getSeminar();
 
         LocalDate seminarDate = seminar.getSeminarDate().toLocalDate();
-        //LocalDate seminarDateMinus = seminarDate.minusDays(10);
+        LocalDate seminarDateMinus = seminarDate.minusDays(1);
         LocalDate deadline = seminarDate.plusDays(10); // 세미나 날짜 + 10일
         LocalDate today = LocalDate.now();
 
         //세미나 인증 가능 기간 확인 (세미나 당일부터 10일후까지 가능)
-        if(today.isBefore(seminarDate) || today.isAfter(deadline)) {
+        if(today.isBefore(seminarDateMinus) || today.isAfter(deadline)) {
             return ApiResponse.onFailure(CustomLiveErrorCode.SEMINAR_TIME_ERROR,LiveError.SEMINAR_NOT_FOUND);
         } else {
             List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
@@ -170,14 +170,14 @@ public class LiveService {
         }
 
         LocalDateTime realSeminarTime = liveSeminar.getSeminarDate(); // 실제 세미나 시작 시간
-        LocalDateTime checkInStartTime = realSeminarTime.minusMinutes(15); // 출석 체크 시작 시간 (시작 10분 전)
+        LocalDateTime checkInStartTime = realSeminarTime.minusMinutes(60); // 출석 체크 시작 시간 (시작 10분 전)
         LocalDateTime onTimeDeadline = realSeminarTime.plusMinutes(80);   // 출석(PRESENT) 마감 시간 (시작 80분 후)
 
         // 5. 출석 상태 결정
         AttendanceStatus newStatus;
         if (attendTime.isBefore(checkInStartTime)) {
             //출석 체크 시작 시간보다 이전인 경우
-            return ApiResponse.onFailure(CustomLiveErrorCode.ATTENDANCE_NOT_YET_OPEN, "아직 출석 체크 시간이 아닙니다.");
+            return ApiResponse.onFailure(CustomLiveErrorCode.ATTENDANCE_NOT_YET_OPEN, "아직 출석 체크 시간이 아닙니다." + checkInStartTime);
         } else if (!attendTime.isAfter(onTimeDeadline)) {
             // 출석 마감 시간(onTimeDeadline) 이후가 아닌 경우 (즉, 마감 시간과 같거나 이전인 경우)
             newStatus = AttendanceStatus.PRESENT;
@@ -193,6 +193,7 @@ public class LiveService {
         AttendanceResponseDto responseDto = AttendanceResponseDto.builder()
                 .liveUrl(liveSeminar.getLive().getLiveUrl())
                 .attendanceStatus(newStatus) // 새로 변경된 상태를 반환
+                .attendTime(attendTime)
                 .build();
 
         return ApiResponse.onSuccess("성공적으로 출석 인증 되었습니다.", responseDto);

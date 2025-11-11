@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 @NoArgsConstructor
@@ -19,4 +21,6 @@ public class AttendanceResponseDto {
 
     @Schema(description = "세미나 라이브 출석체크 상태", example = "PRESENT")
     private AttendanceStatus attendanceStatus;
+
+    private LocalDateTime attendTime;
 }
