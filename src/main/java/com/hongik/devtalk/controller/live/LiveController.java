@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @RestController
 @Tag(name = "Live", description = "세미나 라이브 관련 API -by 황신애")
@@ -157,7 +158,7 @@ public class LiveController {
     })
     public ApiResponse<AttendanceResponseDto> attendCheck(@AuthenticationPrincipal User user) {
         String studentNum = user.getUsername();
-        LocalDateTime attendTime = LocalDateTime.now();
+        LocalDateTime attendTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         return liveService.attendanceCheck(studentNum, attendTime);
     }
 }
