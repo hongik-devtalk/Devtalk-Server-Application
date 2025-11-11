@@ -170,7 +170,7 @@ public class LiveService {
         }
 
         LocalDateTime realSeminarTime = liveSeminar.getSeminarDate(); // 실제 세미나 시작 시간
-        LocalDateTime checkInStartTime = realSeminarTime.minusDate(2); // 출석 체크 시작 시간 (시작 10분 전)
+        LocalDateTime checkInStartTime = realSeminarTime.minusDays(2); // 출석 체크 시작 시간 (시작 10분 전)
         LocalDateTime onTimeDeadline = realSeminarTime.plusMinutes(80);   // 출석(PRESENT) 마감 시간 (시작 80분 후)
 
         // 5. 출석 상태 결정
