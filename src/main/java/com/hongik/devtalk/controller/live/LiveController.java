@@ -60,6 +60,12 @@ public class LiveController {
         return liveService.authStudent(authStudentRequestDto);
     }
 
+    @Operation(summary = "QR용 출석체크 API", description = "QR코드를 인식하여 사용자 인증 및 출석체크를 진행합니다.")
+    @PostMapping("/auth-applicants")
+    public ApiResponse<AuthStudentResponseDto> authAndApplicantCheck(@RequestBody AuthStudentRequestDto authStudentRequestDto) {
+        return liveService.authStudentandCheck(authStudentRequestDto);
+    }
+
     @Operation(summary = "토큰 재발급 API", description = "Refresh Token을 사용하여 새로운 Access Token과 Refresh Token을 발급합니다.")
     @ApiResponses({
             // 👇 [수정] 성공(200) 응답에 'examples' 속성을 추가합니다.
