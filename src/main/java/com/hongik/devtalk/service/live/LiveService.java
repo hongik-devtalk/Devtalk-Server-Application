@@ -98,66 +98,6 @@ public class LiveService {
         }
     }
 
-    //QR 출석체크
-    @Transactional
-    public ApiResponse<AuthStudentResponseDto> authStudentandCheck(AuthStudentRequestDto authStudentRequestDto) {
-        Optional<Student> optionalStudent = studentRepository.findByStudentNumAndName(authStudentRequestDto.getStudentNum(),authStudentRequestDto.getName());
-        if (optionalStudent.isEmpty()) {
-            // 비어있다면 실패 응답을 반환하고 메서드를 종료합니다.
-            return ApiResponse.onFailure(GeneralErrorCode.FORBIDDEN, LiveError.STUDENT_NOT_FOUND);
-        }
-        Student student = optionalStudent.get();
-
-        //학생이 신청한 세미나중 가장 최근 세미나를 가져옴
-        Applicant latestApplicant = applicantRepository.findFirstByStudentOrderBySeminar_SeminarDateDesc(student);
-        if(latestApplicant == null) {return ApiResponse.onFailure(GeneralErrorCode.FORBIDDEN,LiveError.APPLICANT_NOT_FOUND);}
-
-        Seminar seminar = latestApplicant.getSeminar();
-
-        LocalDate seminarDate = seminar.getSeminarDate().toLocalDate();
-        LocalDate seminarDateMinus = seminarDate.minusDays(1);
-        LocalDate deadline = seminarDate.plusDays(10); // 세미나 날짜 + 10일
-        LocalDate today = LocalDate.now();
-
-        //세미나 인증 가능 기간 확인 (세미나 당일부터 10일후까지 가능)
-        if(today.isBefore(seminarDateMinus) || today.isAfter(deadline)) {
-            return ApiResponse.onFailure(CustomLiveErrorCode.SEMINAR_TIME_ERROR,LiveError.SEMINAR_NOT_FOUND);
-        } else {
-            List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
-            Authentication authentication = new UsernamePasswordAuthenticationToken(student.getStudentNum(), null, authorities);
-
-
-            // 3. JwtTokenProvider를 사용해 Access Token 생성
-            String accessToken = tokenProvider.generateToken(authentication);
-            String refreshToken = tokenProvider.generateRefreshToken(authentication);
-
-            refreshTokenRepository.findByStudentId(student.getId())
-                    .ifPresentOrElse(
-                            token -> token.setToken(refreshToken), // 이미 토큰이 있으면 새 토큰으로 교체 (업데이트)
-                            () -> refreshTokenRepository.save(new RefreshToken(student.getId(), refreshToken)) // 없으면 새로 저장 (생성)
-                    );
-
-            // 4. 응답 DTO를 생성하여 성공 응답 반환
-            AuthStudentResponseDto responseDto = AuthStudentResponseDto.builder()
-                    .studentId(student.getId())
-                    .seminarId(seminar.getId())
-                    .accessToken(accessToken)
-                    .refreshToken(refreshToken)
-                    .build();
-
-            Attendance attendance = attendanceRepository.findByApplicantAndSeminar(latestApplicant, seminar)
-                    .orElseThrow(() -> new GeneralException(CustomLiveErrorCode.APPLICANT_NOT_FOUND, "신청 정보를 찾을 수 없습니다."));
-
-            if (attendance.getStatus() != AttendanceStatus.ABSENT) {
-                return ApiResponse.onSuccess("이미 출석 처리된 사용자입니다.", responseDto);
-            }
-
-            attendance.updateAttendance(AttendanceStatus.PRESENT, LocalDateTime.now());
-
-            return ApiResponse.onSuccess("신청자 인증 및 출석체크에 성공하였습니다.", responseDto);
-        }
-    }
-
     @Transactional
     public ReissueResponseDto reissueToken(ReissueRequestDto reissueRequestDto) {
         // 1. Refresh Token 유효성 검증
