@@ -29,7 +29,7 @@ public class QrService {
 
     private final S3Template s3Template;
 
-    @Value("${spring.cloud.aws.s3.bucket}") // application.yml에 설정한 버킷명
+    @Value("${aws.s3.bucket}") // application.yml에 설정한 버킷명
     private String bucketName;
 
     public String generateAndUploadQrCode(Long seminarId) throws Exception {
