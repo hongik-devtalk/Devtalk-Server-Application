@@ -2,6 +2,7 @@ package com.hongik.devtalk.controller.seminar;
 
 import com.hongik.devtalk.domain.seminar.admin.dto.*;
 import com.hongik.devtalk.global.apiPayload.ApiResponse;
+import com.hongik.devtalk.service.admin.QrService;
 import com.hongik.devtalk.service.seminar.SeminarAdminCommandService;
 import com.hongik.devtalk.service.seminar.SeminarAdminQueryService;
 import com.hongik.devtalk.service.seminar.SeminarReviewService;
@@ -31,6 +32,7 @@ public class SeminarAdminController {
     private final SeminarAdminCommandService seminarAdminCommandService;
     private final SeminarReviewService seminarReviewService;
     private final SeminarStatisticsService seminarStatisticsService;
+    private final QrService qrService;
 
     @Operation(summary = "세미나 카드리스트 조회", description = "세미나 카드리스트를 조회합니다.")
     @ApiResponses({
@@ -301,6 +303,13 @@ public class SeminarAdminController {
 
         seminarAdminCommandService.checkAttendence(seminarId, studentId, check);
         return ApiResponse.onSuccess("출석 체크 완료하였습니다.");
+    }
+
+    @Operation(summary = "세미나 출석체크 QR 생성 -by 황신애", description = "세미나 출석체크용 QR코드를 생성합니다.")
+    @PostMapping("/{seminarId}/applicants/qr")
+    public ApiResponse<String> getQrcode(@PathVariable Long seminarId) throws Exception{
+        String qrStr = qrService.generateAndUploadQrCode(seminarId);
+        return ApiResponse.onSuccess("출석체크용 QR 생성 완료",qrStr);
     }
 
     @Operation(summary = "세미나 연사별 질문 조회", description = "세미나 연사별 질문 정보를 조회합니다.")
