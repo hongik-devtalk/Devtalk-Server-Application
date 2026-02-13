@@ -2,6 +2,7 @@ package com.hongik.devtalk.controller.live;
 
 import com.hongik.devtalk.domain.live.dto.*;
 import com.hongik.devtalk.global.apiPayload.ApiResponse;
+import com.hongik.devtalk.service.admin.QrService;
 import com.hongik.devtalk.service.live.LiveService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -27,6 +28,7 @@ import java.time.ZoneId;
 @RequiredArgsConstructor
 public class LiveController {
     private final LiveService liveService;
+    private final QrService qrService;
 
     @PostMapping("/auth")
     @Operation(summary = "신청자 인증 API", description = "학번과 이름을 받아 세미나 신청자임을 인증하고, 라이브 서비스 접근을 위한 JWT 토큰을 발급합니다.")
@@ -58,12 +60,6 @@ public class LiveController {
     })
     public ApiResponse<AuthStudentResponseDto> authStudent(@RequestBody AuthStudentRequestDto authStudentRequestDto) {
         return liveService.authStudent(authStudentRequestDto);
-    }
-
-    @Operation(summary = "QR용 출석체크 API", description = "QR코드를 인식하여 사용자 인증 및 출석체크를 진행합니다.")
-    @PostMapping("/auth-applicants")
-    public ApiResponse<AuthStudentResponseDto> authAndApplicantCheck(@RequestBody AuthStudentRequestDto authStudentRequestDto) {
-        return liveService.authStudentandCheck(authStudentRequestDto);
     }
 
     @Operation(summary = "토큰 재발급 API", description = "Refresh Token을 사용하여 새로운 Access Token과 Refresh Token을 발급합니다.")
@@ -166,5 +162,11 @@ public class LiveController {
         String studentNum = user.getUsername();
         LocalDateTime attendTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         return liveService.attendanceCheck(studentNum, attendTime);
+    }
+
+    @Operation(summary = "QR용 출석체크 API", description = "QR코드를 인식하여 사용자 인증 및 출석체크를 진행합니다.")
+    @PostMapping("/auth-applicants")
+    public ApiResponse<AuthStudentResponseDto> authAndApplicantCheck(@RequestBody AuthStudentRequestDto authStudentRequestDto) {
+        return liveService.authStudentandCheck(authStudentRequestDto);
     }
 }
