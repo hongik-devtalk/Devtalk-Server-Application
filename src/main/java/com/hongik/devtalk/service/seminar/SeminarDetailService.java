@@ -6,6 +6,7 @@ import com.hongik.devtalk.domain.Session;
 import com.hongik.devtalk.domain.seminar.detail.dto.SeminarDetailResponseDto;
 import com.hongik.devtalk.domain.seminar.detail.dto.SeminarDetailReviewResponseDto;
 import com.hongik.devtalk.domain.seminar.detail.dto.SeminarDetailSessionResponseDto;
+import com.hongik.devtalk.domain.seminar.detail.dto.SeminarSearchResponseDto;
 import com.hongik.devtalk.global.apiPayload.code.GeneralErrorCode;
 import com.hongik.devtalk.global.apiPayload.exception.GeneralException;
 import com.hongik.devtalk.repository.seminar.SeminarDetailRepository;
@@ -64,5 +65,29 @@ public class SeminarDetailService {
     return SeminarDetailResponseDto.from(seminar);
 
 }
+
+    //세미나 검색
+    public List<SeminarSearchResponseDto> searchByKeyword(String keyword) {
+        //키워드 받아와서 세미나 검색
+
+        List<Seminar> seminars;
+
+        //만약에 키워드가 비어있으면 전체 조회
+        if(keyword ==null || keyword.isEmpty())
+        { seminars = seminarDetailRepository.findAll();
+    }
+        else{
+            //키워드포함 세미나 검색
+            seminars = seminarDetailRepository.findByTopicContaining(keyword);
+        }
+
+        //엔티티 리스트 -> dto 리스트로 변환 !
+        return seminars.stream()
+                .map(SeminarSearchResponseDto::from)
+                .collect(Collectors.toList());
+
+        }
+
+
 
 }

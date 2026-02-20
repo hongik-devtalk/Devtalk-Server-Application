@@ -3,6 +3,7 @@ package com.hongik.devtalk.controller.seminar;
 import com.hongik.devtalk.domain.seminar.detail.dto.SeminarDetailResponseDto;
 import com.hongik.devtalk.domain.seminar.detail.dto.SeminarDetailReviewResponseDto;
 import com.hongik.devtalk.domain.seminar.detail.dto.SeminarDetailSessionResponseDto;
+import com.hongik.devtalk.domain.seminar.detail.dto.SeminarSearchResponseDto;
 import com.hongik.devtalk.global.apiPayload.ApiResponse;
 import com.hongik.devtalk.service.seminar.SeminarDetailService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,10 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -133,5 +131,38 @@ public class SeminarDetailController {
 
     }
 
+    //세미나 검색
+
+
+    @Operation(summary = "세미나 검색 ", description = "세미나를 키워드로 검색하여 해당 세미나의 정보를 조회합니다.")
+    @GetMapping("/search")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+
+                    responseCode = "200",
+                    description = "세미나 검색 성공",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class))
+
+            ),
+
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "500",
+                    description = "서버 오류",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class))
+            ),
+
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "400",
+                    description = "잘못된 요청( 키워드 누락 )",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class))
+
+            )
+    })
+
+    public ApiResponse<List<SeminarSearchResponseDto>> searchSeminars(@RequestParam(value = "keyword", required = false) String keyword)
+    {
+        List<SeminarSearchResponseDto> seminarList = seminarDetailService.searchByKeyword(keyword);
+        return ApiResponse.onSuccess("세미나 검색에 성공하였습니다.",seminarList);
+    }
 
 }
