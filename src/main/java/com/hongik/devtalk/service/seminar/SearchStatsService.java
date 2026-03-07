@@ -1,9 +1,7 @@
 package com.hongik.devtalk.service.seminar;
 
-import com.hongik.devtalk.domain.SearchKeywordDaily;
 import com.hongik.devtalk.domain.SearchLogHourly;
 import com.hongik.devtalk.repository.seminar.SearchKeywordDailyRepository;
-import com.hongik.devtalk.repository.seminar.SearchLogHourlyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -21,37 +19,28 @@ public class SearchStatsService {
     public static final String TARGET_SPEAKER = "SPEAKER";
     public static final String TARGET_ALL = "ALL";
 
-    private final SearchLogHourlyRepository logRepo;
+    private final StatsLogInsertTxService statsLogInsertTxService;
     private final SearchKeywordDailyRepository dailyRepo;
 
-    @Transactional
     public void recordSearch(String targetType, String rawKeyword, String browserId) {
         String keywordNorm = normalize(rawKeyword);
-        if (keywordNorm.isEmpty()) return;                 // ✅ 빈값 제외
+        if (keywordNorm.isEmpty()) return;
         if (browserId == null || browserId.isBlank()) return;
 
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime hourBucket = now.withMinute(0).withSecond(0).withNano(0); // ✅ 1시간 버킷
+        LocalDateTime hourBucket = now.withMinute(0).withSecond(0).withNano(0);
+        LocalDate today = now.toLocalDate();
 
+        // If duplicate for same browser/hour/keyword, skip daily increment.
         try {
-            // ✅ 1시간 중복 제거 (UNIQUE)
-            logRepo.save(SearchLogHourly.of(targetType, browserId, keywordNorm, hourBucket));
-
-            LocalDate today = now.toLocalDate();
-            SearchKeywordDaily.SearchKeywordDailyId id =
-                    new SearchKeywordDaily.SearchKeywordDailyId(targetType, keywordNorm, today);
-
-            Optional<SearchKeywordDaily> opt = dailyRepo.findById(id);
-            if (opt.isPresent()) {
-                var d = opt.get();
-                d.increment();
-                dailyRepo.save(d);
-            } else {
-                dailyRepo.save(SearchKeywordDaily.create(targetType, keywordNorm, today));
-            }
-        } catch (DataIntegrityViolationException ignore) {
-            // 1시간 내 재검색이면 무시
+            statsLogInsertTxService.insertSearchLog(
+                    SearchLogHourly.of(targetType, browserId, keywordNorm, hourBucket)
+            );
+        } catch (DataIntegrityViolationException dup) {
+            return;
         }
+
+        dailyRepo.upsertIncrement(targetType, keywordNorm, today);
     }
 
     @Transactional(readOnly = true)
