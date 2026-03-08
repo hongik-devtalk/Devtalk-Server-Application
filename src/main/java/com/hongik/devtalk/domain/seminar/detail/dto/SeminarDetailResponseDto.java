@@ -20,6 +20,9 @@ public class SeminarDetailResponseDto {
     private Long seminarId;
     private int seminarNum;
     private String topic;
+    private String subtitle;
+    private String description;
+    private List<String> tags;
     private String thumbnailUrl;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd HH:mm", timezone = "Asia/Seoul")
@@ -32,10 +35,10 @@ public class SeminarDetailResponseDto {
     private LocalDateTime seminarDate;
 
     private String place;
-
+    private List<SeminarDetailSessionResponseDto> sessions;
     private List<String> fileUrls;
 
-    public static SeminarDetailResponseDto from(Seminar seminar){
+    public static SeminarDetailResponseDto from(Seminar seminar, List<SeminarDetailSessionResponseDto> sessions){
 
         //발표자료 url
         List<String> urls = seminar.getLiveFiles().stream()
@@ -46,11 +49,15 @@ public class SeminarDetailResponseDto {
                 .seminarId(seminar.getId())
                 .seminarNum(seminar.getSeminarNum())
                 .topic(seminar.getTopic())
+                .subtitle(seminar.getSubtitle())
+                .description(seminar.getDescription())
+                .tags(seminar.getTags())
                 .thumbnailUrl(seminar.getThumbnailUrl())
                 .startDate(seminar.getStartDate())
                 .endDate(seminar.getEndDate())
                 .seminarDate(seminar.getSeminarDate())
                 .place(seminar.getPlace())
+                .sessions(sessions)
                 .fileUrls(urls)
                 .build();
     }

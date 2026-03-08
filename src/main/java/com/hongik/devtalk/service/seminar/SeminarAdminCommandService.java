@@ -78,6 +78,9 @@ public class SeminarAdminCommandService {
         Seminar seminar = Seminar.builder()
                 .seminarNum(request.getSeminarNum())
                 .topic(request.getTopic())
+                .subtitle(request.getSubtitle())
+                .description(request.getDescription())
+                .tags(request.getTags())
                 .seminarDate(request.getSeminarDate())
                 .place(request.getPlace())
                 .startDate(request.getApplyStartDate())
@@ -181,6 +184,9 @@ public class SeminarAdminCommandService {
                 request.getSeminarDate(),
                 request.getPlace(),
                 request.getTopic(),
+                request.getSubtitle(),
+                request.getDescription(),
+                request.getTags(),
                 request.getApplyStartDate(),
                 request.getApplyEndDate()
         );

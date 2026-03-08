@@ -19,6 +19,9 @@ public class SeminarInfoResponseDTO {
     private Long seminarId;
     private Integer seminarNum;
     private String topic;
+    private String subtitle;
+    private String description;
+    private List<String> tags;
     private LocalDateTime seminarDate;
     private String place;
     private LocalDateTime applyStartDate;
@@ -71,6 +74,9 @@ public class SeminarInfoResponseDTO {
                 .seminarId(seminar.getId())
                 .seminarNum(seminar.getSeminarNum())
                 .topic(seminar.getTopic())
+                .subtitle(seminar.getSubtitle())
+                .description(seminar.getDescription())
+                .tags(seminar.getTags())
                 .seminarDate(seminar.getSeminarDate())
                 .place(seminar.getPlace())
                 .applyStartDate(seminar.getStartDate())
