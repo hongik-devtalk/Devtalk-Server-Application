@@ -21,7 +21,6 @@ public class SeminarInfoResponseDTO {
     private String topic;
     private String subtitle;
     private String description;
-    private List<String> tags;
     private LocalDateTime seminarDate;
     private String place;
     private LocalDateTime applyStartDate;
@@ -64,6 +63,7 @@ public class SeminarInfoResponseDTO {
         private String sessionTitle;
         private String sessionContent;
         private FileInfo profile;
+        private List<String> sessionTags;
     }
 
     // DTO 변환
@@ -76,7 +76,6 @@ public class SeminarInfoResponseDTO {
                 .topic(seminar.getTopic())
                 .subtitle(seminar.getSubtitle())
                 .description(seminar.getDescription())
-                .tags(seminar.getTags())
                 .seminarDate(seminar.getSeminarDate())
                 .place(seminar.getPlace())
                 .applyStartDate(seminar.getStartDate())
@@ -107,6 +106,7 @@ public class SeminarInfoResponseDTO {
                 .history(speaker.getHistory())
                 .sessionTitle(session.getTitle())
                 .sessionContent(session.getDescription())
+                .sessionTags(session.getTags())
                 .profile(FileInfo.from(
                         speaker.getProfileFileName(),
                         speaker.getProfileFileExtension(),

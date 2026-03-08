@@ -35,14 +35,18 @@ public class Session extends BaseTimeEntity {
     @Lob
     private String description;
 
+    @ElementCollection
+    private List<String> tags = new ArrayList<>();
+
     @OneToMany(mappedBy = "session", cascade = CascadeType.ALL)
     private List<SessionImage> seminarImages = new ArrayList<>();
 
     @OneToMany(mappedBy = "session", cascade = CascadeType.ALL)
     private List<Question> questions = new ArrayList<>();
 
-    public void updateInfo(String title, String description) {
+    public void updateInfo(String title, String description, List<String> tags) {
         this.title = title;
+        this.tags = tags;
         this.description = description;
     }
 }

@@ -22,7 +22,6 @@ public class SeminarDetailResponseDto {
     private String topic;
     private String subtitle;
     private String description;
-    private List<String> tags;
     private String thumbnailUrl;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd HH:mm", timezone = "Asia/Seoul")
@@ -51,7 +50,6 @@ public class SeminarDetailResponseDto {
                 .topic(seminar.getTopic())
                 .subtitle(seminar.getSubtitle())
                 .description(seminar.getDescription())
-                .tags(seminar.getTags())
                 .thumbnailUrl(seminar.getThumbnailUrl())
                 .startDate(seminar.getStartDate())
                 .endDate(seminar.getEndDate())
