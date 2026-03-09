@@ -66,7 +66,7 @@ public class SpeakerController {
         try {
             searchStatsService.recordSearch(SearchStatsService.TARGET_SPEAKER, keyword, clientId);
         } catch (Exception exception) {
-            log.warn("Failed to record speaker search stats. keyword={}, clientId={}", keyword, clientId, exception);
+            log.warn("Failed to record speaker search stats.", exception);
         }
 
         return ApiResponse.onSuccess("연사 검색에 성공하였습니다.", speakerList);
