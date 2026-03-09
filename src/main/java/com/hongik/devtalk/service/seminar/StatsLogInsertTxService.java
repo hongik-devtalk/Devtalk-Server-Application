@@ -16,13 +16,24 @@ public class StatsLogInsertTxService {
     private final SeminarViewLogRepository seminarViewLogRepository;
     private final SearchLogHourlyRepository searchLogHourlyRepository;
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void insertSeminarViewLog(SeminarViewLog log) {
-        seminarViewLogRepository.saveAndFlush(log);
+    @Transactional(propagation = Propagation.MANDATORY)
+    public boolean insertSeminarViewLogIfAbsent(SeminarViewLog log) {
+        return seminarViewLogRepository.insertIfAbsent(
+                log.getSeminarId(),
+                log.getBrowserId(),
+                log.getViewDate(),
+                log.getCreatedAt()
+        ) > 0;
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void insertSearchLog(SearchLogHourly log) {
-        searchLogHourlyRepository.saveAndFlush(log);
+    @Transactional(propagation = Propagation.MANDATORY)
+    public boolean insertSearchLogIfAbsent(SearchLogHourly log) {
+        return searchLogHourlyRepository.insertIfAbsent(
+                log.getTargetType(),
+                log.getBrowserId(),
+                log.getKeywordNorm(),
+                log.getHourBucket(),
+                log.getCreatedAt()
+        ) > 0;
     }
 }
