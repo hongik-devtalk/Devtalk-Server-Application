@@ -2,9 +2,11 @@ package com.hongik.devtalk.controller.seminar;
 
 import com.hongik.devtalk.domain.seminar.admin.dto.*;
 import com.hongik.devtalk.global.apiPayload.ApiResponse;
+import com.hongik.devtalk.service.admin.QrService;
 import com.hongik.devtalk.service.seminar.SeminarAdminCommandService;
 import com.hongik.devtalk.service.seminar.SeminarAdminQueryService;
 import com.hongik.devtalk.service.seminar.SeminarReviewService;
+import com.hongik.devtalk.service.seminar.SeminarStatisticsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -29,6 +31,8 @@ public class SeminarAdminController {
     private final SeminarAdminQueryService seminarAdminQueryService;
     private final SeminarAdminCommandService seminarAdminCommandService;
     private final SeminarReviewService seminarReviewService;
+    private final SeminarStatisticsService seminarStatisticsService;
+    private final QrService qrService;
 
     @Operation(summary = "세미나 카드리스트 조회", description = "세미나 카드리스트를 조회합니다.")
     @ApiResponses({
@@ -301,6 +305,13 @@ public class SeminarAdminController {
         return ApiResponse.onSuccess("출석 체크 완료하였습니다.");
     }
 
+    @Operation(summary = "세미나 출석체크 QR 생성 -by 황신애", description = "세미나 출석체크용 QR코드를 생성합니다.")
+    @PostMapping("/{seminarId}/applicants/qr")
+    public ApiResponse<String> getQrcode(@PathVariable Long seminarId) throws Exception{
+        String qrStr = qrService.generateAndUploadQrCode(seminarId);
+        return ApiResponse.onSuccess("출석체크용 QR 생성 완료",qrStr);
+    }
+
     @Operation(summary = "세미나 연사별 질문 조회", description = "세미나 연사별 질문 정보를 조회합니다.")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "조회 성공"),
@@ -328,5 +339,22 @@ public class SeminarAdminController {
     public ApiResponse<List<SeminarNumResponseDTO>> getSeminarNums() {
         List<SeminarNumResponseDTO> result = seminarAdminQueryService.getSeminarNums();
         return ApiResponse.onSuccess("세미나 회차 리스트 조회에 성공했습니다.", result);
+    }
+
+    @Operation(summary = "세미나 통계 정보 조회 -by 박우주", description = "세미나별 통계 정보를 조회합니다. 학과별/학년별 신청 비율, 신청인원, 실제 참석 인원, 참석률을 제공합니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "조회 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "세미나 없음",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 내부 오류",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class)))
+    })
+    @GetMapping("/{seminarId}/statistics")
+    public ApiResponse<SeminarStatisticsResponseDTO> getSeminarStatistics(
+            @Parameter(description = "세미나 ID", required = true)
+            @PathVariable Long seminarId
+    ) {
+        SeminarStatisticsResponseDTO result = seminarStatisticsService.getSeminarStatistics(seminarId);
+        return ApiResponse.onSuccess("세미나 통계 정보 조회에 성공했습니다.", result);
     }
 }
