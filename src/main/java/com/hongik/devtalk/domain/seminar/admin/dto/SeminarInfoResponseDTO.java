@@ -2,6 +2,7 @@ package com.hongik.devtalk.domain.seminar.admin.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hongik.devtalk.domain.*;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,6 +31,7 @@ public class SeminarInfoResponseDTO {
     private FileInfo thumbnail;
     private List<FileInfo> materials;
     private List<SpeakerResponse> speakers;
+    private List<String> seminarTags;
 
     @Getter
     @NoArgsConstructor
@@ -63,7 +65,6 @@ public class SeminarInfoResponseDTO {
         private String sessionTitle;
         private String sessionContent;
         private FileInfo profile;
-        private List<String> sessionTags;
     }
 
     // DTO 변환
@@ -87,6 +88,9 @@ public class SeminarInfoResponseDTO {
                         seminar.getThumbnailFileSize(),
                         seminar.getThumbnailUrl()
                 ))
+                .seminarTags(seminar.getSeminarTags().stream()
+                .map(seminarTag -> seminarTag.getTag().getTagText())
+                .toList())
                 .materials(materials.stream()
                         .map(m -> FileInfo.from(m.getFileName(), m.getFileExtension(), m.getFileSize(), m.getFileUrl()))
                         .collect(Collectors.toList()))
@@ -106,7 +110,6 @@ public class SeminarInfoResponseDTO {
                 .history(speaker.getHistory())
                 .sessionTitle(session.getTitle())
                 .sessionContent(session.getDescription())
-                .sessionTags(session.getTags())
                 .profile(FileInfo.from(
                         speaker.getProfileFileName(),
                         speaker.getProfileFileExtension(),

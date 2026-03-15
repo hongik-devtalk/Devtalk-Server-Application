@@ -63,6 +63,9 @@ public class Seminar {
     @OneToOne(mappedBy = "seminar", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Live live;
 
+    @OneToMany(mappedBy = "seminar", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SeminarTag> seminarTags = new ArrayList<>();
+
     @OneToMany(mappedBy = "seminar", cascade = CascadeType.ALL)
     private List<LiveFile> liveFiles = new ArrayList<>();
 
@@ -96,5 +99,25 @@ public class Seminar {
         this.thumbnailFileName = name;
         this.thumbnailFileExtension = ext;
         this.thumbnailFileSize = size;
+    }
+
+    public void addSeminarTag(Tag tag) {
+        if (this.seminarTags == null) {
+            this.seminarTags = new ArrayList<>();
+        }
+
+        SeminarTag seminarTag = SeminarTag.builder()
+                .seminar(this)
+                .tag(tag)
+                .build();
+        this.seminarTags.add(seminarTag);
+    }
+
+    public void clearSeminarTags() {
+        if (this.seminarTags == null) {
+            this.seminarTags = new ArrayList<>();
+            return;
+        }
+        this.seminarTags.clear();
     }
 }

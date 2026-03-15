@@ -1,11 +1,9 @@
 package com.hongik.devtalk.domain;
 
 import com.hongik.devtalk.domain.common.BaseTimeEntity;
-import com.hongik.devtalk.domain.enums.SeminarStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,18 +33,14 @@ public class Session extends BaseTimeEntity {
     @Lob
     private String description;
 
-    @ElementCollection
-    private List<String> tags = new ArrayList<>();
-
     @OneToMany(mappedBy = "session", cascade = CascadeType.ALL)
     private List<SessionImage> seminarImages = new ArrayList<>();
 
     @OneToMany(mappedBy = "session", cascade = CascadeType.ALL)
     private List<Question> questions = new ArrayList<>();
 
-    public void updateInfo(String title, String description, List<String> tags) {
+    public void updateInfo(String title, String description) {
         this.title = title;
-        this.tags = tags;
         this.description = description;
     }
 }

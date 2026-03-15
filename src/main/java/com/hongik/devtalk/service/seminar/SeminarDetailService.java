@@ -1,12 +1,11 @@
 package com.hongik.devtalk.service.seminar;
 
-import com.hongik.devtalk.domain.Review;
-import com.hongik.devtalk.domain.Seminar;
-import com.hongik.devtalk.domain.Session;
-import com.hongik.devtalk.domain.Speaker;
+import com.hongik.devtalk.domain.*;
 import com.hongik.devtalk.domain.seminar.detail.dto.*;
 import com.hongik.devtalk.global.apiPayload.code.GeneralErrorCode;
 import com.hongik.devtalk.global.apiPayload.exception.GeneralException;
+import com.hongik.devtalk.repository.SeminarTagRepository;
+import com.hongik.devtalk.repository.TagRepository;
 import com.hongik.devtalk.repository.seminar.SeminarDetailRepository;
 import com.hongik.devtalk.repository.speaker.SpeakerRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +22,10 @@ import java.util.stream.Collectors;
 public class SeminarDetailService {
 
     private final SeminarDetailRepository seminarDetailRepository;
-
     private final SpeakerRepository speakerRepository;
+    private final SeminarTagRepository seminarTagRepository;
+    private final TagRepository tagRepository;
+
     //세미나 세부정보 조회 ( 세션 )
 
     public List<SeminarDetailSessionResponseDto> getSeminarDetailSession(Long seminarId) {
@@ -93,6 +94,33 @@ public class SeminarDetailService {
                 .map(SeminarSearchResponseDto::from)
                 .collect(Collectors.toList());
 
+    }
+
+    @Transactional
+    public List<SeminarSearchResponseDto> searchSeminarsByTag(String tagText) {
+        if (tagText == null || tagText.isBlank()) {
+            return List.of();
+        }
+
+        String query = tagText.trim();
+
+        List<Seminar> seminars = seminarTagRepository.findByTag_TagTextIgnoreCase(query).stream()
+                .map(SeminarTag::getSeminar)
+                .toList();
+
+        tagRepository.findByTagTextIgnoreCase(query)
+                .ifPresent(Tag::increaseSearchCount);
+
+        return seminars.stream()
+                .map(SeminarSearchResponseDto::from)
+                .toList();
+    }
+
+
+    public List<String> getTop3PopularTags() {
+        return tagRepository.findTop3ByOrderBySearchCountDesc().stream()
+                .map(Tag::getTagText)
+                .toList();
     }
 
 

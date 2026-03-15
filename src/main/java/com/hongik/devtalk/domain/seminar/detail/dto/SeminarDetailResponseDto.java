@@ -3,12 +3,10 @@ package com.hongik.devtalk.domain.seminar.detail.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hongik.devtalk.domain.LiveFile;
 import com.hongik.devtalk.domain.Seminar;
-import com.hongik.devtalk.domain.SessionImage;
 import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Getter
@@ -36,6 +34,7 @@ public class SeminarDetailResponseDto {
     private String place;
     private List<SeminarDetailSessionResponseDto> sessions;
     private List<String> fileUrls;
+    private List<String> seminarTags;
 
     public static SeminarDetailResponseDto from(Seminar seminar, List<SeminarDetailSessionResponseDto> sessions){
 
@@ -57,6 +56,9 @@ public class SeminarDetailResponseDto {
                 .place(seminar.getPlace())
                 .sessions(sessions)
                 .fileUrls(urls)
+                .seminarTags(seminar.getSeminarTags().stream()
+                        .map(seminarTag -> seminarTag.getTag().getTagText())
+                        .toList())
                 .build();
     }
 }

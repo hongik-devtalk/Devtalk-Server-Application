@@ -48,12 +48,11 @@ public class SeminarDetailController {
 
             )
     })
-    public ApiResponse<SeminarDetailResponseDto> getSeminars(@PathVariable Long seminarId)
-    {
+    public ApiResponse<SeminarDetailResponseDto> getSeminars(@PathVariable Long seminarId) {
 
         SeminarDetailResponseDto seminarDetailInfo = seminarDetailService.getSeminarDetail(seminarId);
 
-        return ApiResponse.onSuccess("세미나 세부정보 ( 세미나 ) 조회에 성공하였습니다. ",seminarDetailInfo);
+        return ApiResponse.onSuccess("세미나 세부정보 ( 세미나 ) 조회에 성공하였습니다. ", seminarDetailInfo);
 
     }
 
@@ -84,10 +83,9 @@ public class SeminarDetailController {
 
             )
     })
-    public ApiResponse<List<SeminarDetailReviewResponseDto>> getSeminarReviews(@PathVariable Long seminarId)
-    {
+    public ApiResponse<List<SeminarDetailReviewResponseDto>> getSeminarReviews(@PathVariable Long seminarId) {
 
-        List<SeminarDetailReviewResponseDto> reviewList=seminarDetailService.getSeminarDetailReview(seminarId);
+        List<SeminarDetailReviewResponseDto> reviewList = seminarDetailService.getSeminarDetailReview(seminarId);
         return ApiResponse.onSuccess("세미나 세부정보 (리뷰) 조회에 성공하였습니다.", reviewList);
 
     }
@@ -121,15 +119,28 @@ public class SeminarDetailController {
             )
     })
 
-    public ApiResponse<List<SeminarDetailSessionResponseDto>> getSeminarSessions(@PathVariable Long seminarId)
-    {
-        List<SeminarDetailSessionResponseDto> sessionList=seminarDetailService.getSeminarDetailSession(seminarId);
+    public ApiResponse<List<SeminarDetailSessionResponseDto>> getSeminarSessions(@PathVariable Long seminarId) {
+        List<SeminarDetailSessionResponseDto> sessionList = seminarDetailService.getSeminarDetailSession(seminarId);
         return ApiResponse.onSuccess("세미나 세션 목록 조회에 성공하였습니다.", sessionList);
 
     }
 
-    //세미나 검색
+    @Operation(summary = "인기 태그 ", description = "검색량이 가장 많은 3개의 세미나 태그를 조회합니다.")
+    @GetMapping("/search/tag/popular")
+    public ApiResponse<List<String>> getTop3PopularTags() {
+        List<String> popularTags = seminarDetailService.getTop3PopularTags();
+        return ApiResponse.onSuccess("인기 태그 조회에 성공하였습니다.", popularTags);
+    }
 
+    //세미나 검색
+    @Operation(summary = "세미나 태그 검색 ", description = "세미나를 태그로 검색하여 해당 세미나의 정보를 조회합니다.")
+    @GetMapping("/search/tag")
+    public ApiResponse<List<SeminarSearchResponseDto>> searchSeminarsByTag(
+            @RequestParam(value = "tag") String tag
+    ) {
+        List<SeminarSearchResponseDto> seminarList = seminarDetailService.searchSeminarsByTag(tag);
+        return ApiResponse.onSuccess("태그 검색에 성공하였습니다.", seminarList);
+    }
 
     @Operation(summary = "세미나 검색 ", description = "세미나를 키워드로 검색하여 해당 세미나의 정보를 조회합니다.")
     @GetMapping("/search")
@@ -156,11 +167,10 @@ public class SeminarDetailController {
             )
     })
 
-    public ApiResponse<List<SeminarSearchResponseDto>> searchSeminars(@RequestParam(value = "keyword", required = false) String keyword)
-    {
+    public ApiResponse<List<SeminarSearchResponseDto>> searchSeminars(
+            @RequestParam(value = "keyword", required = false) String keyword
+    ) {
         List<SeminarSearchResponseDto> seminarList = seminarDetailService.searchSeminars(keyword);
-        return ApiResponse.onSuccess("세미나 검색에 성공하였습니다.",seminarList);
+        return ApiResponse.onSuccess("세미나 검색에 성공하였습니다.", seminarList);
     }
-
-
 }
