@@ -33,7 +33,7 @@ public class ShowSeminarService {
         Seminar seminar = null;
         if (request.getSeminarNum() != null) {
             seminar = seminarRepository.findBySeminarNum(request.getSeminarNum())
-                    .orElseThrow(() -> new IllegalArgumentException("�ش� ���̳� ȸ���� �������� �ʽ��ϴ�."));
+                    .orElseThrow(() -> new IllegalArgumentException("해당 세미나 회차를 찾을 수 없습니다."));
         }
 
         ShowSeminar showSeminar = showSeminarRepository.findFirstByOrderByIdAsc()
@@ -55,7 +55,7 @@ public class ShowSeminarService {
     @Transactional(readOnly = true)
     public ShowSeminarResponseDTO getCurrentShowSeminar() {
         ShowSeminar showSeminar = showSeminarRepository.findFirstByOrderByIdAsc()
-                .orElseThrow(() -> new IllegalStateException("���� ���̳� ������ �����ϴ�."));
+                .orElseThrow(() -> new IllegalStateException("현재 세미나 정보가 존재하지 않습니다."));
 
         Seminar seminar = showSeminar.getSeminar();
 
