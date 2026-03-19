@@ -12,6 +12,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import com.hongik.devtalk.service.seminar.SearchStatsService;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
 
@@ -22,7 +24,7 @@ import java.util.List;
 public class SpeakerController {
 
     private final SpeakerService speakerService;
-
+    private final SearchStatsService searchStatsService;
 
     //세미나 연사 검색
 
@@ -49,14 +51,19 @@ public class SpeakerController {
                     description = "잘못된 요청( 키워드 누락 )",
                     content = @Content(schema = @Schema(implementation = ApiResponse.class))
 
+
             )
     })
 
-    public ApiResponse<List<SpeakerSearchResponseDto>> searchSpeakers(@RequestParam(value = "keyword", required = false) String keyword)
-    {
-        List<SpeakerSearchResponseDto> speakerList = speakerService.searchSpeakers(keyword);
+    public ApiResponse<List<SpeakerSearchResponseDto>> searchSpeakers(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestHeader(value="X-Client-Id", required=false) String clientId
+    ){
+        //검색 요청 들어온 순간 +1
+        searchStatsService.recordSearch(SearchStatsService.TARGET_SPEAKER, keyword, clientId);
 
-        return ApiResponse.onSuccess("연사 검색에 성공하였습니다.",speakerList);
+        List<SpeakerSearchResponseDto> speakerList = speakerService.searchSpeakers(keyword);
+        return ApiResponse.onSuccess("연사 검색에 성공하였습니다.", speakerList);
     }
 
 

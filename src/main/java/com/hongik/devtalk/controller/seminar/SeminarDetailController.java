@@ -10,7 +10,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
+import com.hongik.devtalk.service.seminar.SeminarViewStatsService;
+import com.hongik.devtalk.service.seminar.SearchStatsService;
+import org.springframework.web.bind.annotation.RequestHeader;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,6 +23,8 @@ import java.util.List;
 public class SeminarDetailController {
 
     private final SeminarDetailService seminarDetailService;
+    private final SeminarViewStatsService seminarViewStatsService;
+    private final SearchStatsService searchStatsService;
 
     //세미나 세부정보 조회( 세미나 )
 
@@ -48,15 +52,17 @@ public class SeminarDetailController {
 
             )
     })
-    public ApiResponse<SeminarDetailResponseDto> getSeminars(@PathVariable Long seminarId)
-    {
-
+    public ApiResponse<SeminarDetailResponseDto> getSeminars(
+            @PathVariable Long seminarId,
+            @RequestHeader(value="X-Client-Id", required=false) String clientId
+    ){
         SeminarDetailResponseDto seminarDetailInfo = seminarDetailService.getSeminarDetail(seminarId);
 
-        return ApiResponse.onSuccess("세미나 세부정보 ( 세미나 ) 조회에 성공하였습니다. ",seminarDetailInfo);
+        //본문 조회 성공 후 +1
+        seminarViewStatsService.recordSeminarView(seminarId, clientId);
 
+        return ApiResponse.onSuccess("세미나 세부정보 ( 세미나 ) 조회에 성공하였습니다. ", seminarDetailInfo);
     }
-
 
     //세미나 세부정보 조회 ( 리뷰 )
 
@@ -156,10 +162,15 @@ public class SeminarDetailController {
             )
     })
 
-    public ApiResponse<List<SeminarSearchResponseDto>> searchSeminars(@RequestParam(value = "keyword", required = false) String keyword)
-    {
+    public ApiResponse<List<SeminarSearchResponseDto>> searchSeminars(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestHeader(value="X-Client-Id", required=false) String clientId
+    ){
+        //검색 요청 들어온 순간 +1
+        searchStatsService.recordSearch(SearchStatsService.TARGET_SEMINAR, keyword, clientId);
+
         List<SeminarSearchResponseDto> seminarList = seminarDetailService.searchSeminars(keyword);
-        return ApiResponse.onSuccess("세미나 검색에 성공하였습니다.",seminarList);
+        return ApiResponse.onSuccess("세미나 검색에 성공하였습니다.", seminarList);
     }
 
 
