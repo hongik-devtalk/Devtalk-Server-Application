@@ -33,9 +33,9 @@ public class SeminarReviewService {
                 .orElseThrow(() -> new GeneralException(GeneralErrorCode.REVIEW_NOT_FOUND));
 
         // 비공개 후기일 경우 에러
-        if (!review.isPublic()) {
-            throw new GeneralException(GeneralErrorCode.REVIEW_NOT_PUBLIC);
-        }
+//        if (!review.isPublic()) {
+//            throw new GeneralException(GeneralErrorCode.REVIEW_NOT_PUBLIC);
+//        }
 
         // 다음 순서값 - 현재 노출 중인 후기 중 displayOrder 최댓값 + 1
         Integer maxDisplayOrder = reviewRepository.findMaxDisplayOrder();
