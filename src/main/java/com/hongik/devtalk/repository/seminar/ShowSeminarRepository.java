@@ -8,6 +8,8 @@ import java.util.Optional;
 
 @Repository
 public interface ShowSeminarRepository extends JpaRepository<ShowSeminar,Long> {
+    Optional<ShowSeminar> findFirstByOrderByIdAsc();
+
     Optional<ShowSeminar> findFirstByApplicantActivateTrue();
 
     Optional<ShowSeminar> findFirstByLiveActivateTrue();

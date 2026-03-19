@@ -64,6 +64,8 @@ public class SeminarInfoResponseDTO {
         private String history;
         private String sessionTitle;
         private String sessionContent;
+        private String partTag;
+        private String oneLineSummary;
         private FileInfo profile;
     }
 
@@ -110,6 +112,8 @@ public class SeminarInfoResponseDTO {
                 .history(speaker.getHistory())
                 .sessionTitle(session.getTitle())
                 .sessionContent(session.getDescription())
+                .partTag(session.getPartTag())
+                .oneLineSummary(session.getOneLineSummary())
                 .profile(FileInfo.from(
                         speaker.getProfileFileName(),
                         speaker.getProfileFileExtension(),

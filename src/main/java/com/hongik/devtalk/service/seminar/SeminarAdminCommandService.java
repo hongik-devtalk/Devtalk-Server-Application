@@ -154,6 +154,8 @@ public class SeminarAdminCommandService {
                     .speaker(speaker)
                     .title(sp.getSessionTitle())
                     .description(sp.getSessionContent())
+                    .partTag(sp.getPartTag())
+                    .oneLineSummary(sp.getOneLineSummary())
                     .build();
             sessionRepository.save(session);
             sessions.add(session);
@@ -217,13 +219,18 @@ public class SeminarAdminCommandService {
                     .orElseThrow(() -> new GeneralException(GeneralErrorCode.SESSION_NOT_FOUND));
 
             speaker.updateInfo(spReq.getName(), spReq.getOrganization(), spReq.getHistory());
-            session.updateInfo(spReq.getSessionTitle(), spReq.getSessionContent());
+            session.updateInfo(
+                    spReq.getSessionTitle(),
+                    spReq.getSessionContent(),
+                    spReq.getPartTag(),
+                    spReq.getOneLineSummary()
+            );
         }
 
         // 응답 DTO 생성
         Live live = liveRepository.findBySeminar(seminar).orElse(null);
         List<LiveFile> liveFiles = liveFileRepository.findBySeminar(seminar);
-        List<Session> sessions = sessionRepository.findSessionsBySeminar(seminar);
+        List<Session> sessions = sessionRepository.findBySeminarIdWithSpeaker(seminar.getId());
 
         return SeminarInfoResponseDTO.from(seminar, live, liveFiles, sessions);
     }
@@ -333,7 +340,7 @@ public class SeminarAdminCommandService {
         // 응답 DTO 생성
         Live live = liveRepository.findBySeminar(seminar).orElse(null);
         List<LiveFile> liveFiles = liveFileRepository.findBySeminar(seminar);
-        List<Session> sessions = sessionRepository.findSessionsBySeminar(seminar);
+        List<Session> sessions = sessionRepository.findBySeminarIdWithSpeaker(seminar.getId());
 
         return SeminarInfoResponseDTO.from(seminar, live, liveFiles, sessions);
     }
