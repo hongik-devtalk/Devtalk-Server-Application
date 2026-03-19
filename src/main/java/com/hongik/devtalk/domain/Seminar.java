@@ -36,6 +36,10 @@ public class Seminar {
 
     private String topic;
 
+    private String subtitle;
+
+    private String description;
+
     //세미나가 진행되는 시간
     private LocalDateTime seminarDate;
 
@@ -59,6 +63,9 @@ public class Seminar {
     @OneToOne(mappedBy = "seminar", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Live live;
 
+    @OneToMany(mappedBy = "seminar", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SeminarTag> seminarTags = new ArrayList<>();
+
     @OneToMany(mappedBy = "seminar", cascade = CascadeType.ALL)
     private List<LiveFile> liveFiles = new ArrayList<>();
 
@@ -71,12 +78,14 @@ public class Seminar {
     @OneToMany(mappedBy = "seminar", cascade = CascadeType.ALL)
     private List<Remind> reminds = new ArrayList<>();
 
-    public void updateInfo(Integer seminarNum, LocalDateTime seminarDate, String place, String topic,
-                           LocalDateTime applyStartDate, LocalDateTime applyEndDate) {
+    public void updateInfo(Integer seminarNum, LocalDateTime seminarDate, String place, String topic, String subtitle, String description
+            ,LocalDateTime applyStartDate, LocalDateTime applyEndDate) {
         this.seminarNum = seminarNum;
         this.seminarDate = seminarDate;
         this.place = place;
         this.topic = topic;
+        this.subtitle = subtitle;
+        this.description = description;
         this.startDate = applyStartDate;
         this.endDate = applyEndDate;
     }
@@ -90,5 +99,25 @@ public class Seminar {
         this.thumbnailFileName = name;
         this.thumbnailFileExtension = ext;
         this.thumbnailFileSize = size;
+    }
+
+    public void addSeminarTag(Tag tag) {
+        if (this.seminarTags == null) {
+            this.seminarTags = new ArrayList<>();
+        }
+
+        SeminarTag seminarTag = SeminarTag.builder()
+                .seminar(this)
+                .tag(tag)
+                .build();
+        this.seminarTags.add(seminarTag);
+    }
+
+    public void clearSeminarTags() {
+        if (this.seminarTags == null) {
+            this.seminarTags = new ArrayList<>();
+            return;
+        }
+        this.seminarTags.clear();
     }
 }

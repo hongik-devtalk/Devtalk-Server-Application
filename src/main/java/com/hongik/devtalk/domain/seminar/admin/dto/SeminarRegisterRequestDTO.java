@@ -2,9 +2,9 @@ package com.hongik.devtalk.domain.seminar.admin.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,6 +34,17 @@ public class SeminarRegisterRequestDTO {
     @NotBlank
     @Schema(description = "세미나 주제", example = "AI와 미래 사회")
     private String topic;
+
+    @NotBlank
+    @Schema(description = "세미나 소제목", example= "인공지능이 바꾸는 산업과 우리의 삶")
+    private String subtitle;
+
+    @NotBlank
+    @Schema(description = "세미나 설명", example= "본 세미나는 인공지능 기술이 산업, 사회, 일상에 어떤 변화를 가져오는지 살펴보고 앞으로 우리가 준비해야 할 방향에 대해 논의합니다.")
+    private String description;
+
+    @Schema(description = "세미나 태그")
+    private List<String> seminarTags;
 
     @Schema(description = "세미나 신청 시작일", example = "2025-12-01T09:00:00")
     private LocalDateTime applyStartDate;
@@ -73,5 +84,13 @@ public class SeminarRegisterRequestDTO {
         @NotBlank
         @Schema(description = "강연 내용", example = "이번 강연에서는 인공지능 기술의 윤리적 과제와 사회적 영향에 대해 이야기합니다.")
         private String sessionContent;
+
+        @Schema(description = "1, 2부 구분 태그", example = "1부")
+        @Size(max = 50)
+        private String partTag;
+
+        @Schema(description = "메인/관리 카드용 한줄 요약", example = "생성형 AI의 현재와 실무 적용 포인트를 다룹니다.")
+        @Size(max = 255)
+        private String oneLineSummary;
     }
 }
