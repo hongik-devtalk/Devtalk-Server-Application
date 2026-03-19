@@ -8,31 +8,31 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-@Schema(description = "¸ÞÀÎÈ­¸é ³ëÃâ ¼¼¹Ì³ª ÀÀ´ä DTO")
+@Schema(description = "ï¿½ï¿½ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì³ï¿½ ï¿½ï¿½ï¿½ï¿½ DTO")
 public class ShowSeminarResponseDTO {
 
-    @Schema(description = "¼¼¹Ì³ª ID, ³ëÃâ ¼¼¹Ì³ª°¡ ¾øÀ» °æ¿ì null")
+    @Schema(description = "ï¿½ï¿½ï¿½Ì³ï¿½ ID, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ null")
     private Long seminarId;
 
-    @Schema(description = "¼¼¹Ì³ª È¸Â÷ ¹øÈ£, ³ëÃâ ¼¼¹Ì³ª°¡ ¾øÀ» °æ¿ì null")
+    @Schema(description = "ï¿½ï¿½ï¿½Ì³ï¿½ È¸ï¿½ï¿½ ï¿½ï¿½È£, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì³ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ null")
     private Integer seminarNum;
 
-    @Schema(description = "½ÅÃ» È°¼ºÈ­ ¿©ºÎ")
+    @Schema(description = "ï¿½ï¿½Ã» È°ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½")
     private boolean applicantActivate;
 
-    @Schema(description = "¶óÀÌºê È°¼ºÈ­ ¿©ºÎ")
+    @Schema(description = "ï¿½ï¿½ï¿½Ìºï¿½ È°ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½")
     private boolean liveActivate;
 
-    @Schema(description = "¸ÞÀÎ Æ÷½ºÅÍ ÀÌ¹ÌÁö URL")
+    @Schema(description = "ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ URL")
     private String mainPosterImageUrl;
 
-    @Schema(description = "¸ÞÀÎ Ä«µå Á¤º¸")
+    @Schema(description = "ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½")
     private MainCards mainCards;
 
     @Getter
     @Builder
     @AllArgsConstructor
-    @Schema(description = "¸ÞÀÎ Ä«µå 3Á¾")
+    @Schema(description = "ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½ 3ï¿½ï¿½")
     public static class MainCards {
         private SeminarRoundCard card1;
         private SessionCard card2;
@@ -42,7 +42,7 @@ public class ShowSeminarResponseDTO {
     @Getter
     @Builder
     @AllArgsConstructor
-    @Schema(description = "Ä«µå1: È¸Â÷ Á¤º¸")
+    @Schema(description = "Ä«ï¿½ï¿½1: È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½")
     public static class SeminarRoundCard {
         private String imageUrl;
         private String seminarTitle;
@@ -53,7 +53,7 @@ public class ShowSeminarResponseDTO {
     @Getter
     @Builder
     @AllArgsConstructor
-    @Schema(description = "Ä«µå2/3: ¼¼¼Ç Á¤º¸")
+    @Schema(description = "Ä«ï¿½ï¿½2/3: ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½")
     public static class SessionCard {
         private String imageUrl;
         private String seminarTitle;

@@ -33,7 +33,7 @@ public class ShowSeminarService {
         Seminar seminar = null;
         if (request.getSeminarNum() != null) {
             seminar = seminarRepository.findBySeminarNum(request.getSeminarNum())
-                    .orElseThrow(() -> new IllegalArgumentException("ÇØ´ç ¼¼¹Ì³ª È¸Â÷°¡ Á¸ÀçÇÏÁö ¾Ê½À´Ï´Ù."));
+                    .orElseThrow(() -> new IllegalArgumentException("ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½Ì³ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê½ï¿½ï¿½Ï´ï¿½."));
         }
 
         ShowSeminar showSeminar = showSeminarRepository.findFirstByOrderByIdAsc()
@@ -55,7 +55,7 @@ public class ShowSeminarService {
     @Transactional(readOnly = true)
     public ShowSeminarResponseDTO getCurrentShowSeminar() {
         ShowSeminar showSeminar = showSeminarRepository.findFirstByOrderByIdAsc()
-                .orElseThrow(() -> new IllegalStateException("³ëÃâ ¼¼¹Ì³ª Á¤º¸°¡ ¾ø½À´Ï´Ù."));
+                .orElseThrow(() -> new IllegalStateException("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½."));
 
         Seminar seminar = showSeminar.getSeminar();
 
