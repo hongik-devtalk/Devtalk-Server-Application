@@ -3,7 +3,6 @@ package com.hongik.devtalk.service.seminar;
 import com.hongik.devtalk.domain.SearchLogHourly;
 import com.hongik.devtalk.repository.seminar.SearchKeywordDailyRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +21,7 @@ public class SearchStatsService {
     private final StatsLogInsertTxService statsLogInsertTxService;
     private final SearchKeywordDailyRepository dailyRepo;
 
+    @Transactional
     public void recordSearch(String targetType, String rawKeyword, String browserId) {
         String keywordNorm = normalize(rawKeyword);
         if (keywordNorm.isEmpty()) return;
@@ -31,12 +31,10 @@ public class SearchStatsService {
         LocalDateTime hourBucket = now.withMinute(0).withSecond(0).withNano(0);
         LocalDate today = now.toLocalDate();
 
-        // If duplicate for same browser/hour/keyword, skip daily increment.
-        try {
-            statsLogInsertTxService.insertSearchLog(
-                    SearchLogHourly.of(targetType, browserId, keywordNorm, hourBucket)
-            );
-        } catch (DataIntegrityViolationException dup) {
+        boolean inserted = statsLogInsertTxService.insertSearchLogIfAbsent(
+                SearchLogHourly.of(targetType, browserId, keywordNorm, hourBucket)
+        );
+        if (!inserted) {
             return;
         }
 

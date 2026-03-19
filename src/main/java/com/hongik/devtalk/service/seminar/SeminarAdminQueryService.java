@@ -125,7 +125,7 @@ public class SeminarAdminQueryService {
         // DTO 변환
         Live live = liveRepository.findBySeminarId(seminarId).orElse(null);
         List<LiveFile> materials = liveFileRepository.findBySeminarId(seminarId);
-        List<Session> sessions = sessionRepository.findBySeminarId(seminarId);
+        List<Session> sessions = sessionRepository.findBySeminarIdWithSpeaker(seminarId);
 
         return SeminarInfoResponseDTO.from(seminar, live, materials, sessions);
     }

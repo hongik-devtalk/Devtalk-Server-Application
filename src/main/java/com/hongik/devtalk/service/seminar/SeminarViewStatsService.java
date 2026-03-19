@@ -3,7 +3,6 @@ package com.hongik.devtalk.service.seminar;
 import com.hongik.devtalk.domain.SeminarViewLog;
 import com.hongik.devtalk.repository.seminar.SeminarViewDailyRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,15 +16,16 @@ public class SeminarViewStatsService {
     private final StatsLogInsertTxService statsLogInsertTxService;
     private final SeminarViewDailyRepository dailyRepo;
 
+    @Transactional
     public void recordSeminarView(Long seminarId, String browserId) {
         if (browserId == null || browserId.isBlank()) return;
 
         LocalDate today = LocalDate.now();
 
-        // If duplicate for same browser/day, skip daily increment.
-        try {
-            statsLogInsertTxService.insertSeminarViewLog(SeminarViewLog.of(seminarId, browserId, today));
-        } catch (DataIntegrityViolationException dup) {
+        boolean inserted = statsLogInsertTxService.insertSeminarViewLogIfAbsent(
+                SeminarViewLog.of(seminarId, browserId, today)
+        );
+        if (!inserted) {
             return;
         }
 
