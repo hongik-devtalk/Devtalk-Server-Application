@@ -239,10 +239,7 @@ public class LiveService {
                 .student(student)
                 .seminar(seminar)
                 .strength(reviewRequestDto.getStrength())
-                .improvement(reviewRequestDto.getImprovement())
                 .score(reviewRequestDto.getScore())
-                .nextTopic(reviewRequestDto.getNextTopic())
-                .isPublic(reviewRequestDto.isPublic())
                 .build();
 
         Review savedReview = reviewRepository.save(review);

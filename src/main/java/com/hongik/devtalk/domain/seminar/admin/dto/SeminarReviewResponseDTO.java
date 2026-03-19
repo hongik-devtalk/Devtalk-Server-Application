@@ -34,9 +34,6 @@ public class SeminarReviewResponseDTO {
         private String grade;
         private Integer score;
         private String strength;
-        private String improvement;
-        private String nextTopic;
-        private Boolean isPublic;
         private Boolean isFeatured;
 
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd (E) HH:mm")
@@ -69,9 +66,6 @@ public class SeminarReviewResponseDTO {
                     .grade(gradeInfo)
                     .score((int) review.getScore())
                     .strength(review.getStrength())
-                    .improvement(review.getImprovement())
-                    .nextTopic(review.getNextTopic())
-                    .isPublic(review.isPublic())
                     .isFeatured(review.isNote())
                     .createdAt(review.getCreatedAt())
                     .build();
