@@ -1,11 +1,9 @@
 package com.hongik.devtalk.domain;
 
 import com.hongik.devtalk.domain.common.BaseTimeEntity;
-import com.hongik.devtalk.domain.enums.SeminarStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

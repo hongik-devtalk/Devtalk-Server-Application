@@ -3,12 +3,10 @@ package com.hongik.devtalk.domain.seminar.detail.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hongik.devtalk.domain.LiveFile;
 import com.hongik.devtalk.domain.Seminar;
-import com.hongik.devtalk.domain.SessionImage;
 import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Getter
@@ -20,6 +18,8 @@ public class SeminarDetailResponseDto {
     private Long seminarId;
     private int seminarNum;
     private String topic;
+    private String subtitle;
+    private String description;
     private String thumbnailUrl;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd HH:mm", timezone = "Asia/Seoul")
@@ -32,10 +32,11 @@ public class SeminarDetailResponseDto {
     private LocalDateTime seminarDate;
 
     private String place;
-
+    private List<SeminarDetailSessionResponseDto> sessions;
     private List<String> fileUrls;
+    private List<String> seminarTags;
 
-    public static SeminarDetailResponseDto from(Seminar seminar){
+    public static SeminarDetailResponseDto from(Seminar seminar, List<SeminarDetailSessionResponseDto> sessions){
 
         //발표자료 url
         List<String> urls = seminar.getLiveFiles().stream()
@@ -46,12 +47,18 @@ public class SeminarDetailResponseDto {
                 .seminarId(seminar.getId())
                 .seminarNum(seminar.getSeminarNum())
                 .topic(seminar.getTopic())
+                .subtitle(seminar.getSubtitle())
+                .description(seminar.getDescription())
                 .thumbnailUrl(seminar.getThumbnailUrl())
                 .startDate(seminar.getStartDate())
                 .endDate(seminar.getEndDate())
                 .seminarDate(seminar.getSeminarDate())
                 .place(seminar.getPlace())
+                .sessions(sessions)
                 .fileUrls(urls)
+                .seminarTags(seminar.getSeminarTags().stream()
+                        .map(seminarTag -> seminarTag.getTag().getTagText())
+                        .toList())
                 .build();
     }
 }

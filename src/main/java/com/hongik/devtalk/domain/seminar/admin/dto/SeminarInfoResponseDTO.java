@@ -2,6 +2,7 @@ package com.hongik.devtalk.domain.seminar.admin.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hongik.devtalk.domain.*;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,6 +20,8 @@ public class SeminarInfoResponseDTO {
     private Long seminarId;
     private Integer seminarNum;
     private String topic;
+    private String subtitle;
+    private String description;
     private LocalDateTime seminarDate;
     private String place;
     private LocalDateTime applyStartDate;
@@ -28,6 +31,7 @@ public class SeminarInfoResponseDTO {
     private FileInfo thumbnail;
     private List<FileInfo> materials;
     private List<SpeakerResponse> speakers;
+    private List<String> seminarTags;
 
     @Getter
     @NoArgsConstructor
@@ -73,6 +77,8 @@ public class SeminarInfoResponseDTO {
                 .seminarId(seminar.getId())
                 .seminarNum(seminar.getSeminarNum())
                 .topic(seminar.getTopic())
+                .subtitle(seminar.getSubtitle())
+                .description(seminar.getDescription())
                 .seminarDate(seminar.getSeminarDate())
                 .place(seminar.getPlace())
                 .applyStartDate(seminar.getStartDate())
@@ -84,6 +90,9 @@ public class SeminarInfoResponseDTO {
                         seminar.getThumbnailFileSize(),
                         seminar.getThumbnailUrl()
                 ))
+                .seminarTags(seminar.getSeminarTags().stream()
+                .map(seminarTag -> seminarTag.getTag().getTagText())
+                .toList())
                 .materials(materials.stream()
                         .map(m -> FileInfo.from(m.getFileName(), m.getFileExtension(), m.getFileSize(), m.getFileUrl()))
                         .collect(Collectors.toList()))

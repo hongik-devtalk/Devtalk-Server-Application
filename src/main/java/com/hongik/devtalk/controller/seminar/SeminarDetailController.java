@@ -15,12 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -97,6 +92,7 @@ public class SeminarDetailController {
 
     // 세미나 세부정보 조회 (세션)
     @Operation(summary = "세미나 세부정보 (세션) 조회", description = "seminarId를 사용하여 해당 세미나의 세션 목록을 조회합니다.")
+    @GetMapping("/{seminarId}/session")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "200",
@@ -119,7 +115,23 @@ public class SeminarDetailController {
         return ApiResponse.onSuccess("세미나 세션 목록 조회에 성공하였습니다.", sessionList);
     }
 
-    // 세미나 검색
+    @Operation(summary = "인기 태그 ", description = "검색량이 가장 많은 3개의 세미나 태그를 조회합니다.")
+    @GetMapping("/search/tag/popular")
+    public ApiResponse<List<String>> getTop3PopularTags() {
+        List<String> popularTags = seminarDetailService.getTop3PopularTags();
+        return ApiResponse.onSuccess("인기 태그 조회에 성공하였습니다.", popularTags);
+    }
+
+    //세미나 검색
+    @Operation(summary = "세미나 태그 검색 ", description = "세미나를 태그로 검색하여 해당 세미나의 정보를 조회합니다.")
+    @GetMapping("/search/tag")
+    public ApiResponse<List<SeminarSearchResponseDto>> searchSeminarsByTag(
+            @RequestParam(value = "tag") String tag
+    ) {
+        List<SeminarSearchResponseDto> seminarList = seminarDetailService.searchSeminarsByTag(tag);
+        return ApiResponse.onSuccess("태그 검색에 성공하였습니다.", seminarList);
+    }
+
     @Operation(summary = "세미나 검색", description = "세미나를 키워드로 검색하여 해당 세미나의 정보를 조회합니다.")
     @GetMapping("/search")
     @ApiResponses(value = {

@@ -1,6 +1,8 @@
 package com.hongik.devtalk.service.seminar;
 
 import com.hongik.devtalk.domain.*;
+import com.hongik.devtalk.repository.TagRepository;
+import com.hongik.devtalk.repository.SeminarTagRepository;
 import com.hongik.devtalk.domain.enums.AttendanceStatus;
 import com.hongik.devtalk.domain.enums.SeminarStatus;
 import com.hongik.devtalk.domain.seminar.admin.dto.SeminarRegisterRequestDTO;
@@ -38,6 +40,7 @@ public class SeminarAdminCommandService {
     private final ApplicantRepository applicantRepository;
     private final StudentRepository studentRepository;
     private final AttendanceRepository attendanceRepository;
+    private final TagRepository tagRepository;
     private final S3Service s3Service;
 
     /**
@@ -78,6 +81,8 @@ public class SeminarAdminCommandService {
         Seminar seminar = Seminar.builder()
                 .seminarNum(request.getSeminarNum())
                 .topic(request.getTopic())
+                .subtitle(request.getSubtitle())
+                .description(request.getDescription())
                 .seminarDate(request.getSeminarDate())
                 .place(request.getPlace())
                 .startDate(request.getApplyStartDate())
@@ -88,6 +93,7 @@ public class SeminarAdminCommandService {
                 .thumbnailFileSize(thumbnailFile.getSize())
                 .build();
         seminarRepository.save(seminar);
+        applySeminarTags(seminar, request.getSeminarTags());
 
         // 세미나 라이브 링크 저장
         Live live = null;
@@ -183,9 +189,14 @@ public class SeminarAdminCommandService {
                 request.getSeminarDate(),
                 request.getPlace(),
                 request.getTopic(),
+                request.getSubtitle(),
+                request.getDescription(),
                 request.getApplyStartDate(),
                 request.getApplyEndDate()
         );
+
+        seminar.clearSeminarTags();
+        applySeminarTags(seminar, request.getSeminarTags());
 
         // 라이브 링크 처리
         if (request.getLiveLink() == null || request.getLiveLink().isBlank()) {
@@ -389,6 +400,28 @@ public class SeminarAdminCommandService {
                 : AttendanceStatus.ABSENT;
 
         attendance.updateAttendance(newStatus, LocalDateTime.now());
+    }
+
+    private void applySeminarTags(Seminar seminar, List<String> tagTexts) {
+        if (tagTexts == null) {
+            return;
+        }
+
+        tagTexts.stream()
+                .filter(tagText -> tagText != null && !tagText.isBlank())
+                .map(String::trim)
+                .distinct()
+                .forEach(tagText -> {
+                    Tag tag = tagRepository.findByTagTextIgnoreCase(tagText)
+                            .orElseGet(() -> tagRepository.save(
+                                    Tag.builder()
+                                            .tagText(tagText)
+                                            .searchCount(0L)
+                                            .build()
+                            ));
+
+                    seminar.addSeminarTag(tag);
+                });
     }
 
     // 연사 수와 프로필 이미지 수 일치하는지 검증

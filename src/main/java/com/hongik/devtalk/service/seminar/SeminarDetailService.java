@@ -1,18 +1,18 @@
 package com.hongik.devtalk.service.seminar;
 
-import com.hongik.devtalk.domain.Review;
-import com.hongik.devtalk.domain.Seminar;
-import com.hongik.devtalk.domain.Session;
-import com.hongik.devtalk.domain.Speaker;
+import com.hongik.devtalk.domain.*;
 import com.hongik.devtalk.domain.seminar.detail.dto.*;
 import com.hongik.devtalk.global.apiPayload.code.GeneralErrorCode;
 import com.hongik.devtalk.global.apiPayload.exception.GeneralException;
+import com.hongik.devtalk.repository.SeminarTagRepository;
+import com.hongik.devtalk.repository.TagRepository;
 import com.hongik.devtalk.repository.seminar.SeminarDetailRepository;
 import com.hongik.devtalk.repository.speaker.SpeakerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,17 +22,19 @@ import java.util.stream.Collectors;
 public class SeminarDetailService {
 
     private final SeminarDetailRepository seminarDetailRepository;
-
     private final SpeakerRepository speakerRepository;
+    private final SeminarTagRepository seminarTagRepository;
+    private final TagRepository tagRepository;
+
     //세미나 세부정보 조회 ( 세션 )
 
     public List<SeminarDetailSessionResponseDto> getSeminarDetailSession(Long seminarId) {
 
         //세미나 id 받아와서 seminar 존재하는지 확인
         Seminar seminar = seminarDetailRepository.findById(seminarId)
-                .orElseThrow(()->new GeneralException(GeneralErrorCode.SEMINARINFO_NOT_FOUND));
+                .orElseThrow(() -> new GeneralException(GeneralErrorCode.SEMINARINFO_NOT_FOUND));
         //존재하면 해당 세미나에 속한 모든 세션 목록을 데이터베이스에서 가져옴
-        List<Session> sessions =seminar.getSessions();
+        List<Session> sessions = seminar.getSessions();
 
         return sessions.stream()
                 .map(SeminarDetailSessionResponseDto::from)
@@ -45,7 +47,7 @@ public class SeminarDetailService {
     public List<SeminarDetailReviewResponseDto> getSeminarDetailReview(Long seminarId) {
         //세미나 id 받아와서 seminar 존재하는지 확인
         Seminar seminar = seminarDetailRepository.findById(seminarId)
-                .orElseThrow(()->new GeneralException(GeneralErrorCode.SEMINARINFO_NOT_FOUND));
+                .orElseThrow(() -> new GeneralException(GeneralErrorCode.SEMINARINFO_NOT_FOUND));
 
         //존재하면 해당 세미나에 속한 모든 리뷰 목록을 데이터베이스에서 가져옴
         List<Review> reviews = seminar.getReviews();
@@ -58,13 +60,20 @@ public class SeminarDetailService {
     //세미나 세부정보 조회 ( 세미나 )
 
     public SeminarDetailResponseDto getSeminarDetail(Long seminarId) {
-    //세미나 id를 받아와서 seminar 존재하는지 확인
-    Seminar seminar = seminarDetailRepository.findById(seminarId)
-            .orElseThrow(()->new GeneralException(GeneralErrorCode.SEMINARINFO_NOT_FOUND));
+        //세미나 id를 받아와서 seminar 존재하는지 확인
+        Seminar seminar = seminarDetailRepository.findById(seminarId)
+                .orElseThrow(() -> new GeneralException(GeneralErrorCode.SEMINARINFO_NOT_FOUND));
 
-    return SeminarDetailResponseDto.from(seminar);
+        List<Session> sortedSessions = seminar.getSessions().stream()
+                .sorted(Comparator.comparing(Session::getId))
+                .toList();
+        List<SeminarDetailSessionResponseDto> sessions = sortedSessions.stream()
+                .map(SeminarDetailSessionResponseDto::from)
+                .toList();
 
-}
+        return SeminarDetailResponseDto.from(seminar, sessions);
+
+    }
 
     //세미나 검색
     public List<SeminarSearchResponseDto> searchSeminars(String keyword) {
@@ -73,10 +82,9 @@ public class SeminarDetailService {
         List<Seminar> seminars;
 
         //만약에 키워드가 비어있으면 전체 조회
-        if(keyword ==null || keyword.isEmpty())
-        { seminars = seminarDetailRepository.findAll();
-    }
-        else{
+        if (keyword == null || keyword.isEmpty()) {
+            seminars = seminarDetailRepository.findAll();
+        } else {
             //키워드포함 세미나 검색
             seminars = seminarDetailRepository.findByTopicContaining(keyword);
         }
@@ -86,8 +94,34 @@ public class SeminarDetailService {
                 .map(SeminarSearchResponseDto::from)
                 .collect(Collectors.toList());
 
+    }
+
+    @Transactional
+    public List<SeminarSearchResponseDto> searchSeminarsByTag(String tagText) {
+        if (tagText == null || tagText.isBlank()) {
+            return List.of();
         }
 
+        String query = tagText.trim();
+
+        List<Seminar> seminars = seminarTagRepository.findByTag_TagTextIgnoreCase(query).stream()
+                .map(SeminarTag::getSeminar)
+                .toList();
+
+        tagRepository.findByTagTextIgnoreCase(query)
+                .ifPresent(Tag::increaseSearchCount);
+
+        return seminars.stream()
+                .map(SeminarSearchResponseDto::from)
+                .toList();
+    }
+
+
+    public List<String> getTop3PopularTags() {
+        return tagRepository.findTop3ByOrderBySearchCountDesc().stream()
+                .map(Tag::getTagText)
+                .toList();
+    }
 
 
 }
