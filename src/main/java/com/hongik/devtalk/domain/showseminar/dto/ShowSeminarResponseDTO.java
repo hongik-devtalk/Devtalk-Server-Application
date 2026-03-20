@@ -8,31 +8,31 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-@Schema(description = "����ȭ�� ���� ���̳� ���� DTO")
+@Schema(description = "홈화면 노출 세미나 응답 DTO")
 public class ShowSeminarResponseDTO {
 
-    @Schema(description = "���̳� ID, ���� ���̳��� ���� ��� null")
+    @Schema(description = "세미나 ID, 노출 세미나가 없을 경우 null")
     private Long seminarId;
 
-    @Schema(description = "���̳� ȸ�� ��ȣ, ���� ���̳��� ���� ��� null")
+    @Schema(description = "세미나 번호, 노출 세미나가 없을 경우 null")
     private Integer seminarNum;
 
-    @Schema(description = "��û Ȱ��ȭ ����")
+    @Schema(description = "신청 활성화 여부")
     private boolean applicantActivate;
 
-    @Schema(description = "���̺� Ȱ��ȭ ����")
+    @Schema(description = "라이브 활성화 여부")
     private boolean liveActivate;
 
-    @Schema(description = "���� ������ �̹��� URL")
+    @Schema(description = "메인 포스터 이미지 URL")
     private String mainPosterImageUrl;
 
-    @Schema(description = "���� ī�� ����")
+    @Schema(description = "메인 카드 정보")
     private MainCards mainCards;
 
     @Getter
     @Builder
     @AllArgsConstructor
-    @Schema(description = "���� ī�� 3��")
+    @Schema(description = "메인 카드 3종")
     public static class MainCards {
         private SeminarRoundCard card1;
         private SessionCard card2;
@@ -42,7 +42,7 @@ public class ShowSeminarResponseDTO {
     @Getter
     @Builder
     @AllArgsConstructor
-    @Schema(description = "ī��1: ȸ�� ����")
+    @Schema(description = "카드1: 회차 정보")
     public static class SeminarRoundCard {
         private String imageUrl;
         private String seminarTitle;
@@ -53,7 +53,7 @@ public class ShowSeminarResponseDTO {
     @Getter
     @Builder
     @AllArgsConstructor
-    @Schema(description = "ī��2/3: ���� ����")
+    @Schema(description = "카드2/3: 세션 정보")
     public static class SessionCard {
         private String imageUrl;
         private String seminarTitle;
