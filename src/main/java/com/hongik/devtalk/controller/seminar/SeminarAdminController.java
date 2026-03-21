@@ -3,10 +3,7 @@ package com.hongik.devtalk.controller.seminar;
 import com.hongik.devtalk.domain.seminar.admin.dto.*;
 import com.hongik.devtalk.global.apiPayload.ApiResponse;
 import com.hongik.devtalk.service.admin.QrService;
-import com.hongik.devtalk.service.seminar.SeminarAdminCommandService;
-import com.hongik.devtalk.service.seminar.SeminarAdminQueryService;
-import com.hongik.devtalk.service.seminar.SeminarReviewService;
-import com.hongik.devtalk.service.seminar.SeminarStatisticsService;
+import com.hongik.devtalk.service.seminar.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -33,6 +30,7 @@ public class SeminarAdminController {
     private final SeminarReviewService seminarReviewService;
     private final SeminarStatisticsService seminarStatisticsService;
     private final QrService qrService;
+    private final SeminarVideoLoadService seminarVideoLoadService;
 
     @Operation(summary = "세미나 카드리스트 조회", description = "세미나 카드리스트를 조회합니다.")
     @ApiResponses({
@@ -356,5 +354,26 @@ public class SeminarAdminController {
     ) {
         SeminarStatisticsResponseDTO result = seminarStatisticsService.getSeminarStatistics(seminarId);
         return ApiResponse.onSuccess("세미나 통계 정보 조회에 성공했습니다.", result);
+    }
+
+
+    @Operation(summary = "세미나 녹화본 영상 링크 등록 - by 박서영 ", description = "세미나 녹화본 영상 링크 등록 관련 api입니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "등록 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "세미나 없음",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 내부 오류",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class)))
+    })
+    @PostMapping("/{seminarId}/video")
+    public ApiResponse<Void> createSeminarVideoUrl(
+            @Parameter(description = "세미나 ID", required = true)
+            @PathVariable Long seminarId,
+            @RequestBody SeminarVideoRequestDTO request
+    ) {
+
+
+        seminarVideoLoadService.createSeminarVideo(seminarId,request);
+        return ApiResponse.onSuccess("세미나 녹화본 영상 링크 등록에 성공했습니다.");
     }
 }

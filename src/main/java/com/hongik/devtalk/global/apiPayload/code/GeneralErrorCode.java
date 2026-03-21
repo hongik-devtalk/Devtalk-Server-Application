@@ -20,6 +20,7 @@ public enum GeneralErrorCode implements BaseErrorCode {
     SEMINARINFO_NOT_FOUND(HttpStatus.NOT_FOUND,"SEMINARINFO_4041","seminarId를 찾을 수 없습니다."),
     INVALID_SPEAKER_PROFILE_COUNT(HttpStatus.BAD_REQUEST, "SEMINAR_4002", "연사 정보 수와 프로필 파일 수가 일치하지 않습니다."),
     SEMINAR_NUM_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "SEMINAR_4004", "이미 존재하는 회차입니다."),
+    INVALID_VIDEO_URL(HttpStatus.BAD_REQUEST, "SEMINAR_4002", "유효하지 않은 영상 URL입니다."),
 
     // 세션 에러
     SESSION_NOT_FOUND(HttpStatus.NOT_FOUND, "SESSION_4041", "해당 세션을 찾을 수 없습니다."),
