@@ -21,7 +21,7 @@ public class SeminarVideoController {
 
     private final SeminarVideoLoadService seminarVideoLoadService;
 
-    @Operation(summary = "세미나 녹화본 영상 링크 조회 - by 박서영 ", description = "세미나 녹화본 영상 링크 조회 api입니다.")
+    @Operation(summary = "세미나 녹화본 영상 링크 조회 - by 박서영 ", description = "세미나 녹화본 영상 링크 조회 관련 api입니다.")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "조회 성공"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "세미나 없음",
