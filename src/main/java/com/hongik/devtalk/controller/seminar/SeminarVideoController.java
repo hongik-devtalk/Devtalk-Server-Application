@@ -30,7 +30,7 @@ public class SeminarVideoController {
                     content = @Content(schema = @Schema(implementation = ApiResponse.class)))
     })
     @GetMapping("/{seminarId}")
-    public ApiResponse<SeminarVideoResponseDTO> createSeminarVideoUrl(
+    public ApiResponse<SeminarVideoResponseDTO> getSeminarVideoUrl(
             @Parameter(description = "세미나 ID", required = true)
             @PathVariable Long seminarId
     ) {
