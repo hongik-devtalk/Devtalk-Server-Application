@@ -369,7 +369,7 @@ public class SeminarAdminController {
     public ApiResponse<Void> createSeminarVideoUrl(
             @Parameter(description = "세미나 ID", required = true)
             @PathVariable Long seminarId,
-            @RequestBody SeminarVideoRequestDTO request
+           @Valid @RequestBody SeminarVideoRequestDTO request
     ) {
 
 
