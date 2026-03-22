@@ -54,6 +54,11 @@ public class Seminar {
     @Enumerated(EnumType.STRING)
     private SeminarStatus status;
 
+    //세미나 녹화본 영상 url
+    @Column(length = 2048)
+    private String SeminarVideoUrl;
+
+
     @OneToMany(mappedBy = "seminar", cascade = CascadeType.ALL)
     private List<Attendance> attendances = new ArrayList<>();
 
@@ -119,5 +124,10 @@ public class Seminar {
             return;
         }
         this.seminarTags.clear();
+    }
+
+    //비디오 url 업데이트
+    public void updateVideoUrl(String videoUrl) {
+        this.SeminarVideoUrl = videoUrl;
     }
 }
