@@ -380,7 +380,7 @@ public class SeminarAdminCommandService {
     }
 
     @Transactional
-    public void checkAttendence(Long seminarId, Long studentId, Boolean check) {
+    public LocalDateTime checkAttendance(Long seminarId, Long studentId, Boolean check) {
         // Applicant 조회
         Seminar seminar = seminarRepository.findById(seminarId)
                 .orElseThrow(() -> new GeneralException(GeneralErrorCode.SEMINARINFO_NOT_FOUND));
@@ -399,7 +399,10 @@ public class SeminarAdminCommandService {
                 ? AttendanceStatus.PRESENT
                 : AttendanceStatus.ABSENT;
 
-        attendance.updateAttendance(newStatus, LocalDateTime.now());
+
+
+        return attendance.updateAttendance(newStatus, LocalDateTime.now());
+
     }
 
     private void applySeminarTags(Seminar seminar, List<String> tagTexts) {

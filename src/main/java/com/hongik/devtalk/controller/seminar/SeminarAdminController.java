@@ -17,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Tag(name = "[Admin]Seminar", description = "어드민 - 세미나 관련 API - by 박유정, 남성현")
@@ -294,13 +295,15 @@ public class SeminarAdminController {
     @Operation(summary = "세미나 신청자 출석 체크 -by 남성현", description = "세미나 출석 체크 기능.")
     @Parameters({@Parameter(name="check",description = "true이면 출석체크, false이면 출석체크해제.")})
     @PostMapping("/{seminarId}/applicants/{studentId}")
-    public ApiResponse<Void> checkingAttendance(
+    public ApiResponse<LocalDateTime> checkingAttendance(
             @PathVariable("seminarId") Long seminarId,
             @PathVariable("studentId") Long studentId,
             @RequestParam Boolean check ){
 
-        seminarAdminCommandService.checkAttendence(seminarId, studentId, check);
-        return ApiResponse.onSuccess("출석 체크 완료하였습니다.");
+
+        LocalDateTime checkedAt = seminarAdminCommandService.checkAttendance(seminarId, studentId, check);
+
+        return ApiResponse.onSuccess("출석 체크 완료하였습니다.",checkedAt);
     }
 
     @Operation(summary = "세미나 출석체크 QR 생성 -by 황신애", description = "세미나 출석체크용 QR코드를 생성합니다.")
