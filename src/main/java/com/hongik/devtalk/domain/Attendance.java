@@ -35,7 +35,8 @@ public class Attendance {
 
     private LocalDateTime checkInTime;
 
-    public void updateAttendance(AttendanceStatus status, LocalDateTime checkInTime) {
+
+    public LocalDateTime updateAttendance(AttendanceStatus status, LocalDateTime checkInTime) {
 
         if (this.status == status) {
             if (status == AttendanceStatus.PRESENT) {
@@ -47,5 +48,6 @@ public class Attendance {
 
         this.status = status;
         this.checkInTime = checkInTime;
+        return this.checkInTime;
     }
 }
