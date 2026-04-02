@@ -148,6 +148,7 @@ public class SeminarAdminCommandService {
                     .profileFileSize(profile.getSize())
                     .build();
             speakerRepository.save(speaker);
+            applySpeakerTags(speaker, sp.getSpeakerTags());
 
             Session session = Session.builder()
                     .seminar(seminar)
@@ -414,6 +415,28 @@ public class SeminarAdminCommandService {
                             ));
 
                     seminar.addSeminarTag(tag);
+                });
+    }
+
+    private void applySpeakerTags(Speaker speaker, List<String> tagTexts) {
+        if (tagTexts == null) {
+            return;
+        }
+
+        tagTexts.stream()
+                .filter(tagText -> tagText != null && !tagText.isBlank())
+                .map(String::trim)
+                .distinct()
+                .forEach(tagText -> {
+                    Tag tag = tagRepository.findByTagTextIgnoreCase(tagText)
+                            .orElseGet(() -> tagRepository.save(
+                                    Tag.builder()
+                                            .tagText(tagText)
+                                            .searchCount(0L)
+                                            .build()
+                            ));
+
+                    speaker.addSpeakerTag(tag);
                 });
     }
 

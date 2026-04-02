@@ -132,14 +132,15 @@ public class SeminarDetailController {
         return ApiResponse.onSuccess("인기 태그 조회에 성공하였습니다.", popularTags);
     }
 
-    //세미나 검색
-    @Operation(summary = "세미나 태그 검색 ", description = "세미나를 태그로 검색하여 해당 세미나의 정보를 조회합니다.")
-    @GetMapping("/search/tag")
-    public ApiResponse<List<SeminarSearchResponseDto>> searchSeminarsByTag(
+
+
+    @Operation(summary = "통합 태그 검색", description = "태그로 세미나와 연사를 함께 검색합니다.")
+    @GetMapping("/search/tag/all")
+    public ApiResponse<TagSearchResponseDto> searchAllByTag(
             @RequestParam(value = "tag") String tag
     ) {
-        List<SeminarSearchResponseDto> seminarList = seminarDetailService.searchSeminarsByTag(tag);
-        return ApiResponse.onSuccess("태그 검색에 성공하였습니다.", seminarList);
+        TagSearchResponseDto result = seminarDetailService.searchAllByTag(tag);
+        return ApiResponse.onSuccess("통합 태그 검색에 성공하였습니다.", result);
     }
 
     @Operation(summary = "세미나 검색 ", description = "세미나를 키워드로 검색하여 해당 세미나의 정보를 조회합니다.")

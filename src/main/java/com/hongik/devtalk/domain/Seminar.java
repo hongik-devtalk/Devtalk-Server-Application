@@ -63,6 +63,7 @@ public class Seminar {
     @OneToOne(mappedBy = "seminar", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Live live;
 
+    @Builder.Default
     @OneToMany(mappedBy = "seminar", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SeminarTag> seminarTags = new ArrayList<>();
 
