@@ -23,6 +23,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class SeminarApplicantController {
     private final SeminarApplicantService seminarApplicantService;
 
+    @GetMapping("/duplicate-check")
+    @Operation(summary = "세미나 중복 신청 확인 API")
+    public ApiResponse<Void> checkDuplicateApplicant(
+            @RequestParam(name = "studentNum") String studentNum) {
+        // 서비스 계층의 중복 체크 로직 호출
+        return seminarApplicantService.dupApplicantCheck(studentNum);
+    }
+
+
     @PostMapping
     @Operation(summary = "세미나 신청 API", description = "세미나에 대한 신청 정보를 받아 처리합니다. 학생이 존재하지 않으면 새로 생성하고, 존재하는 경우 정보를 업데이트합니다.")
     @io.swagger.v3.oas.annotations.parameters.RequestBody(

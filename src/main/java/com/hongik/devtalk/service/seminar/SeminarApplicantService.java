@@ -40,6 +40,31 @@ public class SeminarApplicantService {
     // 메인 전송
     private final MailSendService mailSendService;
 
+   
+    public ApiResponse<Void> dupApplicantCheck(String studentNum) {
+    // 1. 학생 존재 여부 확인
+        Optional<Student> studentOpt = studentRepository.findByStudentNum(studentNum);
+
+    // 2. 학생이 DB에 없으면 중복 신청일 리 없으므로 즉시 통과 처리
+        if (studentOpt.isEmpty()) {
+            return ApiResponse.onSuccess("학번 중복 검사 통과 (미등록 학생)");
+        }
+
+    // 3. 학생이 존재한다면, 현재 활성화된 세미나 정보 가져오기
+        Student student = studentOpt.get();
+        Seminar seminar = showSeminarRepository.findFirstByApplicantActivateTrue()
+                .map(ShowSeminar::getSeminar)
+                .orElseThrow(() -> new GeneralException(CustomSeminarApplicantErrorCode.SEMINAR_APPLICANT_ERROR));
+
+    // 4. 해당 학생이 이미 신청했는지 확인
+        if (applicantRepository.existsByStudentAndSeminar(student, seminar)) {
+            throw new GeneralException(CustomSeminarApplicantErrorCode.ALREADY_APPLIED_SEMINAR);
+        }
+
+        return ApiResponse.onSuccess("학번 중복 검사 통과");
+    }
+
+
     public ApiResponse<ApplicantResponseDto> createApplicant(ApplicantRequestDto applicantRequestDto) {
         //학생 정보 확인
         Student student = studentRepository.findByStudentNum(applicantRequestDto.getStudentNum())
