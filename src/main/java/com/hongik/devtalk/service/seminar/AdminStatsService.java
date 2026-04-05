@@ -32,7 +32,7 @@ public class AdminStatsService {
                 .getDailyGraph(seminarId, from, to)
                 .stream()
                 .map(viewPoint -> AdminStatsResponseDTO.SeminarViewPointDTO.builder()
-                        .date(viewPoint.date())
+                        .date(viewPoint.date().atStartOfDay())
                         .viewCount(viewPoint.count())
                         .build())
                 .toList();
@@ -43,8 +43,8 @@ public class AdminStatsService {
 
         return AdminStatsResponseDTO.SeminarViewsResponseDTO.builder()
                 .seminarId(seminarId)
-                .from(from.toString())
-                .to(to.toString())
+                .from(from.atStartOfDay())
+                .to(to.atStartOfDay())
                 .totalViewCount(totalViewCount)
                 .viewPoints(viewPoints)
                 .build();
@@ -68,8 +68,8 @@ public class AdminStatsService {
 
         return AdminStatsResponseDTO.SearchKeywordStatsResponseDTO.builder()
                 .target(normalizedTarget)
-                .from(from.toString())
-                .to(to.toString())
+                .from(from.atStartOfDay())
+                .to(to.atStartOfDay())
                 .keywords(keywords)
                 .build();
     }

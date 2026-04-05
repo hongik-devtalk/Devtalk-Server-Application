@@ -1,10 +1,12 @@
 package com.hongik.devtalk.domain.seminar.admin.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -24,10 +26,12 @@ public class AdminStatsResponseDTO {
         private Long seminarId;
 
         @Schema(description = "조회 시작일", example = "2026-03-01", type = "string", format = "date")
-        private String from;
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+        private LocalDateTime from;
 
         @Schema(description = "조회 종료일", example = "2026-03-31", type = "string", format = "date")
-        private String to;
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+        private LocalDateTime to;
 
         @Schema(description = "기간 내 총 조회수", example = "128")
         private int totalViewCount;
@@ -44,7 +48,8 @@ public class AdminStatsResponseDTO {
     public static class SeminarViewPointDTO {
 
         @Schema(description = "조회 일자", example = "2026-03-01", type = "string", format = "date")
-        private String date;
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+        private LocalDateTime date;
 
         @Schema(description = "해당 일자의 카드 조회수", example = "12")
         private int viewCount;
@@ -61,10 +66,12 @@ public class AdminStatsResponseDTO {
         private String target;
 
         @Schema(description = "조회 시작일", example = "2026-03-01", type = "string", format = "date")
-        private String from;
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+        private LocalDateTime from;
 
         @Schema(description = "조회 종료일", example = "2026-03-31", type = "string", format = "date")
-        private String to;
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+        private LocalDateTime to;
 
         @Schema(description = "검색어 통계 목록")
         private List<TopKeywordDTO> keywords;
