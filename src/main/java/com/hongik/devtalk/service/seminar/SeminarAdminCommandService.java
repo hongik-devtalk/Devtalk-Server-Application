@@ -155,6 +155,8 @@ public class SeminarAdminCommandService {
                     .speaker(speaker)
                     .title(sp.getSessionTitle())
                     .description(sp.getSessionContent())
+                    .partTag(sp.getPartTag())
+                    .oneLineSummary(sp.getOneLineSummary())
                     .build();
             sessionRepository.save(session);
             sessions.add(session);
@@ -218,13 +220,18 @@ public class SeminarAdminCommandService {
                     .orElseThrow(() -> new GeneralException(GeneralErrorCode.SESSION_NOT_FOUND));
 
             speaker.updateInfo(spReq.getName(), spReq.getOrganization(), spReq.getHistory());
-            session.updateInfo(spReq.getSessionTitle(), spReq.getSessionContent());
+            session.updateInfo(
+                    spReq.getSessionTitle(),
+                    spReq.getSessionContent(),
+                    spReq.getPartTag(),
+                    spReq.getOneLineSummary()
+            );
         }
 
         // 응답 DTO 생성
         Live live = liveRepository.findBySeminar(seminar).orElse(null);
         List<LiveFile> liveFiles = liveFileRepository.findBySeminar(seminar);
-        List<Session> sessions = sessionRepository.findSessionsBySeminar(seminar);
+        List<Session> sessions = sessionRepository.findBySeminarIdWithSpeaker(seminar.getId());
 
         return SeminarInfoResponseDTO.from(seminar, live, liveFiles, sessions);
     }
@@ -334,7 +341,7 @@ public class SeminarAdminCommandService {
         // 응답 DTO 생성
         Live live = liveRepository.findBySeminar(seminar).orElse(null);
         List<LiveFile> liveFiles = liveFileRepository.findBySeminar(seminar);
-        List<Session> sessions = sessionRepository.findSessionsBySeminar(seminar);
+        List<Session> sessions = sessionRepository.findBySeminarIdWithSpeaker(seminar.getId());
 
         return SeminarInfoResponseDTO.from(seminar, live, liveFiles, sessions);
     }
@@ -374,7 +381,7 @@ public class SeminarAdminCommandService {
     }
 
     @Transactional
-    public void checkAttendence(Long seminarId, Long studentId, Boolean check) {
+    public LocalDateTime checkAttendance(Long seminarId, Long studentId, Boolean check) {
         // Applicant 조회
         Seminar seminar = seminarRepository.findById(seminarId)
                 .orElseThrow(() -> new GeneralException(GeneralErrorCode.SEMINARINFO_NOT_FOUND));
@@ -393,7 +400,10 @@ public class SeminarAdminCommandService {
                 ? AttendanceStatus.PRESENT
                 : AttendanceStatus.ABSENT;
 
-        attendance.updateAttendance(newStatus, LocalDateTime.now());
+
+
+        return attendance.updateAttendance(newStatus, LocalDateTime.now());
+
     }
 
     private void applySeminarTags(Seminar seminar, List<String> tagTexts) {

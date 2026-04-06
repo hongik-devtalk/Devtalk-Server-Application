@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -91,5 +92,13 @@ public class SeminarUpdateRequestDTO {
 
         @Schema(description = "연사 태그")
         private List<String> speakerTags;
+
+        @Schema(description = "1, 2부 구분 태그", example = "1부")
+        @Size(max = 50)
+        private String partTag;
+
+        @Schema(description = "메인/관리 카드용 한줄 요약", example = "생성형 AI의 현재와 실무 적용 포인트를 다룹니다.")
+        @Size(max = 255)
+        private String oneLineSummary;
     }
 }

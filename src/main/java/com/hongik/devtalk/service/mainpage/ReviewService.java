@@ -175,7 +175,6 @@ public class ReviewService {
                 .content(review.getStrength())
                 .department(department)
                 .grade(grade)
-                .nextTopic(review.getNextTopic())
                 .seminarNum(review.getSeminar().getSeminarNum())
                 .order(review.getDisplayOrder())
                 .createdAt(review.getCreatedAt())

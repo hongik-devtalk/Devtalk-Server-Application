@@ -61,9 +61,24 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+	testRuntimeOnly 'com.h2database:h2'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.encoding = 'UTF-8'
+}
+
+// Javadoc 생성 시 한글 깨짐 방지
+tasks.withType(Javadoc).configureEach {
+	options.encoding = 'UTF-8'
+}
+
+// 리소스 복사 시 한글 깨짐 방지
+tasks.withType(ProcessResources).configureEach {
+	filteringCharset = 'UTF-8'
 }

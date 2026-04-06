@@ -3,10 +3,7 @@ package com.hongik.devtalk.controller.seminar;
 import com.hongik.devtalk.domain.seminar.admin.dto.*;
 import com.hongik.devtalk.global.apiPayload.ApiResponse;
 import com.hongik.devtalk.service.admin.QrService;
-import com.hongik.devtalk.service.seminar.SeminarAdminCommandService;
-import com.hongik.devtalk.service.seminar.SeminarAdminQueryService;
-import com.hongik.devtalk.service.seminar.SeminarReviewService;
-import com.hongik.devtalk.service.seminar.SeminarStatisticsService;
+import com.hongik.devtalk.service.seminar.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -20,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Tag(name = "[Admin]Seminar", description = "어드민 - 세미나 관련 API - by 박유정, 남성현")
@@ -33,6 +31,7 @@ public class SeminarAdminController {
     private final SeminarReviewService seminarReviewService;
     private final SeminarStatisticsService seminarStatisticsService;
     private final QrService qrService;
+    private final SeminarVideoLoadService seminarVideoLoadService;
 
     @Operation(summary = "세미나 카드리스트 조회", description = "세미나 카드리스트를 조회합니다.")
     @ApiResponses({
@@ -296,13 +295,15 @@ public class SeminarAdminController {
     @Operation(summary = "세미나 신청자 출석 체크 -by 남성현", description = "세미나 출석 체크 기능.")
     @Parameters({@Parameter(name="check",description = "true이면 출석체크, false이면 출석체크해제.")})
     @PostMapping("/{seminarId}/applicants/{studentId}")
-    public ApiResponse<Void> checkingAttendance(
+    public ApiResponse<LocalDateTime> checkingAttendance(
             @PathVariable("seminarId") Long seminarId,
             @PathVariable("studentId") Long studentId,
             @RequestParam Boolean check ){
 
-        seminarAdminCommandService.checkAttendence(seminarId, studentId, check);
-        return ApiResponse.onSuccess("출석 체크 완료하였습니다.");
+
+        LocalDateTime checkedAt = seminarAdminCommandService.checkAttendance(seminarId, studentId, check);
+
+        return ApiResponse.onSuccess("출석 체크 완료하였습니다.",checkedAt);
     }
 
     @Operation(summary = "세미나 출석체크 QR 생성 -by 황신애", description = "세미나 출석체크용 QR코드를 생성합니다.")
@@ -356,5 +357,26 @@ public class SeminarAdminController {
     ) {
         SeminarStatisticsResponseDTO result = seminarStatisticsService.getSeminarStatistics(seminarId);
         return ApiResponse.onSuccess("세미나 통계 정보 조회에 성공했습니다.", result);
+    }
+
+
+    @Operation(summary = "세미나 녹화본 영상 링크 등록 - by 박서영 ", description = "세미나 녹화본 영상 링크 등록 관련 api입니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "등록 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "세미나 없음",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 내부 오류",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class)))
+    })
+    @PostMapping("/{seminarId}/video")
+    public ApiResponse<Void> createSeminarVideoUrl(
+            @Parameter(description = "세미나 ID", required = true)
+            @PathVariable Long seminarId,
+           @Valid @RequestBody SeminarVideoRequestDTO request
+    ) {
+
+
+        seminarVideoLoadService.createSeminarVideo(seminarId,request);
+        return ApiResponse.onSuccess("세미나 녹화본 영상 링크 등록에 성공했습니다.");
     }
 }

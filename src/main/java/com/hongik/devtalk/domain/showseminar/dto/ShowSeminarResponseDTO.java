@@ -22,4 +22,42 @@ public class ShowSeminarResponseDTO {
 
     @Schema(description = "라이브 활성화 여부")
     private boolean liveActivate;
+
+    @Schema(description = "메인 포스터 이미지 URL")
+    private String mainPosterImageUrl;
+
+    @Schema(description = "메인 카드 정보")
+    private MainCards mainCards;
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @Schema(description = "메인 카드 3종")
+    public static class MainCards {
+        private SeminarRoundCard card1;
+        private SessionCard card2;
+        private SessionCard card3;
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @Schema(description = "카드1: 회차 정보")
+    public static class SeminarRoundCard {
+        private String imageUrl;
+        private String seminarTitle;
+        private String schedule;
+        private String place;
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @Schema(description = "카드2/3: 세션 정보")
+    public static class SessionCard {
+        private String imageUrl;
+        private String seminarTitle;
+        private String oneLineSummary;
+        private String speakerName;
+    }
 }
