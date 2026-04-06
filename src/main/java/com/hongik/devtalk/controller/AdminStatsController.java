@@ -2,8 +2,8 @@ package com.hongik.devtalk.controller;
 
 import com.hongik.devtalk.domain.seminar.admin.dto.AdminStatsResponseDTO;
 import com.hongik.devtalk.global.apiPayload.ApiResponse;
+import com.hongik.devtalk.service.seminar.AdminStatsService;
 import com.hongik.devtalk.service.seminar.SearchStatsService;
-import com.hongik.devtalk.service.seminar.SeminarViewStatsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,9 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin/stats")
@@ -29,18 +27,17 @@ import java.util.List;
 @SecurityRequirement(name = "JWT TOKEN")
 public class AdminStatsController {
 
-    private final SeminarViewStatsService seminarViewStatsService;
-    private final SearchStatsService searchStatsService;
+    private final AdminStatsService adminStatsService;
 
     @GetMapping("/seminars/{seminarId}/views")
     @Operation(
-            summary = "카드별 조회수 통계 조회",
+            summary = "세미나 카드 조회수 통계 조회",
             description = "특정 세미나 카드의 기간별 일자 단위 조회수 통계를 조회합니다."
     )
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "200",
-                    description = "카드별 조회수 통계 조회 성공"
+                    description = "세미나 카드 조회수 통계 조회 성공"
             ),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "400",
@@ -51,9 +48,14 @@ public class AdminStatsController {
                     responseCode = "401",
                     description = "관리자 인증이 필요한 경우",
                     content = @Content(schema = @Schema(implementation = ApiResponse.class))
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "404",
+                    description = "세미나를 찾을 수 없는 경우",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class))
             )
     })
-    public ApiResponse<List<AdminStatsResponseDTO.SeminarViewPointDTO>> seminarViews(
+    public ApiResponse<AdminStatsResponseDTO.SeminarViewsResponseDTO> seminarViews(
             @Parameter(description = "조회할 세미나 ID", required = true, example = "1")
             @PathVariable Long seminarId,
             @Parameter(
@@ -71,10 +73,58 @@ public class AdminStatsController {
             @RequestParam
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to
     ) {
-        var points = seminarViewStatsService.getDailyGraph(seminarId, from, to).stream()
-                .map(AdminStatsResponseDTO.SeminarViewPointDTO::from)
-                .toList();
-        return ApiResponse.onSuccess("카드별 조회수 통계 조회 성공", points);
+        AdminStatsResponseDTO.SeminarViewsResponseDTO response =
+                adminStatsService.getSeminarViews(seminarId, from, to);
+        return ApiResponse.onSuccess("세미나 카드 조회수 통계 조회 성공", response);
+    }
+
+    @GetMapping("/seminars/{seminarId}/inflows")
+    @Operation(
+            summary = "세미나 신청자 유입경로 통계 조회",
+            description = "특정 세미나의 기간별 신청자 유입경로 통계를 조회합니다."
+    )
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "세미나 신청자 유입경로 통계 조회 성공"
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "400",
+                    description = "날짜 형식 또는 요청 파라미터가 잘못된 경우",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class))
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "401",
+                    description = "관리자 인증이 필요한 경우",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class))
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "404",
+                    description = "세미나를 찾을 수 없는 경우",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class))
+            )
+    })
+    public ApiResponse<AdminStatsResponseDTO.SeminarInflowsResponseDTO> seminarInflows(
+            @Parameter(description = "조회할 세미나 ID", required = true, example = "1")
+            @PathVariable Long seminarId,
+            @Parameter(
+                    description = "조회 시작일",
+                    required = true,
+                    schema = @Schema(type = "string", format = "date", example = "2026-03-01")
+            )
+            @RequestParam
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @Parameter(
+                    description = "조회 종료일",
+                    required = true,
+                    schema = @Schema(type = "string", format = "date", example = "2026-03-31")
+            )
+            @RequestParam
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to
+    ) {
+        AdminStatsResponseDTO.SeminarInflowsResponseDTO response =
+                adminStatsService.getSeminarInflows(seminarId, from, to);
+        return ApiResponse.onSuccess("세미나 신청자 유입경로 통계 조회 성공", response);
     }
 
     @GetMapping("/search/top5")
@@ -98,7 +148,7 @@ public class AdminStatsController {
                     content = @Content(schema = @Schema(implementation = ApiResponse.class))
             )
     })
-    public ApiResponse<List<AdminStatsResponseDTO.TopKeywordDTO>> top5(
+    public ApiResponse<AdminStatsResponseDTO.SearchKeywordStatsResponseDTO> top5(
             @Parameter(
                     description = "조회 시작일",
                     required = true,
@@ -127,9 +177,8 @@ public class AdminStatsController {
             )
             @RequestParam(defaultValue = SearchStatsService.TARGET_ALL) String target
     ) {
-        var res = searchStatsService.getTop5(target, from, to).stream()
-                .map(AdminStatsResponseDTO.TopKeywordDTO::from)
-                .toList();
-        return ApiResponse.onSuccess("검색어 통계 조회 성공", res);
+        AdminStatsResponseDTO.SearchKeywordStatsResponseDTO response =
+                adminStatsService.getSearchKeywordStats(from, to, target);
+        return ApiResponse.onSuccess("검색어 통계 조회 성공", response);
     }
 }
