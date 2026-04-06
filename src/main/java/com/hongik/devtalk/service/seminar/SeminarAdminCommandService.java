@@ -220,6 +220,8 @@ public class SeminarAdminCommandService {
                     .orElseThrow(() -> new GeneralException(GeneralErrorCode.SESSION_NOT_FOUND));
 
             speaker.updateInfo(spReq.getName(), spReq.getOrganization(), spReq.getHistory());
+            speaker.clearSpeakerTags();
+            applySpeakerTags(speaker, spReq.getSpeakerTags());
             session.updateInfo(
                     spReq.getSessionTitle(),
                     spReq.getSessionContent(),
