@@ -1,9 +1,6 @@
 package com.hongik.devtalk.controller.seminar;
 
-import com.hongik.devtalk.domain.seminar.detail.dto.SeminarDetailResponseDto;
-import com.hongik.devtalk.domain.seminar.detail.dto.SeminarDetailReviewResponseDto;
-import com.hongik.devtalk.domain.seminar.detail.dto.SeminarDetailSessionResponseDto;
-import com.hongik.devtalk.domain.seminar.detail.dto.SeminarSearchResponseDto;
+import com.hongik.devtalk.domain.seminar.detail.dto.*;
 import com.hongik.devtalk.global.apiPayload.ApiResponse;
 import com.hongik.devtalk.service.seminar.SearchStatsService;
 import com.hongik.devtalk.service.seminar.SeminarDetailService;
