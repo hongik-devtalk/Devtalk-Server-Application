@@ -125,7 +125,7 @@ public class SeminarDetailController {
 
     }
 
-    @Operation(summary = "인기 태그 ", description = "검색량이 가장 많은 3개의 세미나 태그를 조회합니다.")
+    @Operation(summary = "인기 태그 -by 박우주", description = "검색량이 가장 많은 3개의 세미나 태그를 조회합니다.")
     @GetMapping("/search/tag/popular")
     public ApiResponse<List<String>> getTop3PopularTags() {
         List<String> popularTags = seminarDetailService.getTop3PopularTags();
@@ -134,7 +134,7 @@ public class SeminarDetailController {
 
 
 
-    @Operation(summary = "통합 태그 검색", description = "태그로 세미나와 연사를 함께 검색합니다.")
+    @Operation(summary = "통합 태그 검색 -by 박우주", description = "태그로 세미나와 연사를 함께 검색합니다.")
     @GetMapping("/search/tag/all")
     public ApiResponse<TagSearchResponseDto> searchAllByTag(
             @RequestParam(value = "tag") String tag
