@@ -1,17 +1,21 @@
 package com.hongik.devtalk.service.seminar;
 
+import com.hongik.devtalk.domain.Applicant;
 import com.hongik.devtalk.domain.seminar.admin.dto.AdminStatsResponseDTO;
 import com.hongik.devtalk.global.apiPayload.code.GeneralErrorCode;
 import com.hongik.devtalk.global.apiPayload.exception.GeneralException;
 import com.hongik.devtalk.repository.ApplicantRepository;
 import com.hongik.devtalk.repository.seminar.SeminarRepository;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Locale;
-
 
 @Service
 @RequiredArgsConstructor
@@ -25,8 +29,7 @@ public class AdminStatsService {
 
     public AdminStatsResponseDTO.SeminarViewsResponseDTO getSeminarViews(Long seminarId, LocalDate from, LocalDate to) {
         validateDateRange(from, to);
-        seminarRepository.findById(seminarId)
-                .orElseThrow(() -> new GeneralException(GeneralErrorCode.SEMINARINFO_NOT_FOUND));
+        validateSeminarExists(seminarId);
 
         List<AdminStatsResponseDTO.SeminarViewPointDTO> viewPoints = seminarViewStatsService
                 .getDailyGraph(seminarId, from, to)
@@ -43,10 +46,57 @@ public class AdminStatsService {
 
         return AdminStatsResponseDTO.SeminarViewsResponseDTO.builder()
                 .seminarId(seminarId)
-                .from(from.atStartOfDay())
-                .to(to.atStartOfDay())
+                .from(toStartOfDay(from))
+                .to(toStartOfDay(to))
                 .totalViewCount(totalViewCount)
                 .viewPoints(viewPoints)
+                .build();
+    }
+
+    public AdminStatsResponseDTO.SeminarInflowsResponseDTO getSeminarInflows(Long seminarId, LocalDate from, LocalDate to) {
+        validateDateRange(from, to);
+        validateSeminarExists(seminarId);
+
+        LocalDateTime startDateTime = toStartOfDay(from);
+        LocalDateTime endDateTime = toInclusiveEndOfDay(to);
+
+        List<Applicant> applicants = applicantRepository.findBySeminar_IdAndCreatedAtBetween(
+                seminarId,
+                startDateTime,
+                endDateTime
+        );
+
+        Map<String, Long> countsByInflow = applicants.stream()
+                .collect(Collectors.groupingBy(
+                        this::resolveInflowType,
+                        Collectors.counting()
+                ));
+
+        int totalApplicantCount = applicants.size();
+
+        List<AdminStatsResponseDTO.SeminarInflowDTO> inflows = countsByInflow.entrySet()
+                .stream()
+                .sorted(Map.Entry.<String, Long>comparingByValue(Comparator.reverseOrder())
+                        .thenComparing(Map.Entry.comparingByKey()))
+                .map(entry -> {
+                    int applicantCount = entry.getValue().intValue();
+                    return AdminStatsResponseDTO.SeminarInflowDTO.builder()
+                            .inflowType(entry.getKey())
+                            .applicantCount(applicantCount)
+                            .percentage(AdminStatsResponseDTO.SeminarInflowDTO.calculatePercentage(
+                                    applicantCount,
+                                    totalApplicantCount
+                            ))
+                            .build();
+                })
+                .toList();
+
+        return AdminStatsResponseDTO.SeminarInflowsResponseDTO.builder()
+                .seminarId(seminarId)
+                .from(startDateTime)
+                .to(toStartOfDay(to))
+                .totalApplicantCount(totalApplicantCount)
+                .inflows(inflows)
                 .build();
     }
 
@@ -68,10 +118,15 @@ public class AdminStatsService {
 
         return AdminStatsResponseDTO.SearchKeywordStatsResponseDTO.builder()
                 .target(normalizedTarget)
-                .from(from.atStartOfDay())
-                .to(to.atStartOfDay())
+                .from(toStartOfDay(from))
+                .to(toStartOfDay(to))
                 .keywords(keywords)
                 .build();
+    }
+
+    private void validateSeminarExists(Long seminarId) {
+        seminarRepository.findById(seminarId)
+                .orElseThrow(() -> new GeneralException(GeneralErrorCode.SEMINARINFO_NOT_FOUND));
     }
 
     private void validateDateRange(LocalDate from, LocalDate to) {
@@ -91,9 +146,29 @@ public class AdminStatsService {
                 SearchStatsService.TARGET_SEMINAR,
                 SearchStatsService.TARGET_SPEAKER
         ).contains(normalizedTarget)) {
-            throw new GeneralException(GeneralErrorCode.INVALID_PARAMETER, "target 값은 ALL, SEMINAR, SPEAKER 중 하나여야 합니다.");
+            throw new GeneralException(
+                    GeneralErrorCode.INVALID_PARAMETER,
+                    "target 값은 ALL, SEMINAR, SPEAKER 중 하나여야 합니다."
+            );
         }
         return normalizedTarget;
     }
 
+    private String resolveInflowType(Applicant applicant) {
+        if (applicant.getInflowPathEtc() != null && !applicant.getInflowPathEtc().isBlank()) {
+            return applicant.getInflowPathEtc().trim();
+        }
+        if (applicant.getInflowPath() != null) {
+            return applicant.getInflowPath().name();
+        }
+        return "UNKNOWN";
+    }
+
+    private LocalDateTime toStartOfDay(LocalDate date) {
+        return date.atStartOfDay();
+    }
+
+    private LocalDateTime toInclusiveEndOfDay(LocalDate date) {
+        return date.plusDays(1).atStartOfDay().minusNanos(1);
+    }
 }
