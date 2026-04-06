@@ -1,6 +1,7 @@
 package com.hongik.devtalk.domain.seminar.admin.dto;
 
 import com.hongik.devtalk.domain.Applicant;
+import com.hongik.devtalk.domain.Attendance;
 import com.hongik.devtalk.domain.Student;
 import com.hongik.devtalk.domain.enums.AttendanceStatus;
 import com.hongik.devtalk.domain.enums.Department;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Getter
@@ -38,8 +40,9 @@ public class ApplicantResponseDTO {
         private String email;
         private ParticipationType participationType;
         private String inflowPath;
-        private Boolean attendenceCheck;
+        private Boolean attendanceCheck;
         private LocalDateTime appliedAt;
+        private LocalDateTime checkInTime;
 
         public static StudentInfoDTO from(Applicant applicant, String topic) {
             Student student = applicant.getStudent();
@@ -65,12 +68,18 @@ public class ApplicantResponseDTO {
                     ? applicant.getInflowPathEtc()
                     : applicant.getInflowPath().name();
 
-            // 출석 여부 확인
-            Boolean attendanceCheck = applicant.getAttendances().stream()
+            // 출석 여부 확인 및 조회
+            Optional<Attendance> attendance = applicant.getAttendances().stream()
                     .filter(att -> att.getSeminar().equals(applicant.getSeminar()))
+                    .findFirst();
+
+            Boolean attendanceCheck = attendance
                     .map(att -> att.getStatus() == AttendanceStatus.PRESENT)
-                    .findFirst()
                     .orElse(false);
+
+            LocalDateTime checkInTime = attendance
+                    .map(Attendance::getCheckInTime)
+                    .orElse(null);
 
             return StudentInfoDTO.builder()
                     .topic(topic)
@@ -83,8 +92,9 @@ public class ApplicantResponseDTO {
                     .email(student.getEmail())
                     .participationType(applicant.getParticipationType())
                     .inflowPath(inflowPathInfo)
-                    .attendenceCheck(attendanceCheck)
+                    .attendanceCheck(attendanceCheck)
                     .appliedAt(applicant.getCreatedAt())
+                    .checkInTime(checkInTime)
                     .build();
         }
     }
