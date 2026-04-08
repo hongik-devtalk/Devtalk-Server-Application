@@ -41,10 +41,10 @@ public class SeminarViewStatsService {
 
         List<ViewPoint> points = new ArrayList<>();
         for (LocalDate d = from; !d.isAfter(to); d = d.plusDays(1)) {
-            points.add(new ViewPoint(d.toString(), map.getOrDefault(d, 0)));
+            points.add(new ViewPoint(d, map.getOrDefault(d, 0)));
         }
         return points;
     }
 
-    public record ViewPoint(String date, int count) {}
+    public record ViewPoint(LocalDate date, int count) {}
 }

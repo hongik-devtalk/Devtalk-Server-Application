@@ -6,6 +6,8 @@ import com.hongik.devtalk.domain.Session;
 import com.hongik.devtalk.domain.ShowSeminar;
 import com.hongik.devtalk.domain.showseminar.dto.ShowSeminarRequestDTO;
 import com.hongik.devtalk.domain.showseminar.dto.ShowSeminarResponseDTO;
+import com.hongik.devtalk.global.apiPayload.code.GeneralErrorCode;
+import com.hongik.devtalk.global.apiPayload.exception.GeneralException;
 import com.hongik.devtalk.repository.SessionRepository;
 import com.hongik.devtalk.repository.mainpage.MainpageImagesRepository;
 import com.hongik.devtalk.repository.seminar.SeminarRepository;
@@ -55,7 +57,7 @@ public class ShowSeminarService {
     @Transactional(readOnly = true)
     public ShowSeminarResponseDTO getCurrentShowSeminar() {
         ShowSeminar showSeminar = showSeminarRepository.findFirstByOrderByIdAsc()
-                .orElseThrow(() -> new IllegalStateException("현재 세미나 정보가 존재하지 않습니다."));
+                .orElseThrow(() -> new GeneralException(GeneralErrorCode.SEMINARINFO_NOT_FOUND, "현재 세미나 정보가 존재하지 않습니다."));
 
         Seminar seminar = showSeminar.getSeminar();
 
