@@ -28,7 +28,7 @@ public class SeminarArchiveController {
     private final SeminarArchiveService seminarArchiveService;
 
 
-    @PostMapping("{seminarId}/reviews")
+    @PostMapping("/{seminarId}/reviews")
     @Operation(summary = "세미나 아카이브 리뷰 작성 API", description = "신청했던 세미나의 리뷰를 작성합니다. Authorization 헤더에 Bearer 토큰이 필요합니다.",
             security = {@SecurityRequirement(name = "JWT TOKEN")})
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
