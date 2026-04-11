@@ -22,6 +22,10 @@ public enum GeneralErrorCode implements BaseErrorCode {
     SEMINAR_NUM_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "SEMINAR_4004", "이미 존재하는 회차입니다."),
     INVALID_VIDEO_URL(HttpStatus.BAD_REQUEST, "SEMINAR_4002", "유효하지 않은 영상 URL입니다."),
 
+    // 신청 에러
+    APPLICANT_NOT_FOUND(HttpStatus.NOT_FOUND, "APPLICANT_4041", "해당 세미나 수강 내역이 없습니다."),
+    ATTENDANCE_REQUIRED(HttpStatus.FORBIDDEN, "APPLICANT_4031", "세미나에 출석한 학생만 리뷰 작성이 가능합니다."),
+
     // 세션 에러
     SESSION_NOT_FOUND(HttpStatus.NOT_FOUND, "SESSION_4041", "해당 세션을 찾을 수 없습니다."),
 
