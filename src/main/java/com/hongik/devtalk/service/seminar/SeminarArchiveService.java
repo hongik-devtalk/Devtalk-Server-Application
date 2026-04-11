@@ -58,7 +58,7 @@ public class SeminarArchiveService {
 
         //출석 여부 확인
         Attendance attendance = attendanceRepository.findByApplicantAndSeminar(applicant,seminar)
-                .orElseThrow(()->new GeneralException(GeneralErrorCode.APPLICANT_NOT_FOUND));
+                .orElseThrow(()->new GeneralException(GeneralErrorCode.ATTENDANCE_REQUIRED));
 
 
         if(attendance.getStatus() == AttendanceStatus.ABSENT) {
@@ -77,6 +77,7 @@ public class SeminarArchiveService {
                 .seminar(seminar)
                 .totalContent(requestDto.getTotalContent())
                 .score(requestDto.getScore())
+                .isPublic(true)
                 .build();
 
         //리뷰 저장
