@@ -10,6 +10,14 @@ import org.hibernate.annotations.ColumnDefault;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Table(
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_student_seminar",
+                        columnNames = {"student_id", "seminar_id"} // 실제 DB 컬럼명 확인 필요
+                )
+        }
+)
 public class Review extends BaseTimeEntity {
 
     @Id
@@ -26,9 +34,15 @@ public class Review extends BaseTimeEntity {
     @JoinColumn(name = "seminar_id", nullable = false)
     private Seminar seminar;
 
-    //좋았던 점
+    //전체 후기 작성
     @Lob
     @Column(nullable = false)
+    private String totalContent;
+
+
+    //좋았던 점
+    @Lob
+    @Column
     private String strength;
 
     //아쉬웠던 점
