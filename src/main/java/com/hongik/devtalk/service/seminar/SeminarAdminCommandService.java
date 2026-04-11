@@ -26,7 +26,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -435,11 +438,17 @@ public class SeminarAdminCommandService {
             return;
         }
 
-        tagTexts.stream()
-                .filter(tagText -> tagText != null && !tagText.isBlank())
+        Map<String, String> uniqueTagTexts = tagTexts.stream()
+                .filter(tagText -> tagText != null)
                 .map(String::trim)
-                .distinct()
-                .forEach(tagText -> {
+                .filter(tagText -> !tagText.isBlank())
+                .collect(
+                        LinkedHashMap::new,
+                        (map, tagText) -> map.putIfAbsent(tagText.toLowerCase(Locale.ROOT), tagText),
+                        LinkedHashMap::putAll
+                );
+
+        uniqueTagTexts.values().forEach(tagText -> {
                     Tag tag = tagRepository.findByTagTextIgnoreCase(tagText)
                             .orElseGet(() -> tagRepository.save(
                                     Tag.builder()
