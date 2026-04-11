@@ -10,6 +10,14 @@ import org.hibernate.annotations.ColumnDefault;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Table(
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_student_seminar",
+                        columnNames = {"student_id", "seminar_id"} // 실제 DB 컬럼명 확인 필요
+                )
+        }
+)
 public class Review extends BaseTimeEntity {
 
     @Id
