@@ -19,6 +19,10 @@ public class SeminarSearchResponseDto {
     private int seminarNum;
 
 
+    private String subtitle;
+
+    private String description;
+
     private String topic;
     private String thumbnailUrl;
 
@@ -40,6 +44,8 @@ public class SeminarSearchResponseDto {
         return SeminarSearchResponseDto.builder()
                 .seminarId(seminar.getId())
                 .seminarNum(seminar.getSeminarNum())
+                .subtitle(seminar.getSubtitle())
+                .description(seminar.getDescription())
                 .topic(seminar.getTopic())
                 .thumbnailUrl(seminar.getThumbnailUrl())
                 .startDate(seminar.getStartDate())

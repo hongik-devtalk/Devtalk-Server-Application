@@ -1,11 +1,15 @@
 package com.hongik.devtalk.service.speaker;
 
 
+import com.hongik.devtalk.domain.Seminar;
+import com.hongik.devtalk.domain.Session;
 import com.hongik.devtalk.domain.Speaker;
 import com.hongik.devtalk.domain.speaker.dto.SpeakerDetailResponseDto;
 import com.hongik.devtalk.domain.speaker.dto.SpeakerSearchResponseDto;
 import com.hongik.devtalk.global.apiPayload.code.GeneralErrorCode;
 import com.hongik.devtalk.global.apiPayload.exception.GeneralException;
+import com.hongik.devtalk.repository.SessionRepository;
+import com.hongik.devtalk.repository.seminar.SeminarRepository;
 import com.hongik.devtalk.repository.speaker.SpeakerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +25,8 @@ import java.util.stream.Collectors;
 public class SpeakerService {
 
     private final SpeakerRepository speakerRepository;
+    private final SeminarRepository seminarRepository;
+    private final SessionRepository sessionRepository;
 
 
     //연사 검색
@@ -65,12 +71,17 @@ public class SpeakerService {
 
     //연사 상세정보 조회
 
-    public SpeakerDetailResponseDto getSpeakerDetails(Long speakerId) {
+    public SpeakerDetailResponseDto getSpeakerDetails(Long speakerId,Long seminarId) {
 
         // 연사 조회
         Speaker speaker = speakerRepository.findById(speakerId)
                 .orElseThrow(() -> new GeneralException(GeneralErrorCode.SPEAKER_NOT_FOUND));
 
-        return SpeakerDetailResponseDto.from(speaker);
+        //세미나 조회
+        Session targetSession = sessionRepository.findBySpeakerIdAndSeminarId(speakerId, seminarId)
+                .orElseThrow(() -> new GeneralException(GeneralErrorCode.SESSION_NOT_FOUND, "해당 연사의 세션 정보를 찾을 수 없습니다."));
+        //연사가 해당 세미나를 진행했는지 조회
+
+        return SpeakerDetailResponseDto.from(speaker,targetSession);
     }
 }
