@@ -25,4 +25,6 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
             order by s.id asc
             """)
     List<Session> findBySeminarIdWithSpeaker(@Param("seminarId") Long seminarId);
+
+    Optional<Session> findBySpeakerIdAndSeminarId(Long speakerId, Long seminarId);
 }

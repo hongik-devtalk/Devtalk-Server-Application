@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
@@ -71,7 +72,7 @@ public class SeminarArchiveController {
     })
     public ApiResponse<SeminarArchiveReviewResponseDto> createArchiveReview(@AuthenticationPrincipal User user,
                                                                      @PathVariable Long seminarId,
-                                                                     @RequestBody SeminarArchiveReviewRequestDto requestDto) {
+                                                                     @Valid @RequestBody SeminarArchiveReviewRequestDto requestDto) {
         String studentNum = user.getUsername();
         return seminarArchiveService.createArchiveReview(studentNum, seminarId ,requestDto);
     }

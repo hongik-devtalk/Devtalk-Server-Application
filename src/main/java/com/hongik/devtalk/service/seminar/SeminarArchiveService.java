@@ -36,15 +36,8 @@ public class SeminarArchiveService {
     public ApiResponse<SeminarArchiveReviewResponseDto> createArchiveReview(String studentNum,Long seminarId, SeminarArchiveReviewRequestDto requestDto) {
 
         //학생이 존재하는지 확인
-        Optional<Student> optionalStudent = studentRepository.findByStudentNum(studentNum);
-
-        if(optionalStudent.isEmpty()) {
-            return ApiResponse.onFailure(GeneralErrorCode.FORBIDDEN, LiveError.STUDENT_NOT_FOUND);
-
-        }
-
-        //student 객체가 있으면 꺼내기
-        Student student = optionalStudent.get();
+        Student student = studentRepository.findByStudentNum(studentNum)
+                .orElseThrow(() -> new GeneralException(GeneralErrorCode.STUDENT_NOT_FOUND));
 
         //세미나 존재 여부 확인
         Seminar seminar = seminarRepository.findById(seminarId)
@@ -71,30 +64,36 @@ public class SeminarArchiveService {
             throw new GeneralException(CustomLiveErrorCode.REVIEW_DUPLICATE_ERROR,"리뷰는 세미나당 1회만 작성가능합니다.");
         }
 
+        try {
+            Review review = Review.builder()
+                    .student(student)
+                    .seminar(seminar)
+                    .totalContent(requestDto.getTotalContent())
+                    .score(requestDto.getScore())
+                    .isPublic(true)
+                    .build();
 
-        Review review = Review.builder()
-                .student(student)
-                .seminar(seminar)
-                .totalContent(requestDto.getTotalContent())
-                .score(requestDto.getScore())
-                .isPublic(true)
-                .build();
+            Review savedReview = reviewRepository.save(review);
 
-        //리뷰 저장
-        Review savedReview = reviewRepository.save(review);
+            // 저장 직후 바로 반영하여 DB 유니크 제약 조건 위반을 캐치할 수 있게 함
+            reviewRepository.flush();
 
+            SeminarArchiveReviewResponseDto responseDto = SeminarArchiveReviewResponseDto.builder()
+                    .reviewId(savedReview.getId())
+                    .studentNum(student.getStudentNum())
+                    .seminarId(seminar.getId())
+                    .seminarNum(seminar.getSeminarNum())
+                    .description(seminar.getDescription())
+                    .score(savedReview.getScore())
+                    .totalContent(savedReview.getTotalContent())
+                    .build();
 
-        SeminarArchiveReviewResponseDto responseDto = SeminarArchiveReviewResponseDto.builder()
-                .reviewId(savedReview.getId())
-                .studentNum(student.getStudentNum())
-                .seminarId(seminar.getId())
-                .seminarNum(seminar.getSeminarNum())
-                .description(seminar.getDescription())
-                .score(savedReview.getScore())
-                .totalContent(savedReview.getTotalContent())
-                .build();
+            return ApiResponse.onSuccess("성공적으로 리뷰가 등록되었습니다.", responseDto);
 
-    return ApiResponse.onSuccess("성공적으로 리뷰가 등록되었습니다.",responseDto);
-
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            // DB 유니크 제약 조건(student_id + seminar_id)에 걸렸을 경우 (동시 요청 방어)
+            throw new GeneralException(CustomLiveErrorCode.REVIEW_DUPLICATE_ERROR, "이미 리뷰를 작성하셨습니다.");
+        }
     }
+
 }

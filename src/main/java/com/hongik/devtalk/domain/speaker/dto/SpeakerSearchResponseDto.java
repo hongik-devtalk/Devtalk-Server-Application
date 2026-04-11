@@ -28,15 +28,10 @@ public class SpeakerSearchResponseDto {
 
     public static SpeakerSearchResponseDto from(Speaker speaker) {
 
-        Session session = speaker.getSessions().isEmpty()
-                ? null
-                : speaker.getSessions().get(0);
 
         return SpeakerSearchResponseDto.builder()
                 .speakerId(speaker.getId())
                 .speakerName(speaker.getName())
-                .subtitle(session != null ? session.getTitle() : null)
-                .description(session != null ? session.getDescription() : null)
                 .history(speaker.getHistory())
                 .organization(speaker.getOrganization())
                 .profileUrl(speaker.getProfileUrl())
