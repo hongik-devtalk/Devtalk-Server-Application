@@ -112,7 +112,7 @@ public class SpeakerController {
                     content = @Content(schema = @Schema(implementation = ApiResponse.class))
             )
     })
-    public ApiResponse<SpeakerDetailResponseDto> getSpeakerDetails(@PathVariable Long speakerId,@RequestParam (value = "seminarId", required = false) Long seminarId) {
+    public ApiResponse<SpeakerDetailResponseDto> getSpeakerDetails(@PathVariable Long speakerId,@RequestParam (value = "seminarId") Long seminarId) {
         SpeakerDetailResponseDto speakers = speakerService.getSpeakerDetails(speakerId,seminarId);
         return ApiResponse.onSuccess("연사 상세정보 조회에 성공했습니다.", speakers);
     }
