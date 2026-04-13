@@ -16,6 +16,7 @@ public class SeminarStatisticsResponseDTO {
     private int seminarNum;
     private List<DepartmentRatioDTO> departmentRatios;
     private List<GradeRatioDTO> gradeRatios;
+    private List<InflowDTO> inflows;
     private AttendanceSummaryDTO attendanceSummary;
 
     @Getter
@@ -36,6 +37,16 @@ public class SeminarStatisticsResponseDTO {
         private String grade;
         private Long count;
         private Double percentage;
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class InflowDTO {
+        private String inflowType;
+        private Long count;
+        private Double inflowRate;
     }
 
     @Getter

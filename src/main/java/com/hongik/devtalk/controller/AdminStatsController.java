@@ -78,55 +78,6 @@ public class AdminStatsController {
         return ApiResponse.onSuccess("세미나 카드 조회수 통계 조회 성공", response);
     }
 
-    @GetMapping("/seminars/{seminarId}/inflows")
-    @Operation(
-            summary = "세미나 신청자 유입경로 통계 조회",
-            description = "특정 세미나의 기간별 신청자 유입경로 통계를 조회합니다."
-    )
-    @ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                    responseCode = "200",
-                    description = "세미나 신청자 유입경로 통계 조회 성공"
-            ),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                    responseCode = "400",
-                    description = "날짜 형식 또는 요청 파라미터가 잘못된 경우",
-                    content = @Content(schema = @Schema(implementation = ApiResponse.class))
-            ),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                    responseCode = "401",
-                    description = "관리자 인증이 필요한 경우",
-                    content = @Content(schema = @Schema(implementation = ApiResponse.class))
-            ),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                    responseCode = "404",
-                    description = "세미나를 찾을 수 없는 경우",
-                    content = @Content(schema = @Schema(implementation = ApiResponse.class))
-            )
-    })
-    public ApiResponse<AdminStatsResponseDTO.SeminarInflowsResponseDTO> seminarInflows(
-            @Parameter(description = "조회할 세미나 ID", required = true, example = "1")
-            @PathVariable Long seminarId,
-            @Parameter(
-                    description = "조회 시작일",
-                    required = true,
-                    schema = @Schema(type = "string", format = "date", example = "2026-03-01")
-            )
-            @RequestParam
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
-            @Parameter(
-                    description = "조회 종료일",
-                    required = true,
-                    schema = @Schema(type = "string", format = "date", example = "2026-03-31")
-            )
-            @RequestParam
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to
-    ) {
-        AdminStatsResponseDTO.SeminarInflowsResponseDTO response =
-                adminStatsService.getSeminarInflows(seminarId, from, to);
-        return ApiResponse.onSuccess("세미나 신청자 유입경로 통계 조회 성공", response);
-    }
-
     @GetMapping("/search/top5")
     @Operation(
             summary = "검색어 통계 조회",
