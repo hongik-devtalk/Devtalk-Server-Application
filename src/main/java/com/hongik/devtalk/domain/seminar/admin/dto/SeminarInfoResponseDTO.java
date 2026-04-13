@@ -67,6 +67,7 @@ public class SeminarInfoResponseDTO {
         private String partTag;
         private String oneLineSummary;
         private FileInfo profile;
+        private List<String> speakerTags;
     }
 
     // DTO 변환
@@ -110,6 +111,13 @@ public class SeminarInfoResponseDTO {
                 .name(speaker.getName())
                 .organization(speaker.getOrganization())
                 .history(speaker.getHistory())
+                .speakerTags(
+                        speaker.getSpeakerTags() == null
+                                ? List.of()
+                                : speaker.getSpeakerTags().stream()
+                                .map(speakerTag -> speakerTag.getTag().getTagText())
+                                .toList()
+                )
                 .sessionTitle(session.getTitle())
                 .sessionContent(session.getDescription())
                 .partTag(session.getPartTag())

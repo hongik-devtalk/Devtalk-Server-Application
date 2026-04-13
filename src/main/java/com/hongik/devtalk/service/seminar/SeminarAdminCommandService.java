@@ -26,7 +26,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -148,6 +151,7 @@ public class SeminarAdminCommandService {
                     .profileFileSize(profile.getSize())
                     .build();
             speakerRepository.save(speaker);
+            applySpeakerTags(speaker, sp.getSpeakerTags());
 
             Session session = Session.builder()
                     .seminar(seminar)
@@ -219,6 +223,8 @@ public class SeminarAdminCommandService {
                     .orElseThrow(() -> new GeneralException(GeneralErrorCode.SESSION_NOT_FOUND));
 
             speaker.updateInfo(spReq.getName(), spReq.getOrganization(), spReq.getHistory());
+            speaker.clearSpeakerTags();
+            applySpeakerTags(speaker, spReq.getSpeakerTags());
             session.updateInfo(
                     spReq.getSessionTitle(),
                     spReq.getSessionContent(),
@@ -424,6 +430,34 @@ public class SeminarAdminCommandService {
                             ));
 
                     seminar.addSeminarTag(tag);
+                });
+    }
+
+    private void applySpeakerTags(Speaker speaker, List<String> tagTexts) {
+        if (tagTexts == null) {
+            return;
+        }
+
+        Map<String, String> uniqueTagTexts = tagTexts.stream()
+                .filter(tagText -> tagText != null)
+                .map(String::trim)
+                .filter(tagText -> !tagText.isBlank())
+                .collect(
+                        LinkedHashMap::new,
+                        (map, tagText) -> map.putIfAbsent(tagText.toLowerCase(Locale.ROOT), tagText),
+                        LinkedHashMap::putAll
+                );
+
+        uniqueTagTexts.values().forEach(tagText -> {
+                    Tag tag = tagRepository.findByTagTextIgnoreCase(tagText)
+                            .orElseGet(() -> tagRepository.save(
+                                    Tag.builder()
+                                            .tagText(tagText)
+                                            .searchCount(0L)
+                                            .build()
+                            ));
+
+                    speaker.addSpeakerTag(tag);
                 });
     }
 
