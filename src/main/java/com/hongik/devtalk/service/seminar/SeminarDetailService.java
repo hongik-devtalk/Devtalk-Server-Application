@@ -2,9 +2,11 @@ package com.hongik.devtalk.service.seminar;
 
 import com.hongik.devtalk.domain.*;
 import com.hongik.devtalk.domain.seminar.detail.dto.*;
+import com.hongik.devtalk.domain.speaker.dto.SpeakerSearchResponseDto;
 import com.hongik.devtalk.global.apiPayload.code.GeneralErrorCode;
 import com.hongik.devtalk.global.apiPayload.exception.GeneralException;
 import com.hongik.devtalk.repository.SeminarTagRepository;
+import com.hongik.devtalk.repository.SpeakerTagRepository;
 import com.hongik.devtalk.repository.TagRepository;
 import com.hongik.devtalk.repository.seminar.SeminarDetailRepository;
 import com.hongik.devtalk.repository.speaker.SpeakerRepository;
@@ -13,7 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,6 +28,7 @@ public class SeminarDetailService {
     private final SeminarDetailRepository seminarDetailRepository;
     private final SpeakerRepository speakerRepository;
     private final SeminarTagRepository seminarTagRepository;
+    private final SpeakerTagRepository speakerTagRepository;
     private final TagRepository tagRepository;
 
     //세미나 세부정보 조회 ( 세션 )
@@ -97,6 +102,45 @@ public class SeminarDetailService {
     }
 
     @Transactional
+    public TagSearchResponseDto searchAllByTag(String tagText) {
+        if (tagText == null || tagText.isBlank()) {
+            return TagSearchResponseDto.builder()
+                    .seminars(List.of())
+                    .speakers(List.of())
+                    .build();
+        }
+
+        String query = tagText.trim();
+
+        Map<Long, Seminar> seminarMap = new LinkedHashMap<>();
+        seminarTagRepository.findByTag_TagTextIgnoreCase(query).stream()
+                .map(SeminarTag::getSeminar)
+                .forEach(seminar -> seminarMap.put(seminar.getId(), seminar));
+
+        Map<Long, Speaker> speakerMap = new LinkedHashMap<>();
+        speakerTagRepository.findByTag_TagTextIgnoreCase(query).stream()
+                .map(SpeakerTag::getSpeaker)
+                .forEach(speaker -> {
+                    speakerMap.put(speaker.getId(), speaker);
+                    speaker.getSessions().forEach(session ->
+                            seminarMap.put(session.getSeminar().getId(), session.getSeminar())
+                    );
+                });
+
+        tagRepository.findByTagTextIgnoreCase(query)
+                .ifPresent(Tag::increaseSearchCount);
+
+        return TagSearchResponseDto.builder()
+                .seminars(seminarMap.values().stream()
+                        .map(SeminarSearchResponseDto::from)
+                        .toList())
+                .speakers(speakerMap.values().stream()
+                        .map(SpeakerSearchResponseDto::from)
+                        .toList())
+                .build();
+    }
+
+    @Transactional
     public List<SeminarSearchResponseDto> searchSeminarsByTag(String tagText) {
         if (tagText == null || tagText.isBlank()) {
             return List.of();
@@ -104,14 +148,25 @@ public class SeminarDetailService {
 
         String query = tagText.trim();
 
-        List<Seminar> seminars = seminarTagRepository.findByTag_TagTextIgnoreCase(query).stream()
+        List<Seminar> seminarTaggedSeminars = seminarTagRepository.findByTag_TagTextIgnoreCase(query).stream()
                 .map(SeminarTag::getSeminar)
                 .toList();
+
+        List<Seminar> speakerTaggedSeminars = speakerTagRepository.findByTag_TagTextIgnoreCase(query).stream()
+                .map(SpeakerTag::getSpeaker)
+                .flatMap(speaker -> speaker.getSessions().stream())
+                .map(Session::getSeminar)
+                .toList();
+
+        Map<Long, Seminar> seminarMap = new LinkedHashMap<>();
+
+        seminarTaggedSeminars.forEach(seminar -> seminarMap.put(seminar.getId(), seminar));
+        speakerTaggedSeminars.forEach(seminar -> seminarMap.put(seminar.getId(), seminar));
 
         tagRepository.findByTagTextIgnoreCase(query)
                 .ifPresent(Tag::increaseSearchCount);
 
-        return seminars.stream()
+        return seminarMap.values().stream()
                 .map(SeminarSearchResponseDto::from)
                 .toList();
     }

@@ -47,6 +47,10 @@ public class Speaker {
     @Column(length = 20, unique = true)
     private String phone;
 
+    @Builder.Default
+    @OneToMany(mappedBy = "speaker", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SpeakerTag> speakerTags = new ArrayList<>();
+
     @Lob
     private String etc;
 
@@ -64,5 +68,27 @@ public class Speaker {
         this.profileFileName = name;
         this.profileFileExtension = ext;
         this.profileFileSize = size;
+    }
+
+    public void addSpeakerTag(Tag tag) {
+        if (this.speakerTags == null) {
+            this.speakerTags = new ArrayList<>();
+        }
+
+        SpeakerTag speakerTag = SpeakerTag.builder()
+                .speaker(this)
+                .tag(tag)
+                .build();
+
+        this.speakerTags.add(speakerTag);
+    }
+
+    public void clearSpeakerTags() {
+        if (this.speakerTags == null) {
+            this.speakerTags = new ArrayList<>();
+            return;
+        }
+
+        this.speakerTags.clear();
     }
 }

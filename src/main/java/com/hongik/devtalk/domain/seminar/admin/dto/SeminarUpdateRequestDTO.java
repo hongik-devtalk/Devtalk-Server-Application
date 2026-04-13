@@ -90,6 +90,9 @@ public class SeminarUpdateRequestDTO {
         @Schema(description = "강연 내용", example = "이번 강연에서는 인공지능 기술의 윤리적 과제와 사회적 영향에 대해 이야기합니다.")
         private String sessionContent;
 
+        @Schema(description = "연사 태그")
+        private List<String> speakerTags;
+
         @Schema(description = "1, 2부 구분 태그", example = "1부")
         @Size(max = 50)
         private String partTag;

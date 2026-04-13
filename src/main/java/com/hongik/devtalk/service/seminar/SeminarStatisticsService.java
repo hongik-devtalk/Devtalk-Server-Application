@@ -6,6 +6,7 @@ import com.hongik.devtalk.domain.Seminar;
 import com.hongik.devtalk.domain.Student;
 import com.hongik.devtalk.domain.enums.AttendanceStatus;
 import com.hongik.devtalk.domain.enums.Department;
+import com.hongik.devtalk.domain.enums.InflowPath;
 import com.hongik.devtalk.domain.seminar.admin.dto.SeminarStatisticsResponseDTO;
 import com.hongik.devtalk.global.apiPayload.code.GeneralErrorCode;
 import com.hongik.devtalk.global.apiPayload.exception.GeneralException;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
@@ -127,6 +129,27 @@ public class SeminarStatisticsService {
                 })
                 .collect(Collectors.toList());
 
+        Map<String, Long> inflowCountMap = applicants.stream()
+                .collect(Collectors.groupingBy(
+                        this::resolveInflowType,
+                        Collectors.counting()
+                ));
+
+        List<SeminarStatisticsResponseDTO.InflowDTO> inflows = inflowCountMap.entrySet().stream()
+                .map(entry -> {
+                    double inflowRate = totalApplicants > 0
+                            ? (entry.getValue().doubleValue() / totalApplicants) * 100.0
+                            : 0.0;
+                    return SeminarStatisticsResponseDTO.InflowDTO.builder()
+                            .inflowType(entry.getKey())
+                            .count(entry.getValue())
+                            .inflowRate(Math.round(inflowRate * 100.0) / 100.0)
+                            .build();
+                })
+                .sorted(Comparator.comparing(SeminarStatisticsResponseDTO.InflowDTO::getCount).reversed()
+                        .thenComparing(SeminarStatisticsResponseDTO.InflowDTO::getInflowType))
+                .collect(Collectors.toList());
+
         // 출석 정보 집계
         long presentCount = 0;
         for (Applicant applicant : applicants) {
@@ -157,7 +180,24 @@ public class SeminarStatisticsService {
                 .seminarNum(seminar.getSeminarNum())
                 .departmentRatios(departmentRatios)
                 .gradeRatios(gradeRatios)
+                .inflows(inflows)
                 .attendanceSummary(attendanceSummary)
                 .build();
+    }
+
+    private String resolveInflowType(Applicant applicant) {
+        if (applicant.getInflowPathEtc() != null && !applicant.getInflowPathEtc().isBlank()) {
+            return applicant.getInflowPathEtc().trim();
+        }
+        if (applicant.getInflowPath() != null) {
+            return formatInflowPath(applicant.getInflowPath());
+        }
+        return "Unknown";
+    }
+
+    private String formatInflowPath(InflowPath inflowPath) {
+        return Arrays.stream(inflowPath.name().split("_"))
+                .map(part -> part.substring(0, 1) + part.substring(1).toLowerCase(Locale.ROOT))
+                .collect(Collectors.joining(" "));
     }
 }
