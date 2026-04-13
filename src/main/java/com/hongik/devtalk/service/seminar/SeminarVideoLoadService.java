@@ -1,8 +1,10 @@
 package com.hongik.devtalk.service.seminar;
 
 
+import com.hongik.devtalk.domain.LiveFile;
 import com.hongik.devtalk.domain.Seminar;
 import com.hongik.devtalk.domain.seminar.admin.dto.SeminarVideoRequestDTO;
+import com.hongik.devtalk.domain.seminar.dto.SeminarFileResponseDto;
 import com.hongik.devtalk.domain.seminar.dto.SeminarVideoResponseDTO;
 import com.hongik.devtalk.global.apiPayload.code.GeneralErrorCode;
 import com.hongik.devtalk.global.apiPayload.exception.GeneralException;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URL;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -72,6 +75,24 @@ public class SeminarVideoLoadService {
                 .orElseThrow(() -> new GeneralException(GeneralErrorCode.SEMINARINFO_NOT_FOUND));
 
         return SeminarVideoResponseDTO.from(seminar);
+    }
+
+    @Transactional(readOnly = true)
+    public SeminarFileResponseDto getSeminarFile(Long seminarId) {
+        // 1. 세미나 조회
+        Seminar seminar = seminarRepository.findById(seminarId)
+                .orElseThrow(() -> new GeneralException(GeneralErrorCode.SEMINARINFO_NOT_FOUND));
+
+        // 2. LiveFile 리스트를 FileInfo DTO 리스트로 변환
+        List<SeminarFileResponseDto.FileInfo> fileInfoList = seminar.getLiveFiles().stream()
+                .map(SeminarFileResponseDto.FileInfo::from)
+                .toList();
+
+        // 3. 최종 DTO 구성
+        return SeminarFileResponseDto.builder()
+                .seminarId(seminar.getId())
+                .fileInfos(fileInfoList)
+                .build();
     }
 }
 

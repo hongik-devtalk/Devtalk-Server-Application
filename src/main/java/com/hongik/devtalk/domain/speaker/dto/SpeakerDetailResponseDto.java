@@ -20,11 +20,11 @@ public class SpeakerDetailResponseDto {
     //이력
     private String history;
     private String profileUrl;
-    private List<String> speakerTags;
     private Long seminarId;
     private int seminarNum;
     private String subtitle;
     private String description;
+    private List<String> speakerTags;
 
 
     public static SpeakerDetailResponseDto from(Speaker speaker, Session session) {
