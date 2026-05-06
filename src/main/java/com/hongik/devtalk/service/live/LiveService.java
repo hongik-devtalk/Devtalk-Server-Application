@@ -273,7 +273,7 @@ public class LiveService {
         Seminar seminar = latestApplicant.getSeminar();
 
         LocalDate seminarDate = seminar.getSeminarDate().toLocalDate();
-        LocalDate seminarDateMinus = seminarDate.minusDays(1);
+        LocalDate seminarDateMinus = seminarDate.minusDays(7);
         LocalDate deadline = seminarDate.plusDays(10); // 세미나 날짜 + 10일
         LocalDate today = LocalDate.now();
 
